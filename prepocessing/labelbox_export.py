@@ -1,3 +1,4 @@
+#%% 
 import labelbox
 import numpy as np
 from PIL import Image
@@ -5,6 +6,8 @@ from PIL import Image
 api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbGljd2VqY2QwYWRoMDcwMzFpMDgwN2QyIiwib3JnYW5pemF0aW9uSWQiOiJjbGljd2VqYzAwYWRnMDcwM2dyMzRkM2pjIiwiYXBpS2V5SWQiOiJjbGljeHBlNHkwNGY3MDd5cmFzd2phZXQ1Iiwic2VjcmV0IjoiODY3YjM1NTllMDA4ZmQ3NDEyODgwODY3NzkwNTdjOWQiLCJpYXQiOjE2ODU2MTE3MzQsImV4cCI6MjMxNjc2MzczNH0.e04oD4kfP3-2z3cranyFcYRqAoe98XyjhkupmXauo-U"
 project_id = "clicwkp7q06t607zg87vgerom"
 # dataset_id = 
+
+#%% 
 
 client = labelbox.client.Client(api_key=api_key)
 
@@ -20,7 +23,19 @@ labels = project.export_v2(params={
 	"interpolated_frames": True
   })
 
-for label in labels:
+labels.wait_till_done()
+
+if labels.errors:
+  print(labels.errors)
+
+export_json = labels.result
+print("results: ", export_json)
+
+
+
+#%% 
+
+for label in labels.labels:
     # Assuming the label contains a segmentation mask
     mask = label.data.get('mask')
 
