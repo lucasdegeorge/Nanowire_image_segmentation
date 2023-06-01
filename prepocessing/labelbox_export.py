@@ -1,13 +1,11 @@
 #%% 
 import labelbox
-import numpy as np
-from PIL import Image
+import json
 
 api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbGljd2VqY2QwYWRoMDcwMzFpMDgwN2QyIiwib3JnYW5pemF0aW9uSWQiOiJjbGljd2VqYzAwYWRnMDcwM2dyMzRkM2pjIiwiYXBpS2V5SWQiOiJjbGljeHBlNHkwNGY3MDd5cmFzd2phZXQ1Iiwic2VjcmV0IjoiODY3YjM1NTllMDA4ZmQ3NDEyODgwODY3NzkwNTdjOWQiLCJpYXQiOjE2ODU2MTE3MzQsImV4cCI6MjMxNjc2MzczNH0.e04oD4kfP3-2z3cranyFcYRqAoe98XyjhkupmXauo-U"
 project_id = "clicwkp7q06t607zg87vgerom"
-# dataset_id = 
 
-#%% 
+#%% exporting the json file 
 
 client = labelbox.client.Client(api_key=api_key)
 
@@ -28,23 +26,21 @@ labels.wait_till_done()
 if labels.errors:
   print(labels.errors)
 
-export_json = labels.result
-print("results: ", export_json)
+json_list = labels.result
+# print("results: ", json_list)
+
+#%% Write the json file
+
+i=0
+for element in json_list:
+  json_object = json.dumps(element)
+  with open("input/sample"+str(i)+".json", "w") as outfile:
+    outfile.write(json_object)
+  i+=1
+
+# from main import main
+# main()
 
 
 
-#%% 
 
-for label in labels.labels:
-    # Assuming the label contains a segmentation mask
-    mask = label.data.get('mask')
-
-    if mask:
-        # Convert the mask to a binary numpy array
-        mask_array = np.array(mask, dtype=np.uint8)
-
-        # Create a PIL Image from the binary mask array
-        mask_image = Image.fromarray(mask_array * 255)
-
-        # Save the mask image as a PNG file
-        mask_image.save(f'{label.uid}.png')
