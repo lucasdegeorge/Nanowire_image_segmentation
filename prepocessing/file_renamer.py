@@ -1,3 +1,4 @@
+#%% 
 import os
 
 def get_next_file_number(folder_path):
@@ -12,7 +13,7 @@ def get_next_file_number(folder_path):
     return highest_number + 1
 
 def rename_files(folder_path, count_restart=False):
-    if count_restart: next_number = get_next_file_number(folder_path)
+    if not(count_restart): next_number = get_next_file_number(folder_path)
     else: next_number = 1
 
     png_files = [f for f in os.listdir(folder_path) if f.endswith('.png')]
@@ -27,5 +28,5 @@ def rename_files(folder_path, count_restart=False):
         next_number += 1
 
 
-folder_path = 'path/to/your/folder'
-rename_files(folder_path)
+folder_path = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
+rename_files(folder_path, count_restart=True)
