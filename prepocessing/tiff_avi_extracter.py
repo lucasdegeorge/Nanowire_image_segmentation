@@ -13,13 +13,13 @@ def extract_frames_from_tiff(tiff_file, output_folder, output_format='png'):
         rgb_image = tiff_image.convert('RGB')
 
         os.makedirs(output_folder, exist_ok=True)
-        output_file = os.path.join(output_folder, f'frame13_{i}.{output_format}')
+        output_file = os.path.join(output_folder, f'frame_{i}.{output_format}')
         rgb_image.save(output_file)
         # print(f'Saved frame {i} as {output_file}')
     tiff_image.close()
 
 
-tiff_file_path = "C:/Users/lucas.degeorge/Documents/Images/tiff_to_convert/13_VIDEO.tif" # replace file name
+tiff_file_path = "C:/Users/lucas.degeorge/Documents/Images/tiff_to_convert/file" # replace file name
 output_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 extract_frames_from_tiff(tiff_file_path, output_folder,output_format='png')
 
@@ -35,7 +35,7 @@ def extract_frames_from_avi(avi_file, output_folder, output_format='png'):
         # Check if the frame was read successfully
         if ret:
             os.makedirs(output_folder, exist_ok=True)
-            output_file = os.path.join(output_folder, f'frame8_{frame_count}.{output_format}')
+            output_file = os.path.join(output_folder, f'frame_{frame_count}.{output_format}')
             cv2.imwrite(output_file, frame)
             # print(f'Saved frame {frame_count} as {output_file}')
             frame_count += 1
@@ -43,6 +43,6 @@ def extract_frames_from_avi(avi_file, output_folder, output_format='png'):
             break
     video.release()
 
-avi_file_path = "C:/Users/lucas.degeorge/Documents/Images/videos_to_convert/8.avi" # replace file
+avi_file_path = "C:/Users/lucas.degeorge/Documents/Images/videos_to_convert/file" # replace file
 output_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 extract_frames_from_avi(avi_file_path, output_folder, output_format='png')
