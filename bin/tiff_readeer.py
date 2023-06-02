@@ -57,19 +57,24 @@ from apeer_ometiff_library import io
 import matplotlib.pyplot as plt
 
 # Read the OME-TIFF file
-file_path = "path_to_your_ome.tif"
+file_path = "C:/Users/lucas/Documents/GitHub/Nanowire_image_segmentation/images_test/2_010_Nwire.ome.tiff"
 ome_tiff = io.read_ometiff(file_path)
 
-# Access the individual images
-images = ome_tiff["images"]
 
-# Visualize each image
-for image_index, image_data in enumerate(images):
-    # Create a new figure and plot the image
-    plt.figure()
-    plt.imshow(image_data, cmap='gray')
-    plt.title(f"Image {image_index+1}")
+#%% histo
 
-    # Display the plot
-    plt.show()
+# Compute the histogram
+histogram, bins = np.histogram(ome_tiff[0][0][0][0].flatten(), bins=256, range=[0, 256])
+
+# Plot the histogram
+plt.figure(figsize=(10, 5))
+plt.bar(bins[:-1], histogram, width=1)
+plt.title("Image Histogram")
+plt.xlabel("Pixel Value")
+plt.ylabel("Frequency")
+plt.show()
+
+plt.figure()
+plt.imshow(ome_tiff[0][0][0][0], cmap='gray')
+plt.show()
 
