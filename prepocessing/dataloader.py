@@ -10,9 +10,9 @@ import cv2
 
 batch_size = 32 
 
-labeled_image_dir = "C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/prepocessing/labeled_images"
-annotation_dir = "C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/prepocessing/binary_masks"
-unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/prepocessing/unlabeled_images"
+labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
+masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
+unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 
 filetype = '.png'
 
@@ -83,7 +83,7 @@ class UnlabeledDataset(torch.utils.data.Dataset):
 
 # Definition 
 
-labeled_dataset = LabeledDataset(labeled_image_dir, annotation_dir, transform=None)
+labeled_dataset = LabeledDataset(labeled_image_dir, masks_dir, transform=None)
 unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
 
 labeled_dataloader = torch.utils.data.DataLoader(labeled_dataset, batch_size=batch_size, shuffle=True)
@@ -93,15 +93,11 @@ unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size
 #%% Display images and masks separated
 
 def display_image_with_mask(image, mask):
-    # Create a figure and axes
     fig, ax = plt.subplots(1, 2)
     
-    # Display the image
-    ax[0].imshow(image)
+    ax[0].imshow(image) # Display the image
     ax[0].set_title('Image')
-    
-    # Display the mask
-    ax[1].imshow(mask, cmap='gray')
+    ax[1].imshow(mask, cmap='gray')     # Display the mask
     ax[1].set_title('Mask')
     
     for axis in ax:
@@ -138,5 +134,5 @@ def display_image_mask_overlayed(image, mask, alpha=0.6):
     plt.show()
 
 # Tests : 
-image, mask = labeled_dataset[2]
+image, mask = labeled_dataset[78]
 display_image_mask_overlayed(image, mask)
