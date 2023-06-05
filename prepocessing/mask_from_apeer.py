@@ -6,10 +6,21 @@ import os
 import matplotlib.pyplot as plt
 import shutil
 
-input_folder = "C:/Users/lucas.degeorge/Documents/Images/apeer_annotations"
-png_path = "C:/Users/lucas.degeorge/Documents/Images/apeer_png"
-outputA_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
-mask_folder = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
+c2n = True
+
+if c2n:
+    input_folder = "C:/Users/lucas.degeorge/Documents/Images/apeer_annotations"
+    png_path = "C:/Users/lucas.degeorge/Documents/Images/apeer_png"
+    outputA_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
+    mask_folder = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
+
+else:
+    input_folder = "C:/Users/lucas.degeorge/Documents/Images/apeer_annotations"
+    png_path = "C:/Users/lucas.degeorge/Documents/Images/apeer_png"
+    outputA_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
+    mask_folder = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
+
+
 
 #%% 
 
