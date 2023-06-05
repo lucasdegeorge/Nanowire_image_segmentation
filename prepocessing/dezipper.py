@@ -7,8 +7,8 @@ import czifile
 import matplotlib.pyplot as plt
 
 input_folder = "C:/Users/lucas.degeorge/Documents/Images/zip"
-inter_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_apeer_inter"
-output_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_apeer"
+inter_folder = "C:/Users/lucas.degeorge/Documents/Images/apeer_czi"
+output_folder = "C:/Users/lucas.degeorge/Documents/Images/apeer_png"
 
 #%% Extract the files from zip files
 
