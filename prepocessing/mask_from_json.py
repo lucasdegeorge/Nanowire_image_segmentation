@@ -5,6 +5,8 @@ import numpy as np
 import PIL.Image
 import cv2
 
+##### Path must be changed ! #####
+
 with open("annotations.json", "r") as read_file:
     data = json.load(read_file)
 
