@@ -28,14 +28,14 @@ def load_labeled_data(image_dir, annotation_dir):
         if filename.endswith(filetype):
             image_path = os.path.join(image_dir, filename)
             image = Image.open(image_path)
-            if image.size != (1024,1024):
-                image = image.resize((1024,1024))
+            # if image.size != (1024,1024):
+            #     image = image.resize((1024,1024))
             image = convert(image)
             mask_path = os.path.join(annotation_dir, filename[:-4] + '_mask.png')
             if os.path.isfile(mask_path):
                 mask = Image.open(mask_path).convert('L')
-                if mask.size != (1024,1024):
-                    mask = mask.resize((1024,1024))
+                # if mask.size != (1024,1024):
+                #     mask = mask.resize((1024,1024))
                 mask = convert(mask)
                 labeled_images.append(image)
                 masks.append(mask)
@@ -96,9 +96,8 @@ class UnlabeledDataset(torch.utils.data.Dataset):
 labeled_dataset = LabeledDataset(labeled_image_dir, masks_dir, transform=None)
 # unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
 
-labeled_dataloader = torch.utils.data.DataLoader(labeled_dataset, batch_size=batch_size, shuffle=True)
+labeled_dataloader = torch.utils.data.DataLoader(labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
 # unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
-
 
 #%% Display images and masks separated
 
