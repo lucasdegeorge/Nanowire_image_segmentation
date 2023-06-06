@@ -8,6 +8,8 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import os
 import numpy as np
 
+from resnet import *
+
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -43,20 +45,17 @@ class _PSPModule(nn.Module):
     
 
 class Encoder(nn.Module):
-    def __init__(self, pretrained):
+    def __init__(self, resnet_nb_layers=50, isDilation=True):
         super(Encoder, self).__init__()
 
-        if pretrained and not os.path.isfile(resnet50["path"]):
-            print("Downloading pretrained resnet (source : https://github.com/donnyyou/torchcv)")
-            os.system('sh models/backbones/get_pretrained_model.sh')
+        model = resnet_bbs[resnet_nb_layers](isDilation=isDilation)
 
-        model = ResNetBackbone(backbone='deepbase_resnet50_dilated8', pretrained=pretrained)
         self.base = nn.Sequential(
-            nn.Sequential(model.prefix, model.maxpool),
+            nn.Sequential(model.conv1, model.maxpool),
+            model.layer0,
             model.layer1,
             model.layer2,
-            model.layer3,
-            model.layer4
+            model.layer3
         )
         self.psp = _PSPModule(2048, bin_sizes=[1, 2, 3, 6])
 
