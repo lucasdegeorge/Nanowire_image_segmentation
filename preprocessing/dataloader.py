@@ -115,8 +115,8 @@ def display_image_with_mask(image, mask):
     plt.show()
 
 # Test : 
-image, mask = labeled_dataset[210]
-display_image_with_mask(image, mask)
+# image, mask = labeled_dataset[210]
+# display_image_with_mask(image, mask)
 
 
 #%% Display image and mask overlayed
@@ -135,5 +135,5 @@ def display_image_mask_overlayed(image, mask, alpha=0.2):
     plt.show()
 
 # Tests : 
-image, mask = labeled_dataset[78]
-display_image_mask_overlayed(image, mask)
+# image, mask = labeled_dataset[78]
+# display_image_mask_overlayed(image, mask)
