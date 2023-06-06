@@ -10,11 +10,15 @@ from torch.utils.data.sampler import SubsetRandomSampler
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+in_channels = 1
+num_classes = 3
+
 #%% 
 
-class ResidualBlock(nn.Module):
+# residual block for the resnet 18 and 34 
+class ResidualBlock_2sl(nn.Module): 
     def __init__(self, in_channels, out_channels, stride = 1, downsample = None):
-        super(ResidualBlock, self).__init__()
+        super(ResidualBlock_2sl, self).__init__()
         self.conv1 = nn.Sequential(
                         nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = stride, padding = 1),
                         nn.BatchNorm2d(out_channels),
@@ -37,12 +41,46 @@ class ResidualBlock(nn.Module):
         return out
     
 
+# residual block for the resnet 50, 101 and 152 
+class ResidualBlock_3sl(nn.Module): 
+    def __init__(self, in_channels, out_channels, stride = 1, downsample = None):
+        super(ResidualBlock_3sl, self).__init__()
+        self.conv1 = nn.Sequential(
+                        nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = stride, padding = 1),
+                        nn.BatchNorm2d(out_channels),
+                        nn.ReLU())
+        self.conv2 = nn.Sequential(
+                        nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1),
+                        nn.BatchNorm2d(out_channels),
+                        nn.ReLU())
+        self.conv3 = nn.Sequential(
+                        nn.Conv2d(out_channels, out_channels*4, kernel_size = 3, stride = 1, padding = 1),
+                        nn.BatchNorm2d(out_channels*4))   # je ne suis pas certains pour le *4 à verifier !!
+        self.downsample = downsample
+        self.relu = nn.ReLU()
+        self.out_channels = out_channels
+        
+    def forward(self, x):
+        residual = x
+        out = self.conv1(x)
+        out = self.conv2(out)
+        out = self.conv3(out)
+        if self.downsample:
+            residual = self.downsample(x)
+        out += residual
+        out = self.relu(out)
+        return out
+    
+
 class ResNet(nn.Module):
-    def __init__(self, block, layers, num_classes = 3):
+    def __init__(self, block, layers, num_classes = num_classes):
+        """ 
+            Layers: list with the number of blocks in each layer (stage)
+        """
         super(ResNet, self).__init__()
         self.inplanes = 64
         self.conv1 = nn.Sequential(
-                        nn.Conv2d(3, 64, kernel_size = 7, stride = 2, padding = 3),
+                        nn.Conv2d(in_channels, 64, kernel_size = 7, stride = 2, padding = 3),
                         nn.BatchNorm2d(64),
                         nn.ReLU())
         self.maxpool = nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1)
@@ -53,10 +91,9 @@ class ResNet(nn.Module):
         self.avgpool = nn.AvgPool2d(7, stride=1)
         self.fc = nn.Linear(512, num_classes)
         
-    def _make_layer(self, block, planes, blocks, stride=1):
+    def _make_layer(self, block, planes, nb_blocks, stride=1):
         downsample = None
-        if stride != 1 or self.inplanes != planes:
-            
+        if stride != 1 or self.inplanes != planes: # if the dim of the residual does no match the dim of the output
             downsample = nn.Sequential(
                 nn.Conv2d(self.inplanes, planes, kernel_size=1, stride=stride),
                 nn.BatchNorm2d(planes),
@@ -64,7 +101,7 @@ class ResNet(nn.Module):
         layers = []
         layers.append(block(self.inplanes, planes, stride, downsample))
         self.inplanes = planes
-        for i in range(1, blocks):
+        for i in range(1, nb_blocks):
             layers.append(block(self.inplanes, planes))
 
         return nn.Sequential(*layers)
@@ -82,3 +119,19 @@ class ResNet(nn.Module):
         x = self.fc(x)
 
         return x
+    
+
+def ResNet18():
+    return ResNet(ResidualBlock_2sl, [3,2,2,2])
+
+def ResNet50():
+    return ResNet(ResidualBlock_2sl, [3,4,6,3])
+
+def ResNet50():
+    return ResNet(ResidualBlock_3sl, [3,4,6,3])
+
+def ResNet101():
+    return ResNet(ResidualBlock_3sl, [3,4,23,3])
+
+def ResNet152():
+    return ResNet(ResidualBlock_3sl, [3,8,36,3])
