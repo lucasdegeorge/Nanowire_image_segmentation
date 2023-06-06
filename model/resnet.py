@@ -57,7 +57,7 @@ class ResidualBlock_3sl(nn.Module):
         )
         self.conv3 = nn.Sequential(
             nn.Conv2d(out_channels, out_channels * 4, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(out_channels * 4)
+            nn.BatchNorm2d(out_channels * 4)  # je ne suis pas certains pour le *4 à verifier 
         )
         self.downsample = downsample
         self.relu = nn.ReLU()
@@ -79,7 +79,7 @@ class ResNet(nn.Module):
     def __init__(self, block, layers, num_classes=num_classes, isDilation=True, dilate_scale=8, multi_grid=(1, 2, 4)):
         super(ResNet, self).__init__()
         self.inplanes = 64
-        self.conv1 = nn.Sequential(
+        self.conv1 = nn.Sequential(   # Ici il faut regarder à quoi correspond deep_base, quel est l'intérêt et pourquoi on utilise cela
             nn.Conv2d(in_channels, 64, kernel_size=7, stride=2, padding=3),
             nn.BatchNorm2d(64),
             nn.ReLU()
@@ -100,7 +100,7 @@ class ResNet(nn.Module):
 
     def _make_layer(self, block, planes, nb_blocks, stride=1, dilation=1):
         downsample = None
-        if stride != 1 or self.inplanes != planes:
+        if stride != 1 or self.inplanes != planes:  # if the dim of the residual does no match the dim of the output
             downsample = nn.Sequential(
                 nn.Conv2d(self.inplanes, planes, kernel_size=1, stride=stride),
                 nn.BatchNorm2d(planes),
@@ -128,17 +128,51 @@ class ResNet(nn.Module):
         return x
     
 
-def ResNet18(isDilation = True):
-    return ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation)
+class ResnetBackbone(nn.Module):
+    def __init__(self, orig_resnet):
+        super(ResnetBackbone, self).__init__()
 
-def ResNet50(isDilation = True):
-    return ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation)
+        self.num_features = 2048
 
-def ResNet50(isDilation = True):
-    return ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation)
+        # Take pretrained resnet, except AvgPool and FC
+        self.conv1 = orig_resnet.conv1
+        self.maxpool = orig_resnet.maxpool
+        self.layer1 = orig_resnet.layer1
+        self.layer2 = orig_resnet.layer2
+        self.layer3 = orig_resnet.layer3
+        self.layer4 = orig_resnet.layer4
 
-def ResNet101(isDilation = True):
-    return ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation)
+    def get_num_features(self):
+        return self.num_features
 
-def ResNet152(isDilation = True):
-    return ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation)
+    def forward(self, x):
+        tuple_features = list()
+        x = self.prefix(x)
+        x = self.maxpool(x)
+
+        x = self.layer1(x)
+        tuple_features.append(x)
+        x = self.layer2(x)
+        tuple_features.append(x)
+        x = self.layer3(x)
+        tuple_features.append(x)
+        x = self.layer4(x)
+        tuple_features.append(x)
+
+        return tuple_features
+    
+
+def ResNet18_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation))
+
+def ResNet50_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation))
+
+def ResNet50_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation))
+
+def ResNet101_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation))
+
+def ResNet152_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation))
