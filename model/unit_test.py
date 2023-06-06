@@ -18,7 +18,7 @@ from preprocessing.dataloader import *
 
 from resnet import *
 
-image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")
+image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
 image1 = image.resize((224,224))
 
 convert_tensor = transforms.ToTensor()
@@ -29,5 +29,15 @@ img1 = torch.unsqueeze(img1, dim=0)
 img1.shape
 
 rn18 = ResNet50_bb()
-res = rn18(img1)
+res = rn18(img)
+
+
+#%% Encoder unit tests 
+
+from encoder import * 
+
+enc = Encoder()
+for image, mask in labeled_dataloader:
+    res = enc(image)
+    print("step")
 
