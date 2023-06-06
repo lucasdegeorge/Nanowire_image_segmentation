@@ -27,10 +27,16 @@ def load_labeled_data(image_dir, annotation_dir):
     for filename in os.listdir(image_dir):
         if filename.endswith(filetype):
             image_path = os.path.join(image_dir, filename)
-            image = convert(Image.open(image_path))
+            image = Image.open(image_path)
+            if image.size != (1024,1024):
+                image = image.resize((1024,1024))
+            image = convert(image)
             mask_path = os.path.join(annotation_dir, filename[:-4] + '_mask.png')
             if os.path.isfile(mask_path):
-                mask = convert(Image.open(mask_path).convert('L'))
+                mask = Image.open(mask_path).convert('L')
+                if mask.size != (1024,1024):
+                    mask = mask.resize((1024,1024))
+                mask = convert(mask)
                 labeled_images.append(image)
                 masks.append(mask)
     return labeled_images, masks
