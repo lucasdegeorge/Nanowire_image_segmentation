@@ -181,3 +181,10 @@ def ResNet101_bb(isDilation = True):
 def ResNet152_bb(isDilation = True):
     return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation))
     # return ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation)
+
+resnets = {18 : ResNet18_bb, 
+           34 : ResNet34_bb, 
+           50 : ResNet50_bb, 
+           101 : ResNet101_bb,
+           152 : ResNet152_bb
+           }
