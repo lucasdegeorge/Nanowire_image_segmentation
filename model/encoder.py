@@ -45,6 +45,10 @@ class Encoder(nn.Module):
 
         model = resnet_bbs[nb_RNlayers](isDilation=isDilation)
 
+        if nb_RNlayers in [50, 101, 152]: in_ch_psp = 2048
+        elif nb_RNlayers in [18, 34]: in_ch_psp = 512
+        else: raise ValueError("invalid nb_RNlayers")
+
         self.base = nn.Sequential(
             nn.Sequential(model.conv1, model.maxpool),
             model.layer0,
@@ -52,7 +56,7 @@ class Encoder(nn.Module):
             model.layer2,
             model.layer3
         )
-        self.psp = _PSPModule(2048, bin_sizes=[1, 2, 3, 6])
+        self.psp = _PSPModule(in_ch_psp, bin_sizes=[1, 2, 3, 6])
 
     def forward(self, x):
         x = self.base(x)

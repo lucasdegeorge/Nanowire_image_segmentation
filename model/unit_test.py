@@ -31,18 +31,24 @@ img = torch.unsqueeze(img, dim=0)
 img1 = torch.unsqueeze(img1, dim=0)
 img1.shape
 
-rn18 = ResNet50_bb()
+rn18 = ResNet34_bb()
 res = rn18(img)
+
+for i in range(len(res)):
+    print(i, res[i].shape)
 
 
 #%% Encoder unit tests 
 
 from encoder import * 
 
-enc = Encoder()
-for image, mask in labeled_dataloader:
-    res = enc(image)
-    print("step")
+for x in [18, 34, 50, 101, 152]:
+    print("resnet", x)
+    enc = Encoder(nb_RNlayers=x)
+    for image, mask in labeled_dataloader:
+        res = enc(image)
+        print(res.shape)
+        break
 
 
 #%% Decoder unit tests
