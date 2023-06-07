@@ -48,7 +48,7 @@ for image, mask in labeled_dataloader:
 #%% Decoder unit tests
 
 from encoder import * 
-from decoder import *
+from decoders import *
 
 upscale = 8
 num_out_ch = 2048
