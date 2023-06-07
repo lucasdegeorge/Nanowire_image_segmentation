@@ -87,3 +87,11 @@ for name, decoder in aux_decoder_dict.items():
         print(res.shape)
         break
 
+#%% Model unit tests 
+
+from model import * 
+
+model_test = Model(None, mode='super')
+
+for image, mask in labeled_dataloader:
+    res = model_test(image, None, None, None)
