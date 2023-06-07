@@ -95,3 +95,4 @@ model_test = Model(None, mode='super')
 
 for image, mask in labeled_dataloader:
     res = model_test(image, None, None, None)
+    break
