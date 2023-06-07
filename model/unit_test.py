@@ -57,10 +57,10 @@ from encoder import *
 from decoders import *
 
 upscale = 8
-num_out_ch = 2048
+num_out_ch = 512
 decoder_in_ch = num_out_ch // 4
 
-enc = Encoder()
+enc = Encoder(nb_RNlayers=18)
 dec = MainDecoder(upscale, decoder_in_ch, num_classes=num_classes)
 for image, mask in labeled_dataloader:
     print(image.shape)

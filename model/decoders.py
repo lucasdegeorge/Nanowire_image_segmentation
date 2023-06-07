@@ -8,11 +8,12 @@ import cv2
 import random
 import uniform
 
-#%% 
-
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# most of the code from: https://github.com/yassouali/CCT/blob/master/models/decoders.py
+
+#%% 
 
 def icnr(x, scale=2, init=nn.init.kaiming_normal_):
     ni,nf,h,w = x.shape
