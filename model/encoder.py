@@ -40,7 +40,7 @@ class _PSPModule(nn.Module):
     
 
 class Encoder(nn.Module):
-    def __init__(self, nb_RNlayers=50, in_channls_psp=2048, isDilation=True):
+    def __init__(self, nb_RNlayers=50, in_channels_psp=2048, isDilation=True):
         super(Encoder, self).__init__()
 
         model = resnet_bbs[nb_RNlayers](isDilation=isDilation)
@@ -52,7 +52,7 @@ class Encoder(nn.Module):
             model.layer2,
             model.layer3
         )
-        self.psp = _PSPModule(in_channls_psp, bin_sizes=[1, 2, 3, 6])
+        self.psp = _PSPModule(in_channels_psp, bin_sizes=[1, 2, 3, 6])
 
     def forward(self, x):
         x = self.base(x)
