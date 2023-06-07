@@ -10,7 +10,9 @@ import numpy as np
 import math
 import cv2
 import random
-import Uniform
+import uniform
+
+#%% 
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -93,7 +95,7 @@ class FeatureNoiseDecoder(nn.Module):
     def __init__(self, upscale, conv_in_ch, num_classes, uniform_range=0.3):
         super(FeatureNoiseDecoder, self).__init__()
         self.upsample = upsample(conv_in_ch, num_classes, upscale=upscale)
-        self.uni_dist = Uniform(-uniform_range, uniform_range)
+        self.uni_dist = uniform(-uniform_range, uniform_range)
 
     def feature_based_noise(self, x):
         noise_vector = self.uni_dist.sample(x.shape[1:]).to(x.device).unsqueeze(0)

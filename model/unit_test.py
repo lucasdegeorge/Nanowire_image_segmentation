@@ -14,6 +14,9 @@ sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segment
 
 from preprocessing.dataloader import * 
 
+in_channels = 1
+num_classes = 3
+
 #%% Resnet unit tests 
 
 from resnet import *
@@ -40,4 +43,26 @@ enc = Encoder()
 for image, mask in labeled_dataloader:
     res = enc(image)
     print("step")
+
+
+#%% Decoder unit tests
+
+from encoder import * 
+from decoder import *
+
+upscale = 8
+num_out_ch = 2048
+decoder_in_ch = num_out_ch // 4
+
+enc = Encoder()
+dec = MainDecoder(upscale, decoder_in_ch, num_classes=num_classes)
+for image, mask in labeled_dataloader:
+    print(image.shape)
+    res = enc(image)
+    print(res.shape)
+    res = dec(res)
+    print(res.shape)
+    res = F.interpolate(res, size=(image.size(2), image.size(3)), mode='bilinear', align_corners=True)
+    print(res.shape)
+    break
 
