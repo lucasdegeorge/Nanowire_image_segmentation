@@ -6,7 +6,6 @@ import numpy as np
 import math
 import cv2
 import random
-import uniform
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -64,7 +63,7 @@ class DropOutDecoder(nn.Module):
         self.dropout = nn.Dropout2d(p=drop_rate) if spatial_dropout else nn.Dropout(drop_rate)
         self.upsample = upsample(conv_in_ch, num_classes, upscale=upscale)
 
-    def forward(self, x, _):
+    def forward(self, x):
         x = self.upsample(self.dropout(x))
         return x
 
@@ -82,7 +81,7 @@ class FeatureDropDecoder(nn.Module):
         drop_mask = (attention < threshold).float()
         return x.mul(drop_mask)
 
-    def forward(self, x, _):
+    def forward(self, x):
         x = self.feature_dropout(x)
         x = self.upsample(x)
         return x
@@ -92,14 +91,14 @@ class FeatureNoiseDecoder(nn.Module):
     def __init__(self, upscale, conv_in_ch, num_classes, uniform_range=0.3):
         super(FeatureNoiseDecoder, self).__init__()
         self.upsample = upsample(conv_in_ch, num_classes, upscale=upscale)
-        self.uni_dist = uniform(-uniform_range, uniform_range)
+        self.uniform_range = uniform_range
 
     def feature_based_noise(self, x):
-        noise_vector = self.uni_dist.sample(x.shape[1:]).to(x.device).unsqueeze(0)
+        noise_vector = 2*self.uniform_range*torch.rand(x.shape) - self.uniform_range
         x_noise = x.mul(noise_vector) + x
         return x_noise
 
-    def forward(self, x, _):
+    def forward(self, x):
         x = self.feature_based_noise(x)
         x = self.upsample(x)
         return x
@@ -146,7 +145,7 @@ class VATDecoder(nn.Module):
         self.it = iterations
         self.upsample = upsample(conv_in_ch, num_classes, upscale=upscale)
 
-    def forward(self, x, _):
+    def forward(self, x):
         r_adv = get_r_adv(x, self.upsample, self.it, self.xi, self.eps)
         x = self.upsample(x + r_adv)
         return x

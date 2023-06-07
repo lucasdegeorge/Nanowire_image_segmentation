@@ -42,7 +42,7 @@ for i in range(len(res)):
 
 from encoder import * 
 
-for x in [18, 34, 50, 101, 152]:
+for x,y in [(18,512)]:
     print("resnet", x)
     enc = Encoder(nb_RNlayers=x)
     for image, mask in labeled_dataloader:
@@ -60,15 +60,27 @@ upscale = 8
 num_out_ch = 512
 decoder_in_ch = num_out_ch // 4
 
-enc = Encoder(nb_RNlayers=18)
-dec = MainDecoder(upscale, decoder_in_ch, num_classes=num_classes)
-for image, mask in labeled_dataloader:
-    print(image.shape)
-    res = enc(image)
-    print(res.shape)
-    res = dec(res)
-    print(res.shape)
-    res = F.interpolate(res, size=(image.size(2), image.size(3)), mode='bilinear', align_corners=True)
-    print(res.shape)
-    break
+# enc = Encoder(nb_RNlayers=18)
+# dec = MainDecoder(upscale, decoder_in_ch, num_classes=num_classes)
+# for image, mask in labeled_dataloader:
+#     print(image.shape)
+#     res = enc(image)
+#     print(res.shape)
+#     res = dec(res)
+#     print(res.shape)
+#     res = F.interpolate(res, size=(image.size(2), image.size(3)), mode='bilinear', align_corners=True)
+#     print(res.shape)
+#     break
+
+enc = Encoder(nb_RNlayers=18, in_channels_psp=512)
+for name, decoder in aux_decoder_dict.items():
+    print(name)
+    dec = decoder(upscale, decoder_in_ch, num_classes=num_classes)
+    for image, mask in labeled_dataloader:
+        res = enc(image)
+        res = dec(res)
+        print(res.shape)
+        res = F.interpolate(res, size=(image.size(2), image.size(3)), mode='bilinear', align_corners=True)
+        print(res.shape)
+        break
 
