@@ -63,7 +63,7 @@ class DropOutDecoder(nn.Module):
         self.dropout = nn.Dropout2d(p=drop_rate) if spatial_dropout else nn.Dropout(drop_rate)
         self.upsample = upsample(conv_in_ch, num_classes, upscale=upscale)
 
-    def forward(self, x):
+    def forward(self, x,_):
         x = self.upsample(self.dropout(x))
         return x
 
@@ -81,7 +81,7 @@ class FeatureDropDecoder(nn.Module):
         drop_mask = (attention < threshold).float()
         return x.mul(drop_mask)
 
-    def forward(self, x):
+    def forward(self, x,_):
         x = self.feature_dropout(x)
         x = self.upsample(x)
         return x
@@ -98,7 +98,7 @@ class FeatureNoiseDecoder(nn.Module):
         x_noise = x.mul(noise_vector) + x
         return x_noise
 
-    def forward(self, x):
+    def forward(self, x,_):
         x = self.feature_based_noise(x)
         x = self.upsample(x)
         return x
@@ -145,7 +145,7 @@ class VATDecoder(nn.Module):
         self.it = iterations
         self.upsample = upsample(conv_in_ch, num_classes, upscale=upscale)
 
-    def forward(self, x):
+    def forward(self, x,_):
         r_adv = get_r_adv(x, self.upsample, self.it, self.xi, self.eps)
         x = self.upsample(x + r_adv)
         return x

@@ -60,12 +60,12 @@ upscale = 8
 num_out_ch = 512
 decoder_in_ch = num_out_ch // 4
 
-# enc = Encoder(nb_RNlayers=18)
-# dec = MainDecoder(upscale, decoder_in_ch, num_classes=num_classes)
+# enc = Encoder(nb_RNlayers=18, in_channels_psp=512)
+# dec = FeatureNoiseDecoder(upscale, decoder_in_ch, num_classes=num_classes)
 # for image, mask in labeled_dataloader:
-#     print(image.shape)
+#     # print(image.shape)
 #     res = enc(image)
-#     print(res.shape)
+#     # print(res.shape)
 #     res = dec(res)
 #     print(res.shape)
 #     res = F.interpolate(res, size=(image.size(2), image.size(3)), mode='bilinear', align_corners=True)
@@ -73,12 +73,14 @@ decoder_in_ch = num_out_ch // 4
 #     break
 
 enc = Encoder(nb_RNlayers=18, in_channels_psp=512)
+main_dec = MainDecoder(upscale, decoder_in_ch, num_classes=num_classes)
 for name, decoder in aux_decoder_dict.items():
     print(name)
     dec = decoder(upscale, decoder_in_ch, num_classes=num_classes)
     for image, mask in labeled_dataloader:
         res = enc(image)
-        res = dec(res)
+        pred = main_dec(res)
+        res = dec(res, pred)
         print(res.shape)
         res = F.interpolate(res, size=(image.size(2), image.size(3)), mode='bilinear', align_corners=True)
         print(res.shape)
