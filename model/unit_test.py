@@ -13,6 +13,7 @@ import sys
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation") 
 
 from preprocessing.dataloader import * 
+from parameters import * 
 
 in_channels = 1
 num_classes = 3
