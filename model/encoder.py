@@ -40,10 +40,10 @@ class _PSPModule(nn.Module):
     
 
 class Encoder(nn.Module):
-    def __init__(self, nb_RNlayer=50, isDilation=True):
+    def __init__(self, nb_RNlayers=50, isDilation=True):
         super(Encoder, self).__init__()
 
-        model = resnet_bbs[nb_RNlayer](isDilation=isDilation)
+        model = resnet_bbs[nb_RNlayers](isDilation=isDilation)
 
         self.base = nn.Sequential(
             nn.Sequential(model.conv1, model.maxpool),
