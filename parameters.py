@@ -1,5 +1,3 @@
-from model.decoders import * 
-
 arguments = {"nb_classes" : 3,
              "nb_RNlayers" : 50,
              "isDilation" : True,
@@ -18,20 +16,11 @@ arguments = {"nb_classes" : 3,
              "erase" : 0.4,
              "uniform_range" : 0.3}
 
-aux_decoder_dict = {"DropOutDecoder" : DropOutDecoder, 
-                    "FeatureDropDecoder" : FeatureDropDecoder, 
-                    "FeatureNoiseDecoder" : FeatureNoiseDecoder, 
-                    "VATDecoder" : VATDecoder, 
-                    "CutOutDecoder" : CutOutDecoder, 
-                    "ContextMaskingDecoder" : ContextMaskingDecoder, 
-                    "ObjectMaskingDecoder" : ObjectMaskingDecoder}
-
-aux_decoder_order = {"DropOutDecoder" : DropOutDecoder, 
-                    "FeatureDropDecoder" : FeatureDropDecoder, 
-                    "FeatureNoiseDecoder" : FeatureNoiseDecoder, 
-                    "VATDecoder" : VATDecoder, 
-                    "CutOutDecoder" : CutOutDecoder, 
-                    "ContextMaskingDecoder" : ContextMaskingDecoder, 
-                    "ObjectMaskingDecoder" : ObjectMaskingDecoder
-                     
+aux_decoder_order = {"DropOutDecoder" : 0, 
+                    "FeatureDropDecoder" : 1, 
+                    "FeatureNoiseDecoder" : 2, 
+                    "VATDecoder" : 3, 
+                    "CutOutDecoder" : 4, 
+                    "ContextMaskingDecoder" : 5, 
+                    "ObjectMaskingDecoder" : 6                     
 }

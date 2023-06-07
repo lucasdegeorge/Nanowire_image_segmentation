@@ -251,3 +251,13 @@ class ObjectMaskingDecoder(nn.Module):
         x_masked_obj = self.upsample(x_masked_obj)
 
         return x_masked_obj
+    
+
+
+aux_decoder_dict = {"DropOutDecoder" : DropOutDecoder, 
+                    "FeatureDropDecoder" : FeatureDropDecoder, 
+                    "FeatureNoiseDecoder" : FeatureNoiseDecoder, 
+                    "VATDecoder" : VATDecoder, 
+                    "CutOutDecoder" : CutOutDecoder, 
+                    "ContextMaskingDecoder" : ContextMaskingDecoder, 
+                    "ObjectMaskingDecoder" : ObjectMaskingDecoder}

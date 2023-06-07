@@ -2,11 +2,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
-import math
-import cv2
-import random
-import uniform
 import sys
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation")
@@ -39,25 +34,25 @@ class Model(nn.Module):
         self.loss = loss #### Here change #### 
 
         # Model
-        self.encoder = Encoder(nb_RNlayers=self.nb_RNlayers, in_channls_psp=self.in_channels_psp, isDilation=self.isDilation)
+        self.encoder = Encoder(nb_RNlayers=self.nb_RNlayers, in_channels_psp=self.in_channels_psp, isDilation=self.isDilation)
         self.main_decoder = MainDecoder(self.upscale, self.in_channels_dec, self.nb_classes)
 
         if self.mode == "semi":
-            vat_decoder = [VATDecoder(self.upscale, self.in_channels_dec, self.nb_classes, xi=arguments['xi'],eps=arguments['eps']) for _ in range(arguments['VATDecoder'])]
             drop_decoder = [DropOutDecoder(self.upscale, self.in_channels_dec, self.nb_classes,drop_rate=arguments['drop_rate'], spatial_dropout=arguments['spatial']) for _ in range(arguments['DropOutDecoder'])]
+            feature_drop = [FeatureDropDecoder(self.upscale, self.in_channels_dec, self.nb_classes) for _ in range(arguments['FeatureDropDecoder'])]
+            feature_noise = [FeatureNoiseDecoder(self.upscale, self.in_channels_dec, self.nb_classes, uniform_range=arguments['uniform_range']) for _ in range(arguments['FeatureNoiseDecoder'])]
+            vat_decoder = [VATDecoder(self.upscale, self.in_channels_dec, self.nb_classes, xi=arguments['xi'],eps=arguments['eps']) for _ in range(arguments['VATDecoder'])]
             cut_decoder = [CutOutDecoder(self.upscale, self.in_channels_dec, self.nb_classes, erase=arguments['erase']) for _ in range(arguments['CutOutDecoder'])]
             context_m_decoder = [ContextMaskingDecoder(self.upscale, self.in_channels_dec, self.nb_classes) for _ in range(arguments['ContextMaskingDecoder'])]
             object_masking = [ObjectMaskingDecoder(self.upscale, self.in_channels_dec, self.nb_classes) for _ in range(arguments['ObjectMaskingDecoder'])]
-            feature_drop = [FeatureDropDecoder(self.upscale, self.in_channels_dec, self.nb_classes) for _ in range(arguments['FeatureDropDecoder'])]
-            feature_noise = [FeatureNoiseDecoder(self.upscale, self.in_channels_dec, self.nb_classes, uniform_range=arguments['uniform_range']) for _ in range(arguments['FeatureNoiseDecoder'])]
 
-            self.aux_decoders = nn.ModuleList([*vat_decoder, *drop_decoder, *cut_decoder, *context_m_decoder, *object_masking, *feature_drop, *feature_noise])
+            self.aux_decoders = nn.ModuleList([*drop_decoder, *feature_drop, *feature_noise, *vat_decoder, *cut_decoder, *context_m_decoder, *object_masking])
 
-    def forward(self, x_l, x_ul=None, tgt_l=None, tgt_ul=None):
+    def forward(self, x_l, x_ul=None):
 
         output_l = self.main_decoder(self.encoder(x_l))
         if output_l.shape != x_l.shape:
-            output_l = F.interpolate(output_l, size=x_l.shape, mode='bilinear', align_corners=True)
+            output_l = F.interpolate(output_l, size=(x_l.size(2), x_l.size(3)), mode='bilinear', align_corners=True)
 
         if self.mode == 'super':
             return {"output_l" :  output_l}
@@ -68,8 +63,8 @@ class Model(nn.Module):
             output_ul = self.main_decoder(x_ul)
             # Prediction by auxiliary decoders
             outputs_ul = [aux_decoder(x_ul, output_ul.detach()) for aux_decoder in self.aux_decoders]
-            outputs_ul = [F.interpolate(output, size=x_l.shape, mode='bilinear', align_corners=True) for output in outputs_ul if output.shape != x_ul.shape]
-            
+            outputs_ul = [F.interpolate(output, size=(x_l.size(2), x_l.size(3)), mode='bilinear', align_corners=True) for output in outputs_ul if output.shape != x_ul.shape]
+
             return {"output_l" : output_l, "outputs_ul" : outputs_ul}
         
 
