@@ -43,11 +43,11 @@ def save_and_load(image_folder, mask_folder=None):
         folder_name = mask_folder.split("/")[-1] + ".pt"
         torch.save(masks, folder_name)
 
-save_and_load(labeled_image_dir, masks_dir)
-save_and_load(unlabeled_image_dir, None)
-labeled_images = torch.load("labeled_images.pt")
-masks = torch.load("binary_masks.pt")
-unlabeled_images = torch.load("unlabeled_images.pt")
+# save_and_load(labeled_image_dir, masks_dir)
+# save_and_load(unlabeled_image_dir, None)
+# labeled_images = torch.load("labeled_images.pt")
+# masks = torch.load("binary_masks.pt")
+# unlabeled_images = torch.load("unlabeled_images.pt")
 
 #%% dataset and dataloader
 
@@ -119,6 +119,7 @@ unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
 
 labeled_dataloader = torch.utils.data.DataLoader(labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
 unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
+print("dataloaders ok")
 
 #%% Display images and masks separated
 
