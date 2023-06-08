@@ -91,8 +91,8 @@ for name, decoder in aux_decoder_dict.items():
 
 from model import * 
 
-model_test = Model(None, mode='super')
+model_test = Model(mode='super')
 
 for image, mask in labeled_dataloader:
-    res = model_test(image, None, None, None)
+    res = model_test(image, None)
     break

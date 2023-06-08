@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import sys
+import itertools
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation")
 
@@ -13,7 +14,7 @@ from decoders import *
 #%% Model
 
 class Model(nn.Module):
-    def __init__(self, loss, mode='semi', arguments=arguments, upscale=8, aux_decoders_args=[1,1,1,1,1,1,1]):
+    def __init__(self, mode='semi', arguments=arguments, upscale=8, aux_decoders_args=[1,1,1,1,1,1,1]):
         super(Model, self).__init__()
 
         self.mode = mode
@@ -29,9 +30,6 @@ class Model(nn.Module):
         # decoders
         self.upscale = arguments["upscale"]
         self.in_channels_dec = self.in_channels_psp // 4
-
-        # losses
-        self.loss = loss #### Here change #### 
 
         # Model
         self.encoder = Encoder(nb_RNlayers=self.nb_RNlayers, in_channels_psp=self.in_channels_psp, isDilation=self.isDilation)
@@ -67,7 +65,15 @@ class Model(nn.Module):
 
             return {"output_l" : output_l, "outputs_ul" : outputs_ul}
         
+    def get_backbone_params(self):
+        return self.encoder.get_backbone_params()
 
+    def get_other_params(self):
+        if self.mode == 'semi':
+            return itertools.chain(self.encoder.get_module_params(), self.main_decoder.parameters(), 
+                        self.aux_decoders.parameters())
+
+        return itertools.chain(self.encoder.get_module_params(), self.main_decoder.parameters())
 
 
 
