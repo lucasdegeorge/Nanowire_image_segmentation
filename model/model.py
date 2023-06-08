@@ -36,7 +36,7 @@ class Model(nn.Module):
         self.main_decoder = MainDecoder(self.upscale, self.in_channels_dec, self.nb_classes)
 
         if self.mode == "semi":
-            drop_decoder = [DropOutDecoder(self.upscale, self.in_channels_dec, self.nb_classes,drop_rate=arguments['drop_rate'], spatial_dropout=arguments['spatial']) for _ in range(arguments['DropOutDecoder'])]
+            drop_decoder = [DropOutDecoder(self.upscale, self.in_channels_dec, self.nb_classes,drop_rate=arguments['drop_rate'], spatial_dropout=arguments['spacial_dropout']) for _ in range(arguments['DropOutDecoder'])]
             feature_drop = [FeatureDropDecoder(self.upscale, self.in_channels_dec, self.nb_classes) for _ in range(arguments['FeatureDropDecoder'])]
             feature_noise = [FeatureNoiseDecoder(self.upscale, self.in_channels_dec, self.nb_classes, uniform_range=arguments['uniform_range']) for _ in range(arguments['FeatureNoiseDecoder'])]
             vat_decoder = [VATDecoder(self.upscale, self.in_channels_dec, self.nb_classes, xi=arguments['xi'],eps=arguments['eps']) for _ in range(arguments['VATDecoder'])]

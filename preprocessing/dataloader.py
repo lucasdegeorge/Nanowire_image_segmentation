@@ -11,6 +11,7 @@ batch_size = 32
 labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
 masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
 unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
+folder_where_write = "C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/preprocessing/"
 
 filetype = '.png'
 
@@ -37,8 +38,8 @@ def save_and_load(image_folder, mask_folder=None):
                     mask = converter(mask)
                     masks.append(mask)
     # save tensors 
-    folder_name = image_folder.split("/")[-1] + ".pt"
-    torch.save(images, folder_name)
+    file_name = folder_where_write + "/" + image_folder.split("/")[-1] + ".pt"
+    torch.save(images, file_name)
     if mask_folder is not None:
         folder_name = mask_folder.split("/")[-1] + ".pt"
         torch.save(masks, folder_name)
@@ -55,12 +56,13 @@ def save_and_load(image_folder, mask_folder=None):
 
 def load_labeled_data(image_dir, annotation_dir):
     try:
-        labeled_images = torch.load("labeled_images.pt")
-        masks = torch.load("binary_masks.pt")
+        labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
+        masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
     except FileNotFoundError:
+        print("files labeled_images.pt and binary_masks.pt not found")
         save_and_load(image_dir, annotation_dir)
-        labeled_images = torch.load("labeled_images.pt")
-        masks = torch.load("binary_masks.pt")
+        labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
+        masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
     return labeled_images, masks
 
 
@@ -87,11 +89,11 @@ class LabeledDataset(torch.utils.data.Dataset):
 
 def load_unlabeled_data(image_dir):
     try:
-        unlabeled_images = torch.load("unlabeled_images.pt")
+        unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
     except FileNotFoundError:
         print("file unlabeled_images.pt not found")
         save_and_load(image_dir, None)
-        unlabeled_images = torch.load("unlabeled_images.pt")
+        unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
     return unlabeled_images
 
 
