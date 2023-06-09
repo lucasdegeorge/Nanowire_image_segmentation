@@ -34,8 +34,10 @@ def mask_converter(mask, out="one-hot", nb_classes=3, class_values=[0,127,255]):
     """
     if type(mask) == str:  # mask is a path, the mask is converted in a tensor 
         image = Image.open(mask).convert("L")
+        if image.size != (1024,1024): image = image.resize((1024,1024))
         tensor_image = T.functional.to_tensor(image) * 255
         tensor_image = tensor_image.to(torch.uint8) 
+        if tensor_image.size != (1024,1024): tensor_image = tensor_image.resize((1024,1024))
         for i in range(nb_classes):
             tensor_image = torch.where(tensor_image == class_values[i], torch.tensor(i), tensor_image)         
         try:
@@ -74,7 +76,7 @@ def save_and_load(image_folder, mask_folder=None):
         if filename.endswith(filetype):
             image_path = os.path.join(image_folder, filename)
             image = Image.open(image_path).convert('L')
-            # if image.size != (1024,1024): image = image.resize((1024,1024))
+            if image.size != (1024,1024): image = image.resize((1024,1024))
             image = converter(image)
             images.append(image)
             if mask_folder is not None:
@@ -87,13 +89,13 @@ def save_and_load(image_folder, mask_folder=None):
                         print("mask" + mask_path + "has not been saved")
                         pass
     # save tensors 
-    file_name = folder_where_write + "/" + image_folder.split("/")[-1] + ".pt"
-    torch.save(images, file_name)
-    if mask_folder is not None:
-        folder_name = folder_where_write + "/" + mask_folder.split("/")[-1] + ".pt"
-        torch.save(masks, folder_name)
+    # file_name = folder_where_write + "/" + image_folder.split("/")[-1] + ".pt"
+    # torch.save(images, file_name)
+    # if mask_folder is not None:
+    #     folder_name = folder_where_write + "/" + mask_folder.split("/")[-1] + ".pt"
+    #     torch.save(masks, folder_name)
 
-# save_and_load(labeled_image_dir, masks_dir)
+save_and_load(labeled_image_dir, masks_dir)
 # save_and_load(unlabeled_image_dir, None)
 # labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
 # masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
@@ -166,10 +168,10 @@ class UnlabeledDataset(torch.utils.data.Dataset):
 # Definition 
 
 labeled_dataset = LabeledDataset(labeled_image_dir, masks_dir, transform=None)
-unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
+# unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
 
 labeled_dataloader = torch.utils.data.DataLoader(labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
-unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
+# unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
 print("dataloaders ok")
 
 #%% Display images and masks separated   ## May not work well since last update 
@@ -193,8 +195,11 @@ def display_image_with_mask(image, mask):
     plt.show()
 
 # Test : 
-# image, mask = labeled_dataset[210]
-# display_image_with_mask(image, mask)
+image, mask = labeled_dataset[200]
+print(image.shape)
+mask = mask_converter(mask, out="image-like")
+print(mask.shape)
+display_image_with_mask(image, mask)
 
 
 #%% Display image and mask overlayed ## May not work well since last update
