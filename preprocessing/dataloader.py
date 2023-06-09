@@ -1,5 +1,4 @@
 #%% 
-
 import os
 from PIL import Image
 import torch
@@ -14,6 +13,42 @@ unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images
 folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
 
 filetype = '.png'
+
+#%% mask converter 
+
+def mask_converter(mask, out="one-hot", nb_classes=3, class_values=[0,127,255]):
+    """ mask can be:
+        - a string representing the path to a filetype image -> the mask converted in a (nb_classes, H, W)  tensor(s)
+        - a (.,H,W,1) tensor -> the mask is converted as a (.,nb_classes,H,W) tensor 
+        - a (.,nb_classes,H,W) tensor -> the mask is converted as a (.,H,W,1) tensor
+        (tensors can represent a batch)
+    """
+    if type(mask) == str:  # mask is a path, the mask is converted in a tensor 
+        image = Image.open(mask)
+        tensor_image = T.functional.to_tensor(image) * 255
+        tensor_image = tensor_image.to(torch.uint8) 
+        for i in range(nb_classes):
+            tensor_image = torch.where(tensor_image == class_values[i], torch.tensor(i), tensor_image)
+        tensor_image = torch.nn.functional.one_hot(tensor_image.to(torch.int64), nb_classes).permute(0,3,1,2).squeeze(0)
+        if out == "one-hot":
+            return tensor_image
+        elif out == "image-like":
+            return tensor_image.permute(1,2,0)
+        else: 
+            raise ValueError("out mode is incorrect")
+    if type(mask) == torch.Tensor:
+        if out == "one-hot":
+            assert mask.shape[-1] == nb_classes, "Tensor has a wrong shape"
+            if len(mask.shape) == 3: return mask.permute(2,0,1)
+            elif len(mask.shape) == 4: return mask.permute(0,3,1,2)
+            else: raise ValueError("Tensor has a wrong shape")
+        if out == "image-like":
+            assert mask.shape[0] == nb_classes or mask.shape[1] == nb_classes, "Tensor has a wrong shape"
+            if len(mask.shape) == 3: return mask.permute(1,2,0)
+            elif len(mask.shape) == 4: return mask.permute(0,2,3,1)
+            else: raise ValueError("Tensor has a wrong shape")
+
+
 
 #%% save tensors in .pt 
 
@@ -33,9 +68,7 @@ def save_and_load(image_folder, mask_folder=None):
             if mask_folder is not None:
                 mask_path = os.path.join(mask_folder, filename[:-4] + '_mask.png')
                 if os.path.isfile(mask_path):
-                    mask = Image.open(mask_path).convert('L')
-                    # if mask.size != (1024,1024): mask = mask.resize((1024,1024))
-                    mask = converter(mask)
+                    mask = mask_converter(mask_path)
                     masks.append(mask)
     # save tensors 
     file_name = folder_where_write + "/" + image_folder.split("/")[-1] + ".pt"
@@ -46,9 +79,9 @@ def save_and_load(image_folder, mask_folder=None):
 
 # save_and_load(labeled_image_dir, masks_dir)
 # save_and_load(unlabeled_image_dir, None)
-# labeled_images = torch.load("labeled_images.pt")
-# masks = torch.load("binary_masks.pt")
-# unlabeled_images = torch.load("unlabeled_images.pt")
+# labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
+# masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
+# unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
 
 #%% dataset and dataloader
 
