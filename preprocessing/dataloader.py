@@ -11,7 +11,7 @@ batch_size = 32
 labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
 masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
 unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
-folder_where_write = "C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/preprocessing/"
+folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
 
 filetype = '.png'
 
