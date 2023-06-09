@@ -4,6 +4,7 @@ from PIL import Image
 import torch
 import torchvision.transforms as T
 import matplotlib.pyplot as plt 
+import numpy as np
 
 batch_size = 32 
 
@@ -24,12 +25,24 @@ def mask_converter(mask, out="one-hot", nb_classes=3, class_values=[0,127,255]):
         (tensors can represent a batch)
     """
     if type(mask) == str:  # mask is a path, the mask is converted in a tensor 
-        image = Image.open(mask)
-        tensor_image = T.functional.to_tensor(image) * 255
+        image = Image.open(mask).convert("L")
+        tensor_image = T.functional.to_tensor(image)
+        # print(tensor_image.max())
+        # print(tensor_image.unique())
+        tensor_image = tensor_image * 255
+        # print(tensor_image.max())
+        # print(tensor_image.unique())
         tensor_image = tensor_image.to(torch.uint8) 
+        # print(tensor_image.max())
+        # print(tensor_image.unique())
         for i in range(nb_classes):
             tensor_image = torch.where(tensor_image == class_values[i], torch.tensor(i), tensor_image)
-        tensor_image = torch.nn.functional.one_hot(tensor_image.to(torch.int64), nb_classes).permute(0,3,1,2).squeeze(0)
+        # print(tensor_image.max())            
+        try:
+            tensor_image = torch.nn.functional.one_hot(tensor_image.to(torch.int64), nb_classes).permute(0,3,1,2).squeeze(0)
+        except RuntimeError:
+            print(mask)
+            return torch.rand(2,1)
         if out == "one-hot":
             return tensor_image
         elif out == "image-like":
@@ -71,16 +84,16 @@ def save_and_load(image_folder, mask_folder=None):
                     mask = mask_converter(mask_path)
                     masks.append(mask)
     # save tensors 
-    file_name = folder_where_write + "/" + image_folder.split("/")[-1] + ".pt"
-    torch.save(images, file_name)
-    if mask_folder is not None:
-        folder_name = mask_folder.split("/")[-1] + ".pt"
-        torch.save(masks, folder_name)
+    # file_name = folder_where_write + "/" + image_folder.split("/")[-1] + ".pt"
+    # torch.save(images, file_name)
+    # if mask_folder is not None:
+    #     folder_name = mask_folder.split("/")[-1] + ".pt"
+    #     torch.save(masks, folder_name)
 
-# save_and_load(labeled_image_dir, masks_dir)
+save_and_load(labeled_image_dir, masks_dir)
 # save_and_load(unlabeled_image_dir, None)
 # labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
-# masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
+masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
 # unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
 
 #%% dataset and dataloader
