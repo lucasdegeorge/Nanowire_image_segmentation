@@ -172,7 +172,7 @@ labeled_dataloader = torch.utils.data.DataLoader(labeled_dataset, batch_size=bat
 unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
 print("dataloaders ok")
 
-#%% Display images and masks separated
+#%% Display images and masks separated   ## May not work well since last update 
 
 def display_image_with_mask(image, mask):
     image = image.permute(1, 2, 0).numpy()
@@ -197,7 +197,7 @@ def display_image_with_mask(image, mask):
 # display_image_with_mask(image, mask)
 
 
-#%% Display image and mask overlayed
+#%% Display image and mask overlayed ## May not work well since last update
 
 def display_image_mask_overlayed(image, mask, alpha=0.2):
     image = image.permute(1, 2, 0).numpy()
