@@ -8,10 +8,18 @@ import numpy as np
 
 batch_size = 32 
 
-labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
-masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
-unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
-folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
+c2n = False
+
+if c2n:
+    labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
+    masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
+    unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
+    folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
+else:
+    labeled_image_dir = "C:/Users/lucas/Desktop/labeled_images"
+    masks_dir = "C:/Users/lucas/Desktop/binary_masks"
+    unlabeled_image_dir = "C:/Users/lucas/Desktop/unlabeled_images"
+    folder_where_write = "C:/Users/lucas/Desktop"
 
 filetype = '.png'
 
@@ -40,6 +48,9 @@ def mask_converter(mask, out="one-hot", nb_classes=3, class_values=[0,127,255]):
         # print(tensor_image.max())            
         try:
             tensor_image = torch.nn.functional.one_hot(tensor_image.to(torch.int64), nb_classes).permute(0,3,1,2).squeeze(0)
+            print(mask)
+            print("ok")
+            print("------------------------")
         except RuntimeError:
             print(mask)
             return torch.rand(2,1)
@@ -83,6 +94,7 @@ def save_and_load(image_folder, mask_folder=None):
                 if os.path.isfile(mask_path):
                     mask = mask_converter(mask_path)
                     masks.append(mask)
+    return masks
     # save tensors 
     # file_name = folder_where_write + "/" + image_folder.split("/")[-1] + ".pt"
     # torch.save(images, file_name)
@@ -93,7 +105,7 @@ def save_and_load(image_folder, mask_folder=None):
 save_and_load(labeled_image_dir, masks_dir)
 # save_and_load(unlabeled_image_dir, None)
 # labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
-masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
+# masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
 # unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
 
 #%% dataset and dataloader
