@@ -6,6 +6,7 @@ import torch.nn.functional as F
 from torchvision import transforms
 import json
 import sys
+from itertools import cycle
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model")
 
@@ -16,13 +17,6 @@ from preprocessing.dataloader import *
 
 in_channels = 1
 num_classes = 3
-
-
-#%%  Trainer unit tests 
-
-
-
-
 
 
 #%% Resnet unit tests 
@@ -99,16 +93,21 @@ for name, decoder in aux_decoder_dict.items():
 from model import * 
 
 # # mode super
-model_test = Model(mode='super')
-for image, mask in labeled_dataloader:
-    res = model_test(image, None)
-    break
-
-# mode semi
-# model_test = Model(mode='semi')
-# for x_ul in unlabeled_dataloader:
-#     for x_l, _ in labeled_dataloader:
-#         res = model_test(x_l, x_ul=x_ul)
-#         break
+# model_test = Model(mode='super')
+# for image, mask in labeled_dataloader:
+#     res = model_test(image, None)
 #     break
 
+# mode semi
+model_test = Model(mode='semi')
+# dataloader = iter(zip(cycle(labeled_dataloader), unlabeled_dataloader))
+for x_ul in unlabeled_dataloader:
+    for x_l, _ in labeled_dataloader:
+        res = model_test(x_l, x_ul=x_ul)
+        break
+    break
+
+dataloader = iter(zip(cycle(labeled_dataloader), unlabeled_dataloader))
+for (x_l, mask), x_ul in dataloader:
+    res = model_test(x_l, x_ul=x_ul)
+    break

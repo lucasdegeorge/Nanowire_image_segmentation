@@ -6,7 +6,7 @@ import torchvision.transforms as T
 import matplotlib.pyplot as plt 
 import numpy as np
 
-batch_size = 32 
+batch_size = 2
 
 c2n = True
 
@@ -42,6 +42,7 @@ def mask_converter(mask, out="one-hot", nb_classes=3, class_values=[0,127,255]):
             tensor_image = torch.where(tensor_image == class_values[i], torch.tensor(i), tensor_image)         
         try:
             tensor_image = torch.nn.functional.one_hot(tensor_image.to(torch.int64), nb_classes).permute(0,3,1,2).squeeze(0)
+            tensor_image = tensor_image.to(torch.float32)
         except RuntimeError:
             raise RuntimeError("Error while trying to convert the file" + mask)
         if out == "one-hot":
