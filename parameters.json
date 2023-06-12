@@ -1,30 +1,44 @@
 {
-    "model" : {"nb_classes" : 3,
-                "nb_RNlayers" : 50,
-                "isDilation" : true,
-                "upscale" : 8,
-                "DropOutDecoder" : 1, 
-                "FeatureDropDecoder" : 1, 
-                "FeatureNoiseDecoder" : 1, 
-                "VATDecoder" : 1, 
-                "CutOutDecoder" : 1, 
-                "ContextMaskingDecoder" : 1, 
-                "ObjectMaskingDecoder" : 1, 
-                "xi" : 1e-1,
-                "eps" : 10.0, 
-                "drop_rate" : 0.3, 
-                "spacial_dropout" : true,
-                "erase" : 0.4,
-                "uniform_range" : 0.3}, 
+    "model" : {
+        "nb_classes" : 3,
+        "nb_RNlayers" : 50,
+        "isDilation" : true,
+        "upscale" : 8,
+        "DropOutDecoder" : 1, 
+        "FeatureDropDecoder" : 1, 
+        "FeatureNoiseDecoder" : 1, 
+        "VATDecoder" : 1, 
+        "CutOutDecoder" : 1, 
+        "ContextMaskingDecoder" : 1, 
+        "ObjectMaskingDecoder" : 1, 
+        "xi" : 1e-1,
+        "eps" : 10.0, 
+        "drop_rate" : 0.3, 
+        "spacial_dropout" : true,
+        "erase" : 0.4,
+        "uniform_range" : 0.3
+    }, 
 
-    "aux_decoder_order" : {"DropOutDecoder" : 0, 
-                        "FeatureDropDecoder" : 1, 
-                        "FeatureNoiseDecoder" : 2, 
-                        "VATDecoder" : 3, 
-                        "CutOutDecoder" : 4, 
-                        "ContextMaskingDecoder" : 5, 
-                        "ObjectMaskingDecoder" : 6                     
-        }
-
+    "aux_decoder_order" : {
+        "DropOutDecoder" : 0, 
+        "FeatureDropDecoder" : 1, 
+        "FeatureNoiseDecoder" : 2, 
+        "VATDecoder" : 3, 
+        "CutOutDecoder" : 4, 
+        "ContextMaskingDecoder" : 5, 
+        "ObjectMaskingDecoder" : 6
+    },
     
+    "trainer" : {
+        "sup_loss" : "CE",
+        "unsup_loss" : "mse",
+        "optimizer" : "sgd",
+        "optimizer_args":{
+            "lr": 1e-2,
+            "weight_decay": 1e-4,
+            "momentum": 0.9
+        },
+        "nb_epochs" : 60,
+        "batch_size" : 32        
+    }
 }
