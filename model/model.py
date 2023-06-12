@@ -4,17 +4,22 @@ import torch.nn as nn
 import torch.nn.functional as F
 import sys
 import itertools
+import json
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation")
 
-from parameters import *
 from encoder import * 
 from decoders import *
+
+with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+    arguments = json.load(f)
+    model_arguments = arguments["model"]
+
 
 #%% Model
 
 class Model(nn.Module):
-    def __init__(self, mode='semi', arguments=arguments, upscale=8, aux_decoders_args=[1,1,1,1,1,1,1]):
+    def __init__(self, mode='semi', arguments=model_arguments, upscale=8, aux_decoders_args=[1,1,1,1,1,1,1]):
         super(Model, self).__init__()
 
         self.mode = mode
