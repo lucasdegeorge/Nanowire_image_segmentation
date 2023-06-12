@@ -3,24 +3,31 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import datasets
-from torchvision import transforms, models
-from torch.utils.data.sampler import SubsetRandomSampler
-import os
-import numpy as np
+from torchvision import transforms
+import json
 import sys
 
-sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation") 
+sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation")
+
+with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+    arguments = json.load(f)
 
 from preprocessing.dataloader import * 
-from parameters import * 
 
 in_channels = 1
 num_classes = 3
 
+
+#%%  Trainer unit tests 
+
+
+
+
+
+
 #%% Resnet unit tests 
 
-from resnet import *
+from model.resnet import *
 
 image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
 image1 = image.resize((224,224))
@@ -41,7 +48,7 @@ for i in range(len(res)):
 
 #%% Encoder unit tests 
 
-from encoder import * 
+from model.encoder import * 
 
 for x,y in [(18,512)]:
     print("resnet", x)
@@ -54,8 +61,8 @@ for x,y in [(18,512)]:
 
 #%% Decoder unit tests
 
-from encoder import * 
-from decoders import *
+from model.encoder import * 
+from model.decoders import *
 
 upscale = 8
 num_out_ch = 512
@@ -89,7 +96,7 @@ for name, decoder in aux_decoder_dict.items():
 
 #%% Model unit tests 
 
-from model import * 
+from model.model import * 
 
 # # mode super
 model_test = Model(mode='super')
@@ -104,8 +111,4 @@ for image, mask in labeled_dataloader:
 #         res = model_test(x_l, x_ul=x_ul)
 #         break
 #     break
-
-#%%  Losses unit tests 
-
-criterion = nn.MSELoss(reduction='mean') 
 
