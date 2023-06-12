@@ -5,6 +5,11 @@ import torch.nn.functional as F
 import sys
 import itertools
 
+sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation") 
+
+from preprocessing.dataloader import * 
+from parameters import * 
+
 #%% 
 
 criterion = nn.MSELoss(reduction='mean') 
