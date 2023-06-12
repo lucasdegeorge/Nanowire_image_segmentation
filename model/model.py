@@ -65,7 +65,6 @@ class Model(nn.Module):
             assert x_ul is not None
             # Prediction by main decoder 
             inter_ul = self.encoder(x_ul)
-            print(inter_ul.shape)
             output_ul = self.main_decoder(inter_ul)
 
             # Prediction by auxiliary decoders
