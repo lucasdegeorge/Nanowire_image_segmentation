@@ -7,7 +7,7 @@ from torchvision import transforms
 import json
 import sys
 
-sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation")
+sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model")
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
@@ -96,7 +96,7 @@ for name, decoder in aux_decoder_dict.items():
 
 #%% Model unit tests 
 
-from model.model import * 
+from model import * 
 
 # # mode super
 model_test = Model(mode='super')
