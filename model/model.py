@@ -19,7 +19,7 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 #%% Model
 
 class Model(nn.Module):
-    def __init__(self, mode='semi', arguments=model_arguments, upscale=8, aux_decoders_args=[1,1,1,1,1,1,1]):
+    def __init__(self, mode='semi', arguments=model_arguments):
         super(Model, self).__init__()
 
         self.mode = mode
