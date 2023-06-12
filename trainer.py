@@ -73,39 +73,33 @@ class Trainer:
         dataloader = iter(zip(cycle(self.labeled_loader), self.unlabeled_loader))
         self.model.train()
 
+        running_loss = 0.
+        last_loss = 0.
+
         for i, ((x_l, target_l), x_ul) in enumerate(dataloader):
-            print(i)
-
-            print(x_l.shape, x_ul.shape)
-
             self.optimizer.zero_grad()
             outputs = self.model(x_l, x_ul)
             output_l = outputs["output_l"]
             output_ul = outputs["output_ul"]
             aux_outputs_ul = outputs["aux_outputs_ul"]
-            # target_ul = F.softmax(output_ul.detach(), dim=1)
-            print(output_ul.shape)
-            print(aux_outputs_ul[0].shape)
+            target_ul = F.softmax(output_ul.detach(), dim=1)
 
             loss_l = supervised_loss(output_l, target_l, mode=self.sup_loss_mode)
-            loss_ul = sum([ unsupervised_loss(output, target_ul, mode = self.unsup_loss_mode) for output in aux_outputs_ul])
+            loss_ul = sum([ unsupervised_loss(output, target_ul, mode = self.unsup_loss_mode) for output in aux_outputs_ul]) / len(aux_outputs_ul)
             loss = loss_l + loss_ul * self.weight_ul
 
             loss.backward()
             self.optimizer.step()
 
-            break
-
             # report data
-            # running_loss += loss.item()
-            # if i % 100 == 0:
-            #     last_loss = running_loss / 100
-            #     print('  batch {} loss: {}'.format(i, last_loss))
-            #     tb_x = epoch_idx * len(dataloader) + i
-            #     tb_writer.add_scalar('Loss/train', last_loss, tb_x)
-            #     running_loss = 0.
-
-        return loss       
+            running_loss += loss.item()
+            if i % 100 == 0:
+                last_loss = running_loss / 100
+                print('  batch {} loss: {}'.format(i, last_loss))
+                tb_x = epoch_idx * len(self.unlabeled_loader) + i
+                tb_writer.add_scalar('Loss/train', last_loss, tb_x)
+                running_loss = 0.
+                    
         return last_loss
     
 
@@ -115,14 +109,14 @@ class Trainer:
 #%% Tests
 
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-# writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
+writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
 
 # # mode super
 model_test = Model(mode='semi')
 
 trainer_test = Trainer(model_test, labeled_dataloader, unlabeled_dataloader, None, mode="semi")
 # trainer_test.train_super_1epoch(0, writer)
-trainer_test.train_semi_1epoch(0, None)
+trainer_test.train_semi_1epoch(0, writer)
 
 
 
