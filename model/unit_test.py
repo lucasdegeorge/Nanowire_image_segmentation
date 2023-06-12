@@ -105,3 +105,7 @@ for image, mask in labeled_dataloader:
 #         break
 #     break
 
+#%%  Losses unit tests 
+
+criterion = nn.MSELoss(reduction='mean') 
+
