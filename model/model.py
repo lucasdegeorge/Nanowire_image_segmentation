@@ -10,6 +10,7 @@ sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segment
 
 from encoder import * 
 from decoders import *
+from preprocessing.dataloader import * 
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
@@ -61,14 +62,19 @@ class Model(nn.Module):
             return {"output_l" :  output_l}
         
         elif self.mode == 'semi':
+            assert x_ul is not None
             # Prediction by main decoder 
-            x_ul = self.encoder(x_ul)
-            output_ul = self.main_decoder(x_ul)
-            # Prediction by auxiliary decoders
-            outputs_ul = [aux_decoder(x_ul, output_ul.detach()) for aux_decoder in self.aux_decoders]
-            outputs_ul = [F.interpolate(output, size=(x_l.size(2), x_l.size(3)), mode='bilinear', align_corners=True) for output in outputs_ul if output.shape != x_ul.shape]
+            inter_ul = self.encoder(x_ul)
+            print(inter_ul.shape)
+            output_ul = self.main_decoder(inter_ul)
 
-            return {"output_l" : output_l, "outputs_ul" : outputs_ul}
+            # Prediction by auxiliary decoders
+            aux_outputs_ul = [aux_decoder(inter_ul, output_ul.detach()) for aux_decoder in self.aux_decoders]
+            aux_outputs_ul = [F.interpolate(output, size=(x_ul.size(2), x_ul.size(3)), mode='bilinear', align_corners=True) for output in aux_outputs_ul if output.shape != x_ul.shape]
+
+            output_ul = F.interpolate(output_ul, size=(x_ul.size(2), x_ul.size(3)), mode='bilinear', align_corners=True)
+
+            return {"output_l" : output_l, "output_ul" : output_ul, "aux_outputs_ul" : aux_outputs_ul}
         
     def get_backbone_params(self):
         return self.encoder.get_backbone_params()
@@ -80,8 +86,4 @@ class Model(nn.Module):
 
         return itertools.chain(self.encoder.get_module_params(), self.main_decoder.parameters())
 
-
-
-
-
-        
+       
