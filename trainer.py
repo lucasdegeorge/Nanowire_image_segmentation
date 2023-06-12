@@ -99,12 +99,14 @@ class Trainer:
                 tb_x = epoch_idx * len(self.unlabeled_loader) + i
                 tb_writer.add_scalar('Loss/train', last_loss, tb_x)
                 running_loss = 0.
-                    
+
         return last_loss
     
-
-
+    def eval_1epoch(self, ):
+        return 0
     
+
+  
 
 #%% Tests
 
