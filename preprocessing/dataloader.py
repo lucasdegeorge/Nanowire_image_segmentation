@@ -97,8 +97,8 @@ def save_and_load(image_folder, mask_folder=None):
 
 # save_and_load(labeled_image_dir, masks_dir)
 # save_and_load(unlabeled_image_dir, None)
-labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
-masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
+# labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
+# masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
 # unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
 
 #%% dataset and dataloader
