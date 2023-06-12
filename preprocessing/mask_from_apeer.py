@@ -7,11 +7,11 @@ import os
 import matplotlib.pyplot as plt
 import shutil
 
-c2n = False
+c2n = True
 
 if c2n:
     input_annotation_folder = "C:/Users/lucas.degeorge/Documents/Images/annotations_renamed"
-    # png_path = "C:/Users/lucas.degeorge/Documents/Images/apeer_png"
+    input_images_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images_not_reshaped"
     outputA_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
     mask_folder = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
 
