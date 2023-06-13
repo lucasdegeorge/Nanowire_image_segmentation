@@ -20,9 +20,9 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 #%% 
 
 class Trainer:
-    def __init__(self, model, labeled_loader, unlabeled_loader, eval_loader, mode='semi', arguments=trainer_arguments):
-        self.mode = mode
+    def __init__(self, model, labeled_loader, unlabeled_loader, eval_loader, arguments=trainer_arguments):
         self.model = model
+        self.mode = self.model.mode
 
         # supervised loss
         self.sup_loss_mode = arguments["sup_loss"]
@@ -45,8 +45,10 @@ class Trainer:
         self.eval_loader = eval_loader
 
     def train_super_1epoch(self, epoch_idx, tb_writer):
+        assert self.mode == "super"
+
         dataloader = iter(self.labeled_loader)
-        self.model.train()
+        if not(self.model.training): self.model.train()
 
         running_loss = 0.
         last_loss = 0.
@@ -62,29 +64,30 @@ class Trainer:
 
             # report data
             running_loss += loss.item()
-            if i % 10 == 0:
-                last_loss = running_loss / 100
+            if i % 2 == 0:
+                last_loss = running_loss / 2
                 # logs file 
                 with open("logs.txt","a") as logs :
-                    logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(iter)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
+                    logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(i)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
-                print('  batch {} loss: {}'.format(iter, last_loss))
-                tb_x = epoch_idx * len(self.unlabeled_loader) + iter
+                print('  batch {} loss: {}'.format(i, last_loss))
+                tb_x = epoch_idx * len(self.unlabeled_loader) + i
                 tb_writer.add_scalar('Loss/train', last_loss, tb_x)
                 running_loss = 0.
 
         return last_loss
     
     def train_semi_1epoch(self, epoch_idx, tb_writer):
+        assert self.mode == "semi"
+
         dataloader = iter(zip(cycle(self.labeled_loader), self.unlabeled_loader))
         if not(self.model.training): self.model.train()
-        print("training mode: ", self.model.training)
 
         running_loss = 0.
         last_loss = 0.
 
-        for iter, ((x_l, target_l), x_ul) in enumerate(dataloader):
+        for i, ((x_l, target_l), x_ul) in enumerate(dataloader):
             start_time = time.time()
             self.optimizer.zero_grad()
             outputs = self.model(x_l, x_ul)
@@ -102,15 +105,15 @@ class Trainer:
 
             # report data
             running_loss += loss.item()
-            if iter % 100 == 0:
-                last_loss = running_loss / 100
+            if i % 2 == 0:
+                last_loss = running_loss / 2
                 # logs file 
-                with open("semi_logs.txt","a") as logs :
-                    logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(iter)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
+                with open("logs.txt","a") as logs :
+                    logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(i)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
-                print('  batch {} loss: {}'.format(iter, last_loss))
-                tb_x = epoch_idx * len(self.unlabeled_loader) + iter
+                print('  batch {} loss: {}'.format(i, last_loss))
+                tb_x = epoch_idx * len(self.unlabeled_loader) + i
                 tb_writer.add_scalar('Loss/train', last_loss, tb_x)
                 running_loss = 0.
 
@@ -119,16 +122,15 @@ class Trainer:
     def eval_1epoch(self, epoch_idx):
         start_time = time.time()
         if self.model.training: self.model.eval()
-        print("training mode: ", self.model.training)
         running_val_loss = 0.0
 
         with torch.no_grad():
-            for iter, (val_x, val_target) in enumerate(self.eval_loader):
-                print(iter)
+            for i, (val_x, val_target) in enumerate(self.eval_loader):
+                print(i)
                 val_output = self.model(val_x, None)["output_l"]
-                val_loss =  supervised_loss(val_output, val_target, mode=self.sup_loss_mode)
+                val_loss = F.cross_entropy(val_output, val_target)
                 running_val_loss += val_loss
-        val_loss = running_val_loss / (iter + 1) 
+        val_loss = running_val_loss / (i + 1) 
 
         # report data 
         with open("logs.txt","a") as logs :
@@ -176,14 +178,15 @@ class Trainer:
 #%% Tests
 
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
+writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
 
 # # mode super
-model_test = Model(mode='semi')
+model_test = Model(mode='super')
 
-trainer_test = Trainer(model_test, labeled_dataloader, unlabeled_dataloader, labeled_dataloader, mode="semi")
+trainer_test = Trainer(model_test, labeled_dataloader, unlabeled_dataloader, labeled_dataloader)
 # trainer_test.train_super_1epoch(0, writer)
-trainer_test.train_semi_1epoch(0, writer)
+# trainer_test.train_semi_1epoch(0, writer)
+trainer_test.eval_1epoch(0)
 
 
 
