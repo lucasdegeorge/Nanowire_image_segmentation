@@ -4,7 +4,7 @@ from PIL import Image
 import torch
 import torchvision.transforms as T
 import matplotlib.pyplot as plt 
-import numpy as np
+from sklearn.model_selection import train_test_split
 
 batch_size = 2
 
@@ -115,15 +115,32 @@ def load_labeled_data(image_dir, annotation_dir, folder_where_write):
         save_and_load(image_dir, annotation_dir, folder_where_write)
         labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
-    return labeled_images, masks
+    train_images, eval_images, train_masks, eval_masks = train_test_split(labeled_images, masks, test_size=0.2, random_state=42)
+    return train_images, eval_images, train_masks, eval_masks
 
 
-class LabeledDataset(torch.utils.data.Dataset):
-    def __init__(self, image_dir, annotation_dir, transform=None, folder_where_write=folder_where_write):
-        self.image_dir = image_dir
-        self.annotation_dir = annotation_dir
+class train_LabeledDataset(torch.utils.data.Dataset):
+    def __init__(self, images, masks, transform=None):
         self.transform = transform
-        self.images, self.masks = load_labeled_data(image_dir, annotation_dir, folder_where_write)
+        self.images = images
+        self.masks = masks
+    
+    def __getitem__(self, index):
+        image = self.images[index]
+        mask = self.masks[index]
+        if self.transform is not None:
+            image = self.transform(image)
+            mask = self.transform(mask)
+        return image, mask
+    
+    def __len__(self):
+        return len(self.images)
+    
+class eval_LabeledDataset(torch.utils.data.Dataset):
+    def __init__(self, images, masks, transform=None):
+        self.transform = transform
+        self.images = images
+        self.masks = masks
     
     def __getitem__(self, index):
         image = self.images[index]
@@ -166,11 +183,14 @@ class UnlabeledDataset(torch.utils.data.Dataset):
 
 
 # Definition 
+train_images, eval_images, train_masks, eval_masks = load_labeled_data(labeled_image_dir, masks_dir, folder_where_write=folder_where_write)
 
-labeled_dataset = LabeledDataset(labeled_image_dir, masks_dir, transform=None)
+train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
+eval_labeled_dataset = eval_LabeledDataset(eval_images, eval_masks, transform=None)
 unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
 
-labeled_dataloader = torch.utils.data.DataLoader(labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
 unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
 print("dataloaders ok")
 

@@ -21,7 +21,7 @@ from trainer import *
 in_channels = 1
 num_classes = 3
 
-#%% micro - Dataloaders for tests : 
+#%% micro - Dataloaders for tests :  ## Does not work since updates in dataloader.py
 
 # micro paths 
 micro_labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/labeled_images"
@@ -29,7 +29,8 @@ micro_masks_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_test
 micro_unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/unlabeled_images"
 micro_folder_where_write = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests"
 
-micro_labeled_dataset = LabeledDataset(micro_labeled_image_dir, micro_masks_dir, transform=None, folder_where_write=micro_folder_where_write)
+
+micro_labeled_dataset = train_LabeledDataset(micro_labeled_image_dir, micro_masks_dir, transform=None, folder_where_write=micro_folder_where_write)
 micro_unlabeled_dataset = UnlabeledDataset(micro_unlabeled_image_dir, transform=None, folder_where_write=micro_folder_where_write)
 
 micro_labeled_dataloader = torch.utils.data.DataLoader(micro_labeled_dataset, batch_size=2, shuffle=True, drop_last=True)
@@ -43,7 +44,7 @@ writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
 # # mode super
 model_test = Model(mode='semi')
 
-trainer_test = Trainer(model_test, micro_labeled_dataloader, micro_unlabeled_dataloader, micro_labeled_dataloader)
+trainer_test = Trainer(model_test, micro_labeled_dataloader, micro_unlabeled_dataloader, micro_labeled_dataloader)  ## Just for test : here same data in train and eval
 # trainer_test.train_super_1epoch(0, writer)
 # trainer_test.train_semi_1epoch(0, writer)
 # trainer_test.eval_1epoch(0)
