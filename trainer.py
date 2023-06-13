@@ -7,6 +7,8 @@ from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 import time
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
 
 from preprocessing.dataloader import *
@@ -20,8 +22,9 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 #%% 
 
 class Trainer:
-    def __init__(self, model, labeled_loader, unlabeled_loader, eval_loader, arguments=trainer_arguments):
+    def __init__(self, model, labeled_loader, unlabeled_loader, eval_loader, arguments=trainer_arguments, device=device):
         self.model = model
+        self.model.to(device)
         self.mode = self.model.mode
 
         # supervised loss
@@ -56,7 +59,7 @@ class Trainer:
         for i, (x_l, target_l) in enumerate(dataloader):
             start_time = time.time()
             self.optimizer.zero_grad()
-            output_l = self.model(x_l, None)["output_l"]
+            output_l = self.model(x_l, None)["output_l"].to(device)
 
             loss = supervised_loss(output_l, target_l, mode=self.sup_loss_mode)
             loss.backward()
@@ -91,8 +94,8 @@ class Trainer:
             start_time = time.time()
             self.optimizer.zero_grad()
             outputs = self.model(x_l, x_ul)
-            output_l = outputs["output_l"]
-            output_ul = outputs["output_ul"]
+            output_l = outputs["output_l"].to(device)
+            output_ul = outputs["output_ul"].to(device)
             aux_outputs_ul = outputs["aux_outputs_ul"]
             target_ul = F.softmax(output_ul.detach(), dim=1)
 
@@ -126,7 +129,7 @@ class Trainer:
 
         with torch.no_grad():
             for i, (val_x, val_target) in enumerate(self.eval_loader):
-                val_output = self.model(val_x, None, eval=True)["output_l"]
+                val_output = self.model(val_x, None, eval=True)["output_l"].to(device)
                 val_loss = F.cross_entropy(val_output, val_target)
                 running_val_loss += val_loss
         val_loss = running_val_loss / (i + 1) 

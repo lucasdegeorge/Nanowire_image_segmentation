@@ -94,7 +94,7 @@ class FeatureNoiseDecoder(nn.Module):
         self.uniform_range = uniform_range
 
     def feature_based_noise(self, x):
-        noise_vector = 2*self.uniform_range*torch.rand(x.shape) - self.uniform_range
+        noise_vector = 2*self.uniform_range*torch.rand(x.shape, device=device) - self.uniform_range
         x_noise = x.mul(noise_vector) + x
         return x_noise
 
@@ -187,7 +187,7 @@ def guided_cutout(output, upscale, resize, erase=0.4, use_dropout=False):
         masks_np.append(mask_ones)
     masks_np = np.stack(masks_np)
 
-    maskcut = torch.from_numpy(masks_np).float().unsqueeze_(1)
+    maskcut = torch.from_numpy(masks_np, device=device).float().unsqueeze_(1)
     maskcut = F.interpolate(maskcut, size=resize, mode='nearest')
 
     if use_dropout:
@@ -211,9 +211,9 @@ class CutOutDecoder(nn.Module):
 
 def guided_masking(x, output, upscale, resize, return_msk_context=True):
     if len(output.shape) == 3:
-        masks_context = (output > 0).float().unsqueeze(1)
+        masks_context = (output > 0).float().unsqueeze(1).to(device)
     else:
-        masks_context = (output.argmax(1) > 0).float().unsqueeze(1)
+        masks_context = (output.argmax(1) > 0).float().unsqueeze(1).to(device)
     
     masks_context = F.interpolate(masks_context, size=resize, mode='nearest')
 
