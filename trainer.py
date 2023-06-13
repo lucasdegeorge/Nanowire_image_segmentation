@@ -58,6 +58,10 @@ class Trainer:
 
         for i, (x_l, target_l) in enumerate(dataloader):
             start_time = time.time()
+
+            x_l = x_l.to(device)
+            target_l = target_l.to(device)
+
             self.optimizer.zero_grad()
             output_l = self.model(x_l, None)["output_l"].to(device)
 
@@ -93,6 +97,11 @@ class Trainer:
 
         for i, ((x_l, target_l), x_ul) in enumerate(dataloader):
             start_time = time.time()
+
+            x_l = x_l.to(device)
+            target_l = target_l.to(device)
+            x_ul = x_ul.to(device)
+            
             self.optimizer.zero_grad()
             outputs = self.model(x_l, x_ul)
             output_l = outputs["output_l"].to(device)
@@ -131,6 +140,9 @@ class Trainer:
 
         with torch.no_grad():
             for i, (val_x, val_target) in enumerate(self.eval_loader):
+                val_x = val_x.to(device)
+                val_target = val_target.to(device)
+
                 val_output = self.model(val_x, None, eval=True)["output_l"].to(device)
                 val_loss = F.cross_entropy(val_output, val_target)
                 running_val_loss += val_loss
