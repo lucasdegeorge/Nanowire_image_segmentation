@@ -68,7 +68,7 @@ class Trainer:
                 last_loss = running_loss / 2
                 # logs file 
                 with open("logs.txt","a") as logs :
-                    logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(i)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
+                    logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
                 print('  batch {} loss: {}'.format(i, last_loss))
@@ -109,7 +109,7 @@ class Trainer:
                 last_loss = running_loss / 2
                 # logs file 
                 with open("logs.txt","a") as logs :
-                    logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(i)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
+                    logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
                 print('  batch {} loss: {}'.format(i, last_loss))
@@ -126,15 +126,14 @@ class Trainer:
 
         with torch.no_grad():
             for i, (val_x, val_target) in enumerate(self.eval_loader):
-                print(i)
-                val_output = self.model(val_x, None)["output_l"]
+                val_output = self.model(val_x, None, eval=True)["output_l"]
                 val_loss = F.cross_entropy(val_output, val_target)
                 running_val_loss += val_loss
         val_loss = running_val_loss / (i + 1) 
 
         # report data 
         with open("logs.txt","a") as logs :
-            logs.write("\nEpoch : " + str(epoch_idx) + "- Eval - in "+ str(int(1000*(time.time()-start_time))) + "ms, val_loss "+ str(val_loss))
+            logs.write("\nEpoch : " + str(epoch_idx) + " - Eval - in "+ str(int(1000*(time.time()-start_time))) + "ms, val_loss "+ str(val_loss.item()))
             logs.close()
 
         return  val_loss
@@ -177,22 +176,14 @@ class Trainer:
 
 #%% Tests
 
-timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
+# timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+# writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
 
-# # mode super
-model_test = Model(mode='super')
+# # # mode super
+# model_test = Model(mode='super')
 
-trainer_test = Trainer(model_test, labeled_dataloader, unlabeled_dataloader, labeled_dataloader)
-# trainer_test.train_super_1epoch(0, writer)
-# trainer_test.train_semi_1epoch(0, writer)
-trainer_test.eval_1epoch(0)
-
-
-
-
-
-
-
-        
-
+# trainer_test = Trainer(model_test, labeled_dataloader, unlabeled_dataloader, labeled_dataloader)
+# # trainer_test.train_super_1epoch(0, writer)
+# # trainer_test.train_semi_1epoch(0, writer)
+# # trainer_test.eval_1epoch(0)
+# trainer_test.train()

@@ -7,6 +7,9 @@ from torchvision import transforms
 import json
 import sys
 from itertools import cycle
+from torch.utils.tensorboard import SummaryWriter
+from datetime import datetime
+import time
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model")
 
@@ -17,6 +20,29 @@ from preprocessing.dataloader import *
 
 in_channels = 1
 num_classes = 3
+
+#%% Dataloaders for tests : 
+
+
+
+
+
+
+
+#%% Trainer unit tests 
+
+timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
+
+# # mode super
+model_test = Model(mode='super')
+
+trainer_test = Trainer(model_test, labeled_dataloader, unlabeled_dataloader, labeled_dataloader)
+# trainer_test.train_super_1epoch(0, writer)
+# trainer_test.train_semi_1epoch(0, writer)
+# trainer_test.eval_1epoch(0)
+trainer_test.train()
+
 
 
 #%% Resnet unit tests 

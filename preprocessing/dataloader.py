@@ -67,7 +67,7 @@ def mask_converter(mask, out="one-hot", nb_classes=3, class_values=[0,127,255]):
 
 #%% save tensors in .pt 
 
-def save_and_load(image_folder, mask_folder=None):
+def save_and_load(image_folder, mask_folder=None, folder_where_write=folder_where_write):
     """ loads the images in the folders and save save in a .pt file using the same name"""
     converter = T.ToTensor()
     images = []
@@ -106,24 +106,24 @@ def save_and_load(image_folder, mask_folder=None):
 
 # Labeled data and masks
 
-def load_labeled_data(image_dir, annotation_dir):
+def load_labeled_data(image_dir, annotation_dir, folder_where_write):
     try:
         labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
     except FileNotFoundError:
         print("files labeled_images.pt and binary_masks.pt not found")
-        save_and_load(image_dir, annotation_dir)
+        save_and_load(image_dir, annotation_dir, folder_where_write)
         labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
     return labeled_images, masks
 
 
 class LabeledDataset(torch.utils.data.Dataset):
-    def __init__(self, image_dir, annotation_dir, transform=None):
+    def __init__(self, image_dir, annotation_dir, transform=None, folder_where_write=folder_where_write):
         self.image_dir = image_dir
         self.annotation_dir = annotation_dir
         self.transform = transform
-        self.images, self.masks = load_labeled_data(image_dir, annotation_dir)
+        self.images, self.masks = load_labeled_data(image_dir, annotation_dir, folder_where_write)
     
     def __getitem__(self, index):
         image = self.images[index]
@@ -139,21 +139,21 @@ class LabeledDataset(torch.utils.data.Dataset):
 
 # Unlabeled data 
 
-def load_unlabeled_data(image_dir):
+def load_unlabeled_data(image_dir, folder_where_write):
     try:
         unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
     except FileNotFoundError:
         print("file unlabeled_images.pt not found")
-        save_and_load(image_dir, None)
+        save_and_load(image_dir, None, folder_where_write)
         unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
     return unlabeled_images
 
 
 class UnlabeledDataset(torch.utils.data.Dataset):
-    def __init__(self, image_dir, transform=None):
+    def __init__(self, image_dir, transform=None, folder_where_write=folder_where_write):
         self.image_dir = image_dir
         self.transform = transform
-        self.images = load_unlabeled_data(image_dir)
+        self.images = load_unlabeled_data(image_dir, folder_where_write)
     
     def __getitem__(self, index):
         image = self.images[index]

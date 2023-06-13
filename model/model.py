@@ -52,7 +52,7 @@ class Model(nn.Module):
 
             self.aux_decoders = nn.ModuleList([*drop_decoder, *feature_drop, *feature_noise, *vat_decoder, *cut_decoder, *context_m_decoder, *object_masking])
 
-    def forward(self, x_l, x_ul=None):
+    def forward(self, x_l, x_ul=None, eval=False):
 
         output_l = self.main_decoder(self.encoder(x_l))
         if output_l.shape != x_l.shape:
@@ -61,8 +61,11 @@ class Model(nn.Module):
         if self.mode == 'super':
             return {"output_l" :  output_l}
         
+        if eval:
+            return {"output_l" :  output_l}
+        
         elif self.mode == 'semi':
-            assert x_ul is not None
+            assert x_ul is not None 
             # Prediction by main decoder 
             inter_ul = self.encoder(x_ul)
             output_ul = self.main_decoder(inter_ul)
