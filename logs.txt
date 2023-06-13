@@ -1,4 +1,0 @@
-START TRAINING IN MODE semi- 13/06/2023 
- 
-
-Training - 20230613_171712 - mode semi - loss mode CE mse

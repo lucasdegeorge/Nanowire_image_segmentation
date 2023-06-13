@@ -5,10 +5,13 @@ import torch
 import torchvision.transforms as T
 import matplotlib.pyplot as plt 
 from sklearn.model_selection import train_test_split
+import json
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-batch_size = 2
+# with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+#     arguments = json.load(f)
+#     batch_size = arguments["batch_size"]
 
 c2n = True
 
@@ -187,7 +190,7 @@ class UnlabeledDataset(torch.utils.data.Dataset):
 
 # Definition 
 
-def get_dataloaders(labeled_image_dir=labeled_image_dir, masks_dir=masks_dir, unlabeled_image_dir=unlabeled_image_dir, folder_where_write=folder_where_write):
+def get_dataloaders(batch_size, labeled_image_dir=labeled_image_dir, masks_dir=masks_dir, unlabeled_image_dir=unlabeled_image_dir, folder_where_write=folder_where_write):
     train_images, eval_images, train_masks, eval_masks = load_labeled_data(labeled_image_dir, masks_dir, folder_where_write=folder_where_write)
 
     train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
@@ -200,7 +203,7 @@ def get_dataloaders(labeled_image_dir=labeled_image_dir, masks_dir=masks_dir, un
 
     return train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader
 
-# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders()
+# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=32)
 
 #%% One-hot to images 
 
