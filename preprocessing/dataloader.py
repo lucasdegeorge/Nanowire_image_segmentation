@@ -122,8 +122,8 @@ def load_labeled_data(image_dir, annotation_dir, folder_where_write):
 class train_LabeledDataset(torch.utils.data.Dataset):
     def __init__(self, images, masks, transform=None):
         self.transform = transform
-        self.images = images
-        self.masks = masks
+        self.images = [ t.to("cuda:0") for t in images]
+        self.masks = [ t.to("cuda:0") for t in masks]
     
     def __getitem__(self, index):
         image = self.images[index]
@@ -139,8 +139,8 @@ class train_LabeledDataset(torch.utils.data.Dataset):
 class eval_LabeledDataset(torch.utils.data.Dataset):
     def __init__(self, images, masks, transform=None):
         self.transform = transform
-        self.images = images
-        self.masks = masks
+        self.images = [ t.to("cuda:0") for t in images]
+        self.masks = [ t.to("cuda:0") for t in masks]
     
     def __getitem__(self, index):
         image = self.images[index]
@@ -163,6 +163,7 @@ def load_unlabeled_data(image_dir, folder_where_write):
         print("file unlabeled_images.pt not found")
         save_and_load(image_dir, None, folder_where_write)
         unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
+    unlabeled_images = [ t.to("cuda:0") for t in unlabeled_images]
     return unlabeled_images
 
 
@@ -193,6 +194,12 @@ train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, ba
 eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
 unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
 print("dataloaders ok")
+
+#%% 
+
+for image, mask in train_labeled_dataset:
+    print(image.get_device())
+    print(mask.get_device())
 
 
 #%% One-hot to images 
