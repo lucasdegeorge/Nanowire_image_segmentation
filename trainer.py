@@ -101,7 +101,7 @@ class Trainer:
             x_l = x_l.to(device)
             target_l = target_l.to(device)
             x_ul = x_ul.to(device)
-            
+
             self.optimizer.zero_grad()
             outputs = self.model(x_l, x_ul)
             output_l = outputs["output_l"].to(device)
@@ -184,9 +184,9 @@ class Trainer:
             writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_train_loss, 'Eval' : avg_val_loss }, epoch_idx)
             writer.flush()
 
-        # save (best) models
-        model_path = 'model_{}_{}'.format(self.mode, timestamp)
-        torch.save(self.model.state_dict(), model_path)
+            # save (best) models
+            model_path = 'model_{}_{}'.format(self.mode, timestamp)
+            torch.save(self.model.state_dict(), model_path)
 
 
 
