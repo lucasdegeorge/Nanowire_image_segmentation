@@ -65,7 +65,7 @@ class Trainer:
             if i % 10 == 0:
                 last_loss = running_loss / 100
                 # logs file 
-                with open("super_logs.txt","a") as logs :
+                with open("logs.txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(iter)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
@@ -78,7 +78,8 @@ class Trainer:
     
     def train_semi_1epoch(self, epoch_idx, tb_writer):
         dataloader = iter(zip(cycle(self.labeled_loader), self.unlabeled_loader))
-        self.model.train()
+        if not(self.model.training): self.model.train()
+        print("training mode: ", self.model.training)
 
         running_loss = 0.
         last_loss = 0.
@@ -115,9 +116,10 @@ class Trainer:
 
         return last_loss
     
-    def eval_1epoch(self, epoch_idx, tb_writer):
+    def eval_1epoch(self, epoch_idx):
         start_time = time.time()
-        self.model.eval()
+        if self.model.training: self.model.eval()
+        print("training mode: ", self.model.training)
         running_val_loss = 0.0
 
         with torch.no_grad():
@@ -129,11 +131,47 @@ class Trainer:
         val_loss = running_val_loss / (iter + 1) 
 
         # report data 
-        with open("semi_logs.txt","a") as logs :
-                    logs.write("\nEpoch : " + str(epoch_idx) + "- Eval - in "+ str(int(1000*(time.time()-start_time))) + "ms, val_loss "+ str(val_loss))
-                    logs.close()
+        with open("logs.txt","a") as logs :
+            logs.write("\nEpoch : " + str(epoch_idx) + "- Eval - in "+ str(int(1000*(time.time()-start_time))) + "ms, val_loss "+ str(val_loss))
+            logs.close()
 
         return  val_loss
+    
+    def train(self):
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        writer = SummaryWriter('runs/trainer_{}_{}'.format(self.mode, timestamp))
+
+        with open("logs.txt","a") as logs :
+            logs.write("\n \n")
+            logs.write("\nTraining - " + str(timestamp) + " - mode " + self.mode  + " - loss mode "  + self.sup_loss_mode + " " + self.unsup_loss_mode + "\n")
+            logs.close()
+
+
+        for epoch_idx in range(self.nb_epochs):
+            print('EPOCH {}:'.format(epoch_idx))
+
+            # train on one epoch 
+            self.model.train(True)
+            if self.mode == "semi":
+                avg_train_loss = self.train_semi_1epoch(epoch_idx, writer)
+            elif self.mode =="super":
+                avg_train_loss = self.train_super_1epoch(epoch_idx, writer)
+
+            # eval after the epoch
+            self.model.eval()
+            avg_val_loss = self.eval_1epoch(epoch_idx)
+
+            # report data
+            print('LOSS train {} eval {}'.format(avg_train_loss, avg_val_loss))
+            writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_train_loss, 'Eval' : avg_val_loss }, epoch_idx)
+            writer.flush()
+
+        # save (best) models
+        model_path = 'model_{}_{}'.format(self.mode, timestamp)
+        torch.save(self.model.state_dict(), model_path)
+
+
+
 
 #%% Tests
 
@@ -143,7 +181,7 @@ writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
 # # mode super
 model_test = Model(mode='semi')
 
-trainer_test = Trainer(model_test, labeled_dataloader, unlabeled_dataloader, None, mode="semi")
+trainer_test = Trainer(model_test, labeled_dataloader, unlabeled_dataloader, labeled_dataloader, mode="semi")
 # trainer_test.train_super_1epoch(0, writer)
 trainer_test.train_semi_1epoch(0, writer)
 
