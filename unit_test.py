@@ -10,6 +10,8 @@ from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 import time
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model")
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
@@ -30,7 +32,8 @@ micro_unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batc
 micro_folder_where_write = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests"
 
 
-micro_labeled_dataset = train_LabeledDataset(micro_labeled_image_dir, micro_masks_dir, transform=None, folder_where_write=micro_folder_where_write)
+train_images, eval_images, train_masks, eval_masks = load_labeled_data(micro_labeled_image_dir, micro_masks_dir, folder_where_write=micro_folder_where_write)
+micro_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
 micro_unlabeled_dataset = UnlabeledDataset(micro_unlabeled_image_dir, transform=None, folder_where_write=micro_folder_where_write)
 
 micro_labeled_dataloader = torch.utils.data.DataLoader(micro_labeled_dataset, batch_size=2, shuffle=True, drop_last=True)
@@ -42,7 +45,8 @@ timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
 
 # # mode super
-model_test = Model(mode='semi')
+model_test = Model(mode='super')
+model_test.to(device)
 
 trainer_test = Trainer(model_test, micro_labeled_dataloader, micro_unlabeled_dataloader, micro_labeled_dataloader)  ## Just for test : here same data in train and eval
 # trainer_test.train_super_1epoch(0, writer)

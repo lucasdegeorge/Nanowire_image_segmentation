@@ -187,7 +187,7 @@ def guided_cutout(output, upscale, resize, erase=0.4, use_dropout=False):
         masks_np.append(mask_ones)
     masks_np = np.stack(masks_np)
 
-    maskcut = torch.from_numpy(masks_np, device=device).float().unsqueeze_(1)
+    maskcut = torch.from_numpy(masks_np).float().unsqueeze_(1).to(device)
     maskcut = F.interpolate(maskcut, size=resize, mode='nearest')
 
     if use_dropout:

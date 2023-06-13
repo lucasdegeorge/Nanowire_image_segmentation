@@ -39,7 +39,7 @@
             "weight_decay": 1e-4,
             "momentum": 0.9
         },
-        "nb_epochs" : 2,
+        "nb_epochs" : 40,
         "batch_size" : 32        
     }
 }

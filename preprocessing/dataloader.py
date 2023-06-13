@@ -186,17 +186,21 @@ class UnlabeledDataset(torch.utils.data.Dataset):
 
 
 # Definition 
-train_images, eval_images, train_masks, eval_masks = load_labeled_data(labeled_image_dir, masks_dir, folder_where_write=folder_where_write)
 
-train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
-eval_labeled_dataset = eval_LabeledDataset(eval_images, eval_masks, transform=None)
-unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
+def get_dataloaders(labeled_image_dir=labeled_image_dir, masks_dir=masks_dir, unlabeled_image_dir=unlabeled_image_dir, folder_where_write=folder_where_write):
+    train_images, eval_images, train_masks, eval_masks = load_labeled_data(labeled_image_dir, masks_dir, folder_where_write=folder_where_write)
 
-train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
-eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
-unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
-print("dataloaders ok")
+    train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
+    eval_labeled_dataset = eval_LabeledDataset(eval_images, eval_masks, transform=None)
+    unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
 
+    train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+    eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+    unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
+
+    return train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader
+
+# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders()
 
 #%% One-hot to images 
 
