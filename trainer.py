@@ -5,6 +5,7 @@ import torch
 from itertools import cycle
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
+import time
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
 
@@ -51,6 +52,7 @@ class Trainer:
         last_loss = 0.
 
         for i, (x_l, target_l) in enumerate(dataloader):
+            start_time = time.time()
             self.optimizer.zero_grad()
             output_l = self.model(x_l, None)["output_l"]
 
@@ -61,9 +63,14 @@ class Trainer:
             # report data
             running_loss += loss.item()
             if i % 10 == 0:
-                last_loss = running_loss / 10
-                print('  batch {} loss: {}'.format(i, last_loss))
-                tb_x = epoch_idx * len(dataloader) + i
+                last_loss = running_loss / 100
+                # logs file 
+                with open("super_logs.txt","a") as logs :
+                    logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(iter)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
+                    logs.close()
+                # tensorboard
+                print('  batch {} loss: {}'.format(iter, last_loss))
+                tb_x = epoch_idx * len(self.unlabeled_loader) + iter
                 tb_writer.add_scalar('Loss/train', last_loss, tb_x)
                 running_loss = 0.
 
@@ -76,7 +83,8 @@ class Trainer:
         running_loss = 0.
         last_loss = 0.
 
-        for i, ((x_l, target_l), x_ul) in enumerate(dataloader):
+        for iter, ((x_l, target_l), x_ul) in enumerate(dataloader):
+            start_time = time.time()
             self.optimizer.zero_grad()
             outputs = self.model(x_l, x_ul)
             output_l = outputs["output_l"]
@@ -93,20 +101,39 @@ class Trainer:
 
             # report data
             running_loss += loss.item()
-            if i % 100 == 0:
+            if iter % 100 == 0:
                 last_loss = running_loss / 100
-                print('  batch {} loss: {}'.format(i, last_loss))
-                tb_x = epoch_idx * len(self.unlabeled_loader) + i
+                # logs file 
+                with open("semi_logs.txt","a") as logs :
+                    logs.write("\nEpoch : " + str(epoch_idx) + "- batch nb : "+str(iter)+"-  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
+                    logs.close()
+                # tensorboard
+                print('  batch {} loss: {}'.format(iter, last_loss))
+                tb_x = epoch_idx * len(self.unlabeled_loader) + iter
                 tb_writer.add_scalar('Loss/train', last_loss, tb_x)
                 running_loss = 0.
 
         return last_loss
     
-    def eval_1epoch(self, ):
-        return 0
-    
+    def eval_1epoch(self, epoch_idx, tb_writer):
+        start_time = time.time()
+        self.model.eval()
+        running_val_loss = 0.0
 
-  
+        with torch.no_grad():
+            for iter, (val_x, val_target) in enumerate(self.eval_loader):
+                print(iter)
+                val_output = self.model(val_x, None)["output_l"]
+                val_loss =  supervised_loss(val_output, val_target, mode=self.sup_loss_mode)
+                running_val_loss += val_loss
+        val_loss = running_val_loss / (iter + 1) 
+
+        # report data 
+        with open("semi_logs.txt","a") as logs :
+                    logs.write("\nEpoch : " + str(epoch_idx) + "- Eval - in "+ str(int(1000*(time.time()-start_time))) + "ms, val_loss "+ str(val_loss))
+                    logs.close()
+
+        return  val_loss
 
 #%% Tests
 
