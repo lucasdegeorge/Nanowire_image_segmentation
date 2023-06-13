@@ -13,6 +13,8 @@ from trainer import *
 
 def main():
 
+    torch.cuda.empty_cache()
+
     for mode in ["semi", "super"]:
 
         with open("logs.txt","a") as logs :
@@ -29,9 +31,9 @@ def main():
             batch_size = arguments["batch_size"]
 
         train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size)
-        trainer_test = Trainer(model, train_labeled_dataloader, unlabeled_dataloader, eval_labeled_dataloader)
+        trainer = Trainer(model, train_labeled_dataloader, unlabeled_dataloader, eval_labeled_dataloader)
 
-        trainer_test.train()
+        trainer.train()
         print("end of training in mode " + mode)
         with open("logs.txt","a") as logs :
             logs.write("END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
