@@ -27,7 +27,6 @@ def main():
         with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
             arguments = json.load(f)
             batch_size = arguments["batch_size"]
-        print(batch_size)
 
         train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size)
         trainer_test = Trainer(model, train_labeled_dataloader, unlabeled_dataloader, eval_labeled_dataloader)
