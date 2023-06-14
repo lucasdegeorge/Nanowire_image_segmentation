@@ -2,6 +2,7 @@
 import sys
 import time
 import torch
+import json
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
