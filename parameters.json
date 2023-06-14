@@ -43,5 +43,5 @@
     }, 
 
     "batch_size" : 4,
-    "device" : "cpu"
+    "device" : "cuda"
 }
