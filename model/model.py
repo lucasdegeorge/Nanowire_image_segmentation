@@ -8,8 +8,6 @@ import json
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation")
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 from encoder import * 
 from decoders import *
 from preprocessing.dataloader import * 
@@ -17,6 +15,8 @@ from preprocessing.dataloader import *
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
     model_arguments = arguments["model"]
+    device = arguments["device"]
+    device = torch.device(device)
 
 
 #%% Model

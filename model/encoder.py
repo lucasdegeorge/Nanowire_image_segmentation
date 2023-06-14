@@ -2,11 +2,15 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import json
 
 from resnet import *
 
 # Device configuration
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+    arguments = json.load(f)
+    device = arguments["device"]
+    device = torch.device(device)
 
 #%% 
 

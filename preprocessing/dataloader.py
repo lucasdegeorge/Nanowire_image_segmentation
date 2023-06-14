@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import json
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
     batch_size = arguments["batch_size"]
+    device = arguments["device"]
+    device = torch.device(device)
 
 c2n = True
 

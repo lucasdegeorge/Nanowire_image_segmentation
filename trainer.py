@@ -7,7 +7,10 @@ from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime, date
 import time
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+    arguments = json.load(f)
+    device = arguments["device"]
+    device = torch.device(device)
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
 

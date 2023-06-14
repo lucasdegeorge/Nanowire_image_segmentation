@@ -5,10 +5,13 @@ import torch.nn as nn
 from torchvision import datasets
 from torchvision import transforms
 from torch.utils.data.sampler import SubsetRandomSampler
-
+import json
 
 # Device configuration
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+    arguments = json.load(f)
+    device = arguments["device"]
+    device = torch.device(device)
 
 in_channels = 1
 num_classes = 3
