@@ -42,6 +42,6 @@
         "nb_epochs" : 20
     }, 
 
-    "batch_size" : 4,
+    "batch_size" : 2,
     "device" : "cuda"
 }

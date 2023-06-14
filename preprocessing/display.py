@@ -1,4 +1,6 @@
+#%% 
 import os
+import sys
 from PIL import Image
 import torch
 import torchvision.transforms as T
@@ -11,6 +13,10 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     batch_size = arguments["batch_size"]
     device = arguments["device"]
     device = torch.device(device)
+
+sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation") 
+from dataloader import mask_converter
+
 #%% One-hot to images 
 
 def one_hot_to_image(mask, nb_classes=3, class_values=[0,127,255]):
@@ -25,8 +31,13 @@ def one_hot_to_image(mask, nb_classes=3, class_values=[0,127,255]):
 #%% Display images and masks separated
 
 def display_image_with_mask(image, mask):
-    image = image.permute(1, 2, 0).numpy()
-    mask = mask.squeeze().numpy()
+    try:
+        image = image.permute(1, 2, 0).numpy()
+        mask = mask.squeeze().numpy()
+    except TypeError:
+        image = image.cpu().permute(1, 2, 0).numpy()
+        mask = mask.cpu().squeeze().numpy()
+
 
     # Display the image
     plt.subplot(1, 2, 1)
@@ -35,7 +46,7 @@ def display_image_with_mask(image, mask):
     plt.axis('off')
     # Display the mask
     plt.subplot(1, 2, 2)
-    plt.imshow(mask, cmap='gray')
+    plt.imshow(mask) #, cmap='gray')
     plt.title('Mask')
     plt.axis('off')
 
@@ -50,9 +61,13 @@ def display_image_with_mask(image, mask):
 
 #%% Display image and mask overlayed ## May not work well since last update
 
-def display_image_mask_overlayed(image, mask, alpha=0.2):
-    image = image.permute(1, 2, 0).numpy()
-    mask = mask.squeeze().numpy()
+def display_image_mask_overlayed(image, mask, alpha=0.5):
+    try:
+        image = image.permute(1, 2, 0).numpy()
+        mask = mask.squeeze().numpy()
+    except TypeError:
+        image = image.cpu().permute(1, 2, 0).numpy()
+        mask = mask.cpu().squeeze().numpy()
 
     fig, ax = plt.subplots()
     ax.imshow(image, cmap='gray')

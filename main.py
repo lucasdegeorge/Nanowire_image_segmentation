@@ -9,6 +9,8 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     device = arguments["device"]
     device = torch.device(device)
 
+print(device)
+
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
 
 from dataloader import *
@@ -18,10 +20,11 @@ from trainer import *
 def main():
 
     torch.cuda.empty_cache()
-    mode = "super"
+    mode = "semi"
+    today = date.today()
 
-    with open("logs.txt","a") as logs :
-        logs.write("START TRAINING IN MODE " + mode + "- 13/06/2023 ")
+    with open("logs/logs_" + mode + "_" + str(today) + ".txt","a") as logs :
+        logs.write("START TRAINING IN MODE " + mode + "- 14/06/2023 ")
         logs.close()
     print("start training in mode " + mode)
     start_time = time.time()
@@ -38,7 +41,7 @@ def main():
 
     trainer.train()
     print("end of training in mode " + mode)
-    with open("logs.txt","a") as logs :
+    with open("logs/logs_" + mode + "_" + str(today) + ".txt","a") as logs :
         logs.write("END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
         logs.close()
     print()
