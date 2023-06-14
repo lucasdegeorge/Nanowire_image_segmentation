@@ -9,9 +9,9 @@ import json
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
-#     arguments = json.load(f)
-#     batch_size = arguments["batch_size"]
+with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+    arguments = json.load(f)
+    batch_size = arguments["batch_size"]
 
 c2n = True
 
@@ -207,7 +207,7 @@ def get_dataloaders(batch_size, labeled_image_dir=labeled_image_dir, masks_dir=m
 
     return train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader
 
-# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=32)
+# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
 
 #%% One-hot to images 
 
