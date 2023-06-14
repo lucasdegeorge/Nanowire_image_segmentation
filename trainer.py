@@ -118,9 +118,9 @@ class Trainer:
 
             # report data
             running_loss += loss.item()
-            if i % 500 == 0:
+            if i % 25 == 0:
                 if i==0: last_loss = running_loss
-                else: last_loss = running_loss / 500
+                else: last_loss = running_loss / 25
                 # logs file 
                 with open("logs.txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
