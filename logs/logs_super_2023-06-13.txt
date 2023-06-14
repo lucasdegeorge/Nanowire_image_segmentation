@@ -1,0 +1,250 @@
+START TRAINING IN MODE super- 13/06/2023 
+ 
+
+Training - 20230614_090513 - mode super - loss mode CE mse
+
+Epoch : 0 - batch nb : 0 -  in 388130ms, loss 1.6280748844146729START TRAINING IN MODE super- 13/06/2023 
+ 
+
+Training - 20230614_091322 - mode super - loss mode CE mse
+
+Epoch : 0 - batch nb : 0 -  in 10733ms, loss 1.1161866188049316
+Epoch : 0 - batch nb : 2 -  in 18687ms, loss 1.0588856935501099
+Epoch : 0 - batch nb : 4 -  in 18126ms, loss 0.8991886079311371
+Epoch : 0 - batch nb : 6 -  in 18108ms, loss 0.79502272605896
+Epoch : 0 - batch nb : 8 -  in 17409ms, loss 0.9427445232868195
+Epoch : 0 - batch nb : 10 -  in 17467ms, loss 0.676369309425354
+Epoch : 0 - batch nb : 12 -  in 17547ms, loss 0.6671029925346375
+Epoch : 0 - batch nb : 14 -  in 17822ms, loss 0.5794430077075958
+Epoch : 0 - batch nb : 16 -  in 18082ms, loss 0.5739980340003967
+Epoch : 0 - batch nb : 18 -  in 18136ms, loss 0.5472836792469025
+Epoch : 0 - batch nb : 20 -  in 17812ms, loss 0.4901234954595566
+Epoch : 0 - Eval - in 32099ms, val_loss 1.7673043012619019
+Epoch : 1 - batch nb : 0 -  in 10678ms, loss 0.780920684337616
+Epoch : 1 - batch nb : 2 -  in 13330ms, loss 0.5536568760871887
+Epoch : 1 - batch nb : 4 -  in 13181ms, loss 0.5507239401340485
+Epoch : 1 - batch nb : 6 -  in 13480ms, loss 0.5159056782722473
+Epoch : 1 - batch nb : 8 -  in 13364ms, loss 0.470729723572731
+Epoch : 1 - batch nb : 10 -  in 13258ms, loss 0.5583644360303879
+Epoch : 1 - batch nb : 12 -  in 13287ms, loss 0.39757293462753296
+Epoch : 1 - batch nb : 14 -  in 13503ms, loss 0.42603830993175507
+Epoch : 1 - batch nb : 16 -  in 13720ms, loss 0.5616268962621689
+Epoch : 1 - batch nb : 18 -  in 13515ms, loss 0.40375958383083344
+Epoch : 1 - batch nb : 20 -  in 13366ms, loss 0.6185238063335419
+Epoch : 1 - Eval - in 32239ms, val_loss 0.79273921251297
+Epoch : 2 - batch nb : 0 -  in 10724ms, loss 0.40807121992111206
+Epoch : 2 - batch nb : 2 -  in 13156ms, loss 0.5503524243831635
+Epoch : 2 - batch nb : 4 -  in 13146ms, loss 0.44276466965675354
+Epoch : 2 - batch nb : 6 -  in 13092ms, loss 0.3564690053462982
+Epoch : 2 - batch nb : 8 -  in 13097ms, loss 0.40612688660621643
+Epoch : 2 - batch nb : 10 -  in 13141ms, loss 0.3753230571746826
+Epoch : 2 - batch nb : 12 -  in 13440ms, loss 0.33511631190776825
+Epoch : 2 - batch nb : 14 -  in 12795ms, loss 0.36060427129268646
+Epoch : 2 - batch nb : 16 -  in 12961ms, loss 0.3226877599954605
+Epoch : 2 - batch nb : 18 -  in 12823ms, loss 0.39426448941230774
+Epoch : 2 - batch nb : 20 -  in 13477ms, loss 0.2636735290288925
+Epoch : 2 - Eval - in 32511ms, val_loss 0.288003146648407
+Epoch : 3 - batch nb : 0 -  in 10933ms, loss 0.21893727779388428
+Epoch : 3 - batch nb : 2 -  in 13146ms, loss 0.30644044280052185
+Epoch : 3 - batch nb : 4 -  in 12894ms, loss 0.2738356441259384
+Epoch : 3 - batch nb : 6 -  in 13346ms, loss 0.24924282729625702
+Epoch : 3 - batch nb : 8 -  in 12909ms, loss 0.33664774894714355
+Epoch : 3 - batch nb : 10 -  in 12815ms, loss 0.43871596455574036
+Epoch : 3 - batch nb : 12 -  in 12864ms, loss 0.3068508058786392
+Epoch : 3 - batch nb : 14 -  in 12801ms, loss 0.21531231701374054
+Epoch : 3 - batch nb : 16 -  in 13176ms, loss 0.32377898693084717
+Epoch : 3 - batch nb : 18 -  in 12889ms, loss 0.26831047236919403
+Epoch : 3 - batch nb : 20 -  in 13015ms, loss 0.3032969981431961
+Epoch : 3 - Eval - in 31763ms, val_loss 0.30248957872390747
+Epoch : 4 - batch nb : 0 -  in 10560ms, loss 0.4161888659000397
+Epoch : 4 - batch nb : 2 -  in 12704ms, loss 0.24611958116292953
+Epoch : 4 - batch nb : 4 -  in 12728ms, loss 0.2764699384570122
+Epoch : 4 - batch nb : 6 -  in 12783ms, loss 0.24803880602121353
+Epoch : 4 - batch nb : 8 -  in 12790ms, loss 0.22617456316947937
+Epoch : 4 - batch nb : 10 -  in 13588ms, loss 0.2337685525417328
+Epoch : 4 - batch nb : 12 -  in 12864ms, loss 0.24313069134950638
+Epoch : 4 - batch nb : 14 -  in 12849ms, loss 0.23049672693014145
+Epoch : 4 - batch nb : 16 -  in 12928ms, loss 0.4483461305499077
+Epoch : 4 - batch nb : 18 -  in 12796ms, loss 0.2579740136861801
+Epoch : 4 - batch nb : 20 -  in 12739ms, loss 0.3080703318119049
+Epoch : 4 - Eval - in 31576ms, val_loss 0.2769792377948761
+Epoch : 5 - batch nb : 0 -  in 10543ms, loss 0.3100009262561798
+Epoch : 5 - batch nb : 2 -  in 12788ms, loss 0.24447611719369888
+Epoch : 5 - batch nb : 4 -  in 12807ms, loss 0.22644798457622528
+Epoch : 5 - batch nb : 6 -  in 12801ms, loss 0.21086200326681137
+Epoch : 5 - batch nb : 8 -  in 13351ms, loss 0.2513033002614975
+Epoch : 5 - batch nb : 10 -  in 95094ms, loss 0.23170265555381775
+Epoch : 5 - batch nb : 12 -  in 147123ms, loss 0.39499904215335846
+Epoch : 5 - batch nb : 14 -  in 27762ms, loss 0.25021281838417053
+Epoch : 5 - batch nb : 16 -  in 27762ms, loss 0.24208825826644897
+Epoch : 5 - batch nb : 18 -  in 27393ms, loss 0.1735673025250435
+Epoch : 5 - batch nb : 20 -  in 27582ms, loss 0.2211237996816635
+Epoch : 5 - Eval - in 13899ms, val_loss 0.2109803706407547
+Epoch : 6 - batch nb : 0 -  in 31950ms, loss 0.19039873778820038
+Epoch : 6 - batch nb : 2 -  in 28413ms, loss 0.22691710293293
+Epoch : 6 - batch nb : 4 -  in 27691ms, loss 0.20729967951774597
+Epoch : 6 - batch nb : 6 -  in 27981ms, loss 0.23044361174106598
+Epoch : 6 - batch nb : 8 -  in 27813ms, loss 0.2908381521701813
+Epoch : 6 - batch nb : 10 -  in 28194ms, loss 0.22482506930828094
+Epoch : 6 - batch nb : 12 -  in 28040ms, loss 0.20089466124773026
+Epoch : 6 - batch nb : 14 -  in 27441ms, loss 0.3835769295692444
+Epoch : 6 - batch nb : 16 -  in 27426ms, loss 0.29611043632030487
+Epoch : 6 - batch nb : 18 -  in 27743ms, loss 0.24207157641649246
+Epoch : 6 - batch nb : 20 -  in 27772ms, loss 0.23394732177257538
+Epoch : 6 - Eval - in 13710ms, val_loss 0.25187787413597107
+Epoch : 7 - batch nb : 0 -  in 32027ms, loss 0.20068079233169556
+Epoch : 7 - batch nb : 2 -  in 27505ms, loss 0.1828031688928604
+Epoch : 7 - batch nb : 4 -  in 26558ms, loss 0.18270795047283173
+Epoch : 7 - batch nb : 6 -  in 26785ms, loss 0.2522665038704872
+Epoch : 7 - batch nb : 8 -  in 26980ms, loss 0.2139311134815216
+Epoch : 7 - batch nb : 10 -  in 27156ms, loss 0.2370595708489418
+Epoch : 7 - batch nb : 12 -  in 29320ms, loss 0.22843819111585617
+Epoch : 7 - batch nb : 14 -  in 28552ms, loss 0.20459681004285812
+Epoch : 7 - batch nb : 16 -  in 29441ms, loss 0.36051761358976364
+Epoch : 7 - batch nb : 18 -  in 28901ms, loss 0.24015935510396957
+Epoch : 7 - batch nb : 20 -  in 28803ms, loss 0.23594551533460617
+Epoch : 7 - Eval - in 13762ms, val_loss 0.2448941469192505
+Epoch : 8 - batch nb : 0 -  in 32701ms, loss 0.268248051404953
+Epoch : 8 - batch nb : 2 -  in 29044ms, loss 0.22817830741405487
+Epoch : 8 - batch nb : 4 -  in 29363ms, loss 0.17594759166240692
+Epoch : 8 - batch nb : 6 -  in 29145ms, loss 0.2022307887673378
+Epoch : 8 - batch nb : 8 -  in 28919ms, loss 0.2272469401359558
+Epoch : 8 - batch nb : 10 -  in 28975ms, loss 0.20752981305122375
+Epoch : 8 - batch nb : 12 -  in 28163ms, loss 0.21496957540512085
+Epoch : 8 - batch nb : 14 -  in 26820ms, loss 0.2131059467792511
+Epoch : 8 - batch nb : 16 -  in 29191ms, loss 0.18737196177244186
+Epoch : 8 - batch nb : 18 -  in 29584ms, loss 0.35389888286590576
+Epoch : 8 - batch nb : 20 -  in 29016ms, loss 0.2540344297885895
+Epoch : 8 - Eval - in 14285ms, val_loss 0.19105304777622223
+Epoch : 9 - batch nb : 0 -  in 31908ms, loss 0.19743315875530243
+Epoch : 9 - batch nb : 2 -  in 27433ms, loss 0.20055876672267914
+Epoch : 9 - batch nb : 4 -  in 27100ms, loss 0.2063608169555664
+Epoch : 9 - batch nb : 6 -  in 27283ms, loss 0.21406739205121994
+Epoch : 9 - batch nb : 8 -  in 27273ms, loss 0.28782080113887787
+Epoch : 9 - batch nb : 10 -  in 28236ms, loss 0.20477141439914703
+Epoch : 9 - batch nb : 12 -  in 28477ms, loss 0.15625551342964172
+Epoch : 9 - batch nb : 14 -  in 29180ms, loss 0.15964482724666595
+Epoch : 9 - batch nb : 16 -  in 29966ms, loss 0.32503652572631836
+Epoch : 9 - batch nb : 18 -  in 28186ms, loss 0.17974157631397247
+Epoch : 9 - batch nb : 20 -  in 27881ms, loss 0.22218520939350128
+Epoch : 9 - Eval - in 14019ms, val_loss 0.18762007355690002
+Epoch : 10 - batch nb : 0 -  in 32640ms, loss 0.3255370259284973
+Epoch : 10 - batch nb : 2 -  in 27319ms, loss 0.23644901812076569
+Epoch : 10 - batch nb : 4 -  in 27869ms, loss 0.22474625706672668
+Epoch : 10 - batch nb : 6 -  in 28225ms, loss 0.1976601928472519
+Epoch : 10 - batch nb : 8 -  in 28308ms, loss 0.1851082742214203
+Epoch : 10 - batch nb : 10 -  in 28257ms, loss 0.19039717316627502
+Epoch : 10 - batch nb : 12 -  in 28440ms, loss 0.17747246474027634
+Epoch : 10 - batch nb : 14 -  in 28052ms, loss 0.19991789758205414
+Epoch : 10 - batch nb : 16 -  in 28011ms, loss 0.20450669527053833
+Epoch : 10 - batch nb : 18 -  in 28679ms, loss 0.16258420050144196
+Epoch : 10 - batch nb : 20 -  in 28530ms, loss 0.22301089763641357
+Epoch : 10 - Eval - in 14829ms, val_loss 0.1779680699110031
+Epoch : 11 - batch nb : 0 -  in 32993ms, loss 0.16725198924541473
+Epoch : 11 - batch nb : 2 -  in 28383ms, loss 0.2082470878958702
+Epoch : 11 - batch nb : 4 -  in 28476ms, loss 0.1692548468708992
+Epoch : 11 - batch nb : 6 -  in 28395ms, loss 0.2033754661679268
+Epoch : 11 - batch nb : 8 -  in 28062ms, loss 0.16521738469600677
+Epoch : 11 - batch nb : 10 -  in 28466ms, loss 0.24105848371982574
+Epoch : 11 - batch nb : 12 -  in 28813ms, loss 0.15352614969015121
+Epoch : 11 - batch nb : 14 -  in 28598ms, loss 0.16182950884103775
+Epoch : 11 - batch nb : 16 -  in 26950ms, loss 0.1873655915260315
+Epoch : 11 - batch nb : 18 -  in 27247ms, loss 0.33795084804296494
+Epoch : 11 - batch nb : 20 -  in 27661ms, loss 0.20196980983018875
+Epoch : 11 - Eval - in 14197ms, val_loss 0.1699509471654892
+Epoch : 12 - batch nb : 0 -  in 31957ms, loss 0.16112560033798218
+Epoch : 12 - batch nb : 2 -  in 28550ms, loss 0.15106293559074402
+Epoch : 12 - batch nb : 4 -  in 28952ms, loss 0.22642628848552704
+Epoch : 12 - batch nb : 6 -  in 28888ms, loss 0.20269541442394257
+Epoch : 12 - batch nb : 8 -  in 29321ms, loss 0.1599465012550354
+Epoch : 12 - batch nb : 10 -  in 29968ms, loss 0.2367442548274994
+Epoch : 12 - batch nb : 12 -  in 30344ms, loss 0.1763020008802414
+Epoch : 12 - batch nb : 14 -  in 28662ms, loss 0.31232596933841705
+Epoch : 12 - batch nb : 16 -  in 29107ms, loss 0.18843504786491394
+Epoch : 12 - batch nb : 18 -  in 28035ms, loss 0.1659606173634529
+Epoch : 12 - batch nb : 20 -  in 28444ms, loss 0.14143171906471252
+Epoch : 12 - Eval - in 14528ms, val_loss 0.18206952512264252
+Epoch : 13 - batch nb : 0 -  in 30807ms, loss 0.21203964948654175
+Epoch : 13 - batch nb : 2 -  in 27410ms, loss 0.1583760753273964
+Epoch : 13 - batch nb : 4 -  in 27109ms, loss 0.193360835313797
+Epoch : 13 - batch nb : 6 -  in 27261ms, loss 0.20267242938280106
+Epoch : 13 - batch nb : 8 -  in 27113ms, loss 0.19050811231136322
+Epoch : 13 - batch nb : 10 -  in 27205ms, loss 0.1991107314825058
+Epoch : 13 - batch nb : 12 -  in 27666ms, loss 0.31600676476955414
+Epoch : 13 - batch nb : 14 -  in 27523ms, loss 0.16642776876688004
+Epoch : 13 - batch nb : 16 -  in 27940ms, loss 0.17407036572694778
+Epoch : 13 - batch nb : 18 -  in 27520ms, loss 0.17645848542451859
+Epoch : 13 - batch nb : 20 -  in 27812ms, loss 0.1664968729019165
+Epoch : 13 - Eval - in 14013ms, val_loss 0.17351257801055908
+Epoch : 14 - batch nb : 0 -  in 34175ms, loss 0.2265687733888626
+Epoch : 14 - batch nb : 2 -  in 29899ms, loss 0.18920272588729858
+Epoch : 14 - batch nb : 4 -  in 32611ms, loss 0.18490319699048996
+Epoch : 14 - batch nb : 6 -  in 28329ms, loss 0.18346701562404633
+Epoch : 14 - batch nb : 8 -  in 28352ms, loss 0.3294663280248642
+Epoch : 14 - batch nb : 10 -  in 29081ms, loss 0.16894397884607315
+Epoch : 14 - batch nb : 12 -  in 28829ms, loss 0.19372322410345078
+Epoch : 14 - batch nb : 14 -  in 28335ms, loss 0.1621011719107628
+Epoch : 14 - batch nb : 16 -  in 28399ms, loss 0.19724490493535995
+Epoch : 14 - batch nb : 18 -  in 29065ms, loss 0.19382403045892715
+Epoch : 14 - batch nb : 20 -  in 29418ms, loss 0.1351102776825428
+Epoch : 14 - Eval - in 14439ms, val_loss 0.17487886548042297
+Epoch : 15 - batch nb : 0 -  in 32346ms, loss 0.12795160710811615
+Epoch : 15 - batch nb : 2 -  in 27762ms, loss 0.16326069086790085
+Epoch : 15 - batch nb : 4 -  in 27011ms, loss 0.1909460574388504
+Epoch : 15 - batch nb : 6 -  in 26812ms, loss 0.14489328861236572
+Epoch : 15 - batch nb : 8 -  in 27048ms, loss 0.19195076078176498
+Epoch : 15 - batch nb : 10 -  in 28014ms, loss 0.18359694629907608
+Epoch : 15 - batch nb : 12 -  in 28157ms, loss 0.17291289567947388
+Epoch : 15 - batch nb : 14 -  in 28412ms, loss 0.185128852725029
+Epoch : 15 - batch nb : 16 -  in 28010ms, loss 0.1970970183610916
+Epoch : 15 - batch nb : 18 -  in 27941ms, loss 0.20679369568824768
+Epoch : 15 - batch nb : 20 -  in 27466ms, loss 0.37913184612989426
+Epoch : 15 - Eval - in 14836ms, val_loss 0.16723588109016418
+Epoch : 16 - batch nb : 0 -  in 31852ms, loss 0.13267487287521362
+Epoch : 16 - batch nb : 2 -  in 28116ms, loss 0.16709017753601074
+Epoch : 16 - batch nb : 4 -  in 28886ms, loss 0.15046896040439606
+Epoch : 16 - batch nb : 6 -  in 27788ms, loss 0.16889821365475655
+Epoch : 16 - batch nb : 8 -  in 28176ms, loss 0.19408925995230675
+Epoch : 16 - batch nb : 10 -  in 27875ms, loss 0.16877518594264984
+Epoch : 16 - batch nb : 12 -  in 28340ms, loss 0.2333153858780861
+Epoch : 16 - batch nb : 14 -  in 31875ms, loss 0.17645450681447983
+Epoch : 16 - batch nb : 16 -  in 32457ms, loss 0.2808435708284378
+Epoch : 16 - batch nb : 18 -  in 30394ms, loss 0.1922127529978752
+Epoch : 16 - batch nb : 20 -  in 27503ms, loss 0.19640672951936722
+Epoch : 16 - Eval - in 14330ms, val_loss 0.16925786435604095
+Epoch : 17 - batch nb : 0 -  in 31916ms, loss 0.16573360562324524
+Epoch : 17 - batch nb : 2 -  in 27210ms, loss 0.17481249570846558
+Epoch : 17 - batch nb : 4 -  in 26937ms, loss 0.21625493466854095
+Epoch : 17 - batch nb : 6 -  in 27282ms, loss 0.1973261460661888
+Epoch : 17 - batch nb : 8 -  in 26985ms, loss 0.17967663705348969
+Epoch : 17 - batch nb : 10 -  in 27197ms, loss 0.1688288077712059
+Epoch : 17 - batch nb : 12 -  in 27835ms, loss 0.31999486684799194
+Epoch : 17 - batch nb : 14 -  in 27382ms, loss 0.18049155175685883
+Epoch : 17 - batch nb : 16 -  in 27648ms, loss 0.16533784568309784
+Epoch : 17 - batch nb : 18 -  in 27155ms, loss 0.1496140956878662
+Epoch : 17 - batch nb : 20 -  in 27678ms, loss 0.17342927306890488
+Epoch : 17 - Eval - in 14127ms, val_loss 0.17091819643974304
+Epoch : 18 - batch nb : 0 -  in 32252ms, loss 0.25430965423583984
+Epoch : 18 - batch nb : 2 -  in 28320ms, loss 0.1620405614376068
+Epoch : 18 - batch nb : 4 -  in 29525ms, loss 0.167302705347538
+Epoch : 18 - batch nb : 6 -  in 28555ms, loss 0.17619838565587997
+Epoch : 18 - batch nb : 8 -  in 28270ms, loss 0.166220560669899
+Epoch : 18 - batch nb : 10 -  in 28159ms, loss 0.19426622986793518
+Epoch : 18 - batch nb : 12 -  in 28445ms, loss 0.16342489421367645
+Epoch : 18 - batch nb : 14 -  in 28046ms, loss 0.15977588295936584
+Epoch : 18 - batch nb : 16 -  in 29332ms, loss 0.18739917129278183
+Epoch : 18 - batch nb : 18 -  in 28043ms, loss 0.27507859468460083
+Epoch : 18 - batch nb : 20 -  in 28079ms, loss 0.14747018367052078
+Epoch : 18 - Eval - in 14147ms, val_loss 0.16294215619564056
+Epoch : 19 - batch nb : 0 -  in 32475ms, loss 0.17728164792060852
+Epoch : 19 - batch nb : 2 -  in 28380ms, loss 0.18581338226795197
+Epoch : 19 - batch nb : 4 -  in 27412ms, loss 0.17738648504018784
+Epoch : 19 - batch nb : 6 -  in 28093ms, loss 0.18764083832502365
+Epoch : 19 - batch nb : 8 -  in 27777ms, loss 0.25063712894916534
+Epoch : 19 - batch nb : 10 -  in 27344ms, loss 0.1563996523618698
+Epoch : 19 - batch nb : 12 -  in 27739ms, loss 0.15384657680988312
+Epoch : 19 - batch nb : 14 -  in 27757ms, loss 0.18696343898773193
+Epoch : 19 - batch nb : 16 -  in 27529ms, loss 0.23639322817325592
+Epoch : 19 - batch nb : 18 -  in 28306ms, loss 0.16819654405117035
+Epoch : 19 - batch nb : 20 -  in 27745ms, loss 0.23094090074300766
+Epoch : 19 - Eval - in 14342ms, val_loss 0.18009288609027863END OF TRAINING IN MODE super- 13/06/2023 - it took 10814443ms
