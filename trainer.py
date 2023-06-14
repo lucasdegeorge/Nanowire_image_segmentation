@@ -192,7 +192,7 @@ class Trainer:
             writer.flush()
 
             # save (best) models
-            model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}'.format(self.mode, timestamp)
+            model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}.pth'.format(self.mode, timestamp)
             torch.save(self.model.state_dict(), model_path)
 
 

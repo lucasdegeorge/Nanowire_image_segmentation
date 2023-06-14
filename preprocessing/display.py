@@ -61,7 +61,7 @@ def display_image_with_mask(image, mask):
 
 #%% Display image and mask overlayed ## May not work well since last update
 
-def display_image_mask_overlayed(image, mask, alpha=0.5):
+def display_image_mask_overlayed(image, mask, alpha=0.4):
     try:
         image = image.permute(1, 2, 0).numpy()
         mask = mask.squeeze().numpy()
