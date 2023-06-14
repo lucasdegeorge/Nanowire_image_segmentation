@@ -4,7 +4,7 @@ import json
 import torch
 from itertools import cycle
 from torch.utils.tensorboard import SummaryWriter
-from datetime import datetime
+from datetime import datetime, date
 import time
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -49,6 +49,7 @@ class Trainer:
 
     def train_super_1epoch(self, epoch_idx, tb_writer):
         assert self.mode == "super"
+        today = date.today()
 
         dataloader = iter(self.labeled_loader)
         if not(self.model.training): self.model.train()
@@ -75,7 +76,7 @@ class Trainer:
                 if i==0: last_loss = running_loss
                 else: last_loss = running_loss / 2
                 # logs file 
-                with open("logs.txt","a") as logs :
+                with open(self.mode + str(today) + "logs.txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
@@ -88,6 +89,7 @@ class Trainer:
     
     def train_semi_1epoch(self, epoch_idx, tb_writer):
         assert self.mode == "semi"
+        today = date.today()
 
         dataloader = iter(zip(cycle(self.labeled_loader), self.unlabeled_loader))
         if not(self.model.training): self.model.train()
@@ -122,7 +124,7 @@ class Trainer:
                 if i==0: last_loss = running_loss
                 else: last_loss = running_loss / 25
                 # logs file 
-                with open("logs.txt","a") as logs :
+                with open(self.mode + str(today) + "logs.txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
@@ -135,6 +137,7 @@ class Trainer:
     
     def eval_1epoch(self, epoch_idx):
         start_time = time.time()
+        today = date.today()
         if self.model.training: self.model.eval()
         running_val_loss = 0.0
 
@@ -149,7 +152,7 @@ class Trainer:
         val_loss = running_val_loss / (i + 1) 
 
         # report data 
-        with open("logs.txt","a") as logs :
+        with open(self.mode + str(today) + "logs.txt","a") as logs :
             logs.write("\nEpoch : " + str(epoch_idx) + " - Eval - in "+ str(int(1000*(time.time()-start_time))) + "ms, val_loss "+ str(val_loss.item()))
             logs.close()
 
@@ -157,9 +160,10 @@ class Trainer:
     
     def train(self):
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        today = date.today()
         writer = SummaryWriter('runs/trainer_{}_{}'.format(self.mode, timestamp))
 
-        with open("logs.txt","a") as logs :
+        with open(self.mode + str(today) + "logs.txt","a") as logs :
             logs.write("\n \n")
             logs.write("\nTraining - " + str(timestamp) + " - mode " + self.mode  + " - loss mode "  + self.sup_loss_mode + " " + self.unsup_loss_mode + "\n")
             logs.close()
