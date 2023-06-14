@@ -201,9 +201,9 @@ def get_dataloaders(batch_size, labeled_image_dir=labeled_image_dir, masks_dir=m
     eval_labeled_dataset = eval_LabeledDataset(eval_images, eval_masks, transform=None)
     unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
 
-    train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
-    eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
-    unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True)
+    train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True)
+    eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True)
+    unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True)
 
     return train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader
 
