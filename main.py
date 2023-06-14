@@ -4,6 +4,7 @@ import time
 import torch
 from torch.utils.tensorboard import SummaryWriter
 from datetime import date
+import json
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
@@ -36,8 +37,10 @@ def main():
     with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
         arguments = json.load(f)
         batch_size = arguments["batch_size"]
+        print(batch_size)
 
     train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size)
+    print(len(unlabeled_dataloader))
     trainer = Trainer(model, train_labeled_dataloader, unlabeled_dataloader, eval_labeled_dataloader)
 
     trainer.train()
@@ -46,6 +49,5 @@ def main():
         logs.write("END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
         logs.close()
     print()
-
 
 main()
