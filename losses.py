@@ -7,7 +7,7 @@ import itertools
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation") 
 
-from preprocessing.dataloader import * 
+from dataloader import * 
 
 #%% Supervised losses 
 

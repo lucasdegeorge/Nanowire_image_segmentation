@@ -11,7 +11,7 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
 
-from preprocessing.dataloader import *
+from dataloader import *
 from model import * 
 from trainer import * 
 

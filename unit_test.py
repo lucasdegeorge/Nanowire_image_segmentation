@@ -17,7 +17,7 @@ sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segment
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
 
-from preprocessing.dataloader import * 
+from dataloader import * 
 from trainer import *
 
 in_channels = 1

@@ -10,7 +10,7 @@ sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segment
 
 from encoder import * 
 from decoders import *
-from preprocessing.dataloader import * 
+from dataloader import * 
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
