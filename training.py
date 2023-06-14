@@ -23,7 +23,7 @@ def main():
     mode = "semi"
     today = date.today()
 
-    with open(mode + "_" + str(today) + "_" + "logs.txt","a") as logs :
+    with open("logs/logs_" + mode + "_" + str(today) + ".txt","a") as logs :
         logs.write("START TRAINING IN MODE " + mode + " - " + str(today))
         logs.close()
     print("start training in mode " + mode)
@@ -41,7 +41,7 @@ def main():
 
     trainer.train()
     print("end of training in mode " + mode)
-    with open(mode + "_" + str(today) + "_" + "logs.txt","a") as logs :
+    with open("logs/logs_" + mode + "_" + str(today) + ".txt","a") as logs :
         logs.write("END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
         logs.close()
     print()

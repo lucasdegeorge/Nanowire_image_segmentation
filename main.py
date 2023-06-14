@@ -3,6 +3,7 @@ import sys
 import time
 import torch
 from torch.utils.tensorboard import SummaryWriter
+from datetime import date
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
