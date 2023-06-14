@@ -79,7 +79,7 @@ class Trainer:
                 if i==0: last_loss = running_loss
                 else: last_loss = running_loss / 2
                 # logs file 
-                with open(self.mode + str(today) + "logs.txt","a") as logs :
+                with open(self.mode + "_" + str(today) + "_" + "logs.txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
@@ -127,7 +127,7 @@ class Trainer:
                 if i==0: last_loss = running_loss
                 else: last_loss = running_loss / 25
                 # logs file 
-                with open(self.mode + str(today) + "logs.txt","a") as logs :
+                with open(self.mode + "_" + str(today) + "_" + "logs.txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
@@ -155,7 +155,7 @@ class Trainer:
         val_loss = running_val_loss / (i + 1) 
 
         # report data 
-        with open(self.mode + str(today) + "logs.txt","a") as logs :
+        with open(self.mode + "_" + str(today) + "_" + "logs.txt","a") as logs :
             logs.write("\nEpoch : " + str(epoch_idx) + " - Eval - in "+ str(int(1000*(time.time()-start_time))) + "ms, val_loss "+ str(val_loss.item()))
             logs.close()
 
@@ -166,7 +166,7 @@ class Trainer:
         today = date.today()
         writer = SummaryWriter('runs/trainer_{}_{}'.format(self.mode, timestamp))
 
-        with open(self.mode + str(today) + "logs.txt","a") as logs :
+        with open(self.mode + "_" + str(today) + "_" + "logs.txt","a") as logs :
             logs.write("\n \n")
             logs.write("\nTraining - " + str(timestamp) + " - mode " + self.mode  + " - loss mode "  + self.sup_loss_mode + " " + self.unsup_loss_mode + "\n")
             logs.close()

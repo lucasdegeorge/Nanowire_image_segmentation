@@ -18,11 +18,10 @@ from trainer import *
 
 def main():
 
-    torch.cuda.empty_cache()
     mode = "semi"
     today = date.today()
 
-    with open(mode + str(today) + "logs.txt","a") as logs :
+    with open(mode + "_" + str(today) + "_" + "logs.txt","a") as logs :
         logs.write("START TRAINING IN MODE " + mode + " - " + str(today))
         logs.close()
     print("start training in mode " + mode)
@@ -40,7 +39,7 @@ def main():
 
     trainer.train()
     print("end of training in mode " + mode)
-    with open(mode + str(today) + "logs.txt","a") as logs :
+    with open(mode + "_" + str(today) + "_" + "logs.txt","a") as logs :
         logs.write("END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
         logs.close()
     print()
