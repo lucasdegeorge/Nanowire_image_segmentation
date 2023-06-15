@@ -19,7 +19,7 @@ from model import *
 from preprocessing.display import *
 
 model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
-image_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
+image_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 
 #%% 
 
@@ -59,7 +59,7 @@ def predict(model, image, class_values=[0,127,255], display=True, return_input=F
 
 #%% Tests
 
-image_test = image_folder + "/0000220.png"
+image_test = image_folder + "/0000327.png"
 model_test = model_folder + "/model_semi_20230614_171123"
 
 image, prediction = predict(model_test, image_test, display=True, return_input=True)
