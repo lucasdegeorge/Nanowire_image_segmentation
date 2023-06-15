@@ -48,6 +48,5 @@ def main():
     with open("logs/logs_" + mode + "_" + str(timestamp) + ".txt","a") as logs :
         logs.write("END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
         logs.close()
-    print()
 
 main()
