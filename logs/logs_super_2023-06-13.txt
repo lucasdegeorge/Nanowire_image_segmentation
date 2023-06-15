@@ -247,4 +247,5 @@ Epoch : 19 - batch nb : 14 -  in 27757ms, loss 0.18696343898773193
 Epoch : 19 - batch nb : 16 -  in 27529ms, loss 0.23639322817325592
 Epoch : 19 - batch nb : 18 -  in 28306ms, loss 0.16819654405117035
 Epoch : 19 - batch nb : 20 -  in 27745ms, loss 0.23094090074300766
-Epoch : 19 - Eval - in 14342ms, val_loss 0.18009288609027863END OF TRAINING IN MODE super- 13/06/2023 - it took 10814443ms
+Epoch : 19 - Eval - in 14342ms, val_loss 0.18009288609027863
+END OF TRAINING IN MODE super- 13/06/2023 - it took 10814443ms
