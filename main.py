@@ -23,9 +23,9 @@ def main():
 
     torch.cuda.empty_cache()
     mode = "semi"
-    today = date.today()
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    with open("logs/logs_" + mode + "_" + str(today) + ".txt","a") as logs :
+    with open("logs/logs_" + mode + "_" + str(timestamp) + ".txt","a") as logs :
         logs.write("START TRAINING IN MODE " + mode + "- 14/06/2023 ")
         logs.close()
     print("start training in mode " + mode)
@@ -41,11 +41,11 @@ def main():
 
     train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size)
     print(len(unlabeled_dataloader))
-    trainer = Trainer(model, train_labeled_dataloader, unlabeled_dataloader, eval_labeled_dataloader)
+    trainer = Trainer(model, train_labeled_dataloader, unlabeled_dataloader, eval_labeled_dataloader, timestamp=timestamp)
 
     trainer.train()
     print("end of training in mode " + mode)
-    with open("logs/logs_" + mode + "_" + str(today) + ".txt","a") as logs :
+    with open("logs/logs_" + mode + "_" + str(timestamp) + ".txt","a") as logs :
         logs.write("END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
         logs.close()
     print()

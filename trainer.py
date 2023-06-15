@@ -26,10 +26,13 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 #%% 
 
 class Trainer:
-    def __init__(self, model, labeled_loader, unlabeled_loader, eval_loader, arguments=trainer_arguments, device=device):
+    def __init__(self, model, labeled_loader, unlabeled_loader, eval_loader, arguments=trainer_arguments, device=device, timestamp=None):
         self.model = model
         self.model.to(device)
         self.mode = self.model.mode
+
+        if timestamp is not None: self.timestamp = timestamp
+        else: self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
         # supervised loss
         self.sup_loss_mode = arguments["sup_loss"]
@@ -64,7 +67,6 @@ class Trainer:
 
     def train_super_1epoch(self, epoch_idx, tb_writer):
         assert self.mode == "super"
-        today = date.today()
 
         dataloader = iter(self.labeled_loader)
         if not(self.model.training): self.model.train()
@@ -91,7 +93,7 @@ class Trainer:
                 if i==0: last_loss = running_loss
                 else: last_loss = running_loss / 2
                 # logs file 
-                with open("logs/logs_" + self.mode + "_" + str(today) + ".txt","a") as logs :
+                with open("logs/logs_" + self.mode + "_" + str(self.timestamp) + ".txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
@@ -104,7 +106,6 @@ class Trainer:
     
     def train_semi_1epoch(self, epoch_idx, tb_writer):
         assert self.mode == "semi"
-        today = date.today()
 
         dataloader = iter(zip(cycle(self.labeled_loader), self.unlabeled_loader))
         if not(self.model.training): self.model.train()
@@ -139,7 +140,7 @@ class Trainer:
                 if i==0: last_loss = running_loss
                 else: last_loss = running_loss / 100
                 # logs file 
-                with open("logs/logs_" + self.mode + "_" + str(today) + ".txt","a") as logs :
+                with open("logs/logs_" + self.mode + "_" + str(self.timestamp) + ".txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
@@ -167,21 +168,19 @@ class Trainer:
         val_loss = running_val_loss / (i + 1) 
 
         # report data 
-        with open("logs/logs_" + self.mode + "_" + str(today) + ".txt","a") as logs :
+        with open("logs/logs_" + self.mode + "_" + str(self.timestamp) + ".txt","a") as logs :
             logs.write("\nEpoch : " + str(epoch_idx) + " - Eval - in "+ str(int(1000*(time.time()-start_time))) + "ms, val_loss "+ str(val_loss.item()))
             logs.close()
 
         return  val_loss
     
     def train(self):
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        today = date.today()
         best_val_loss = 0
-        writer = SummaryWriter('runs/trainer_{}_{}'.format(self.mode, timestamp))
+        writer = SummaryWriter('runs/trainer_{}_{}'.format(self.mode, self.timestamp))
 
-        with open("logs/logs_" + self.mode + "_" + str(today) + ".txt","a") as logs :
+        with open("logs/logs_" + self.mode + "_" + str(self.timestamp) + ".txt","a") as logs :
             logs.write("\n \n")
-            logs.write("\nTraining - " + str(timestamp) + " - mode " + self.mode  + " - loss mode "  + self.sup_loss_mode + " " + self.unsup_loss_mode + "\n")
+            logs.write("\nTraining - " + str(self.timestamp) + " - mode " + self.mode  + " - loss mode "  + self.sup_loss_mode + " " + self.unsup_loss_mode + "\n")
             logs.close()
 
 
@@ -209,10 +208,10 @@ class Trainer:
             writer.flush()
 
             # save (best) models
-            model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}.pth'.format(self.mode, timestamp)
+            model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}.pth'.format(self.mode, self.timestamp)
             torch.save(self.model.state_dict(), model_path)
             if avg_val_loss > best_val_loss:
-                model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_best.pth'.format(self.mode, timestamp)
+                model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_best.pth'.format(self.mode, self.timestamp)
                 torch.save(self.model.state_dict(), model_path)
 
 
