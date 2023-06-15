@@ -24,11 +24,11 @@ class ResidualBlock_2sl(nn.Module):
     def __init__(self, in_channels, out_channels, stride = 1, downsample = None, dilation=1):
         super(ResidualBlock_2sl, self).__init__()
         self.conv1 = nn.Sequential(
-                        nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = stride, padding = dilation, dilation = dilation),
+                        nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = stride, padding = dilation, dilation = dilation, bias=False),
                         nn.BatchNorm2d(out_channels),
                         nn.ReLU())
         self.conv2 = nn.Sequential(
-                        nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1),
+                        nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1, bias=False),
                         nn.BatchNorm2d(out_channels))
         self.downsample = downsample
         self.relu = nn.ReLU()
@@ -51,17 +51,17 @@ class ResidualBlock_3sl(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1, downsample=None, dilation=1):
         super(ResidualBlock_3sl, self).__init__()
         self.conv1 = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=dilation, dilation=dilation),
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=dilation, dilation=dilation, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU()
         )
         self.conv2 = nn.Sequential(
-            nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU()
         )
         self.conv3 = nn.Sequential(
-            nn.Conv2d(out_channels, out_channels*self.expansion, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(out_channels, out_channels*self.expansion, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(out_channels*self.expansion) 
         )
         self.downsample = downsample
@@ -107,7 +107,7 @@ class ResNet(nn.Module):
         downsample = None
         if stride != 1 or self.inplanes != planes*block.expansion:  # if the dim of the residual does no match the dim of the output
             downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes, planes*block.expansion, kernel_size=1, stride=stride),
+                nn.Conv2d(self.inplanes, planes*block.expansion, kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(planes*block.expansion),
             )
         layers = []
