@@ -29,10 +29,10 @@ def predict(model, image, class_values=[0,127,255], display=True, return_input=F
         image (string) : path to the image
     """
     # load the model
-    model = Model(mode="super")
+    model = Model(mode="semi")
     with open(model_test, 'rb') as f:
         buffer = io.BytesIO(f.read())
-        model.load_state_dict(torch.load(buffer))
+        model.load_state_dict(torch.load(buffer), strict=False)
     model.eval()
 
     # load the image
@@ -42,7 +42,7 @@ def predict(model, image, class_values=[0,127,255], display=True, return_input=F
     image = converter(image).to(device)
 
     # predict
-    prediction = model(image.unsqueeze(0))["output_l"][0]
+    prediction = model(image.unsqueeze(0), eval=True)["output_l"][0]
     prediction = prediction.permute(1,2,0)
     prediction = torch.softmax(prediction, dim=-1)
     prediction = torch.argmax(prediction, dim=-1)
@@ -59,8 +59,8 @@ def predict(model, image, class_values=[0,127,255], display=True, return_input=F
 
 #%% Tests
 
-image_test = image_folder + "/0000227.png"
-model_test = model_folder + "/model_super_20230614_091322.pth"
+image_test = image_folder + "/0000327.png"
+model_test = model_folder + "/model_semi_20230614_171123.pth"
 
 image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
