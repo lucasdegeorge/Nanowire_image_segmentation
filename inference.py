@@ -59,8 +59,8 @@ def predict(model, image, class_values=[0,127,255], display=True, return_input=F
 
 #%% Tests
 
-image_test = image_folder + "/0000327.png"
-model_test = model_folder + "/model_semi_20230614_171123.pth"
+image_test = image_folder + "/0000330.png"
+model_test = model_folder + "/model_semi_20230614_171123"
 
 image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
