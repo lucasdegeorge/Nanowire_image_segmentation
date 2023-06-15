@@ -6,6 +6,7 @@ from itertools import cycle
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime, date
 import time
+from torch.optim.lr_scheduler import OneCycleLR, CosineAnnealingLR, CosineAnnealingWarmRestarts
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
@@ -42,6 +43,17 @@ class Trainer:
             self.optimizer = torch.optim.SGD(self.model.parameters(), lr=arguments["optimizer_args"]["lr"], momentum=arguments["optimizer_args"]["momentum"])
         else:
             raise ValueError("optimizer has an invalid value. Must be in ['sgd']")
+        
+        # scheduler
+        if arguments["scheduler"] == "OneCycleLR":
+            self.scheduler = OneCycleLR(self.optimizer, max_lr = 1e-2, steps_per_epoch = None, epochs = arguments["nb_epochs"], anneal_strategy = 'cos')
+        elif arguments["scheduler"] == "CosineAnnealingLR":
+            self.scheduler = CosineAnnealingLR(self.optimizer, T_max = 40, eta_min = 1e-4)
+        elif arguments["scheduler"] == "CosineAnnealingWarmRestarts":
+            self.scheduler = CosineAnnealingWarmRestarts(self.optimizer, t_0=5, T_max = 40, eta_min = 1e-6)
+        else:
+            self.scheduler = None
+            # raise ValueError("scheduler has an invalid value. Must be in ['OneCycleLR', 'CosineAnnealingLR', 'CosineAnnealingWarmRestarts]")
         
         self.nb_epochs = arguments["nb_epochs"]
 
@@ -164,6 +176,7 @@ class Trainer:
     def train(self):
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         today = date.today()
+        best_val_loss = 0
         writer = SummaryWriter('runs/trainer_{}_{}'.format(self.mode, timestamp))
 
         with open("logs/logs_" + self.mode + "_" + str(today) + ".txt","a") as logs :
@@ -186,6 +199,10 @@ class Trainer:
             self.model.eval()
             avg_val_loss = self.eval_1epoch(epoch_idx)
 
+            # scheduler 
+            if self.scheduler is not None:
+                self.scheduler.step()
+
             # report data
             print('LOSS train {} eval {}'.format(avg_train_loss, avg_val_loss))
             writer.add_scalars('Training vs. Validation Loss', { 'Training' : avg_train_loss, 'Eval' : avg_val_loss }, epoch_idx)
@@ -194,6 +211,10 @@ class Trainer:
             # save (best) models
             model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}.pth'.format(self.mode, timestamp)
             torch.save(self.model.state_dict(), model_path)
+            if avg_val_loss > best_val_loss:
+                model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_best.pth'.format(self.mode, timestamp)
+                torch.save(self.model.state_dict(), model_path)
+
 
 
 
