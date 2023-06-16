@@ -49,7 +49,7 @@ class Trainer:
         
         # scheduler
         if arguments["scheduler"] == "OneCycleLR":
-            self.scheduler = OneCycleLR(self.optimizer, max_lr = 1e-2, steps_per_epoch = None, epochs = arguments["nb_epochs"], anneal_strategy = 'cos')
+            self.scheduler = OneCycleLR(self.optimizer, max_lr = 1e-2, steps_per_epoch = 8, epochs = arguments["nb_epochs"], anneal_strategy = 'cos')
         elif arguments["scheduler"] == "CosineAnnealingLR":
             self.scheduler = CosineAnnealingLR(self.optimizer, T_max = 40, eta_min = 1e-4)
         elif arguments["scheduler"] == "CosineAnnealingWarmRestarts":
@@ -153,7 +153,6 @@ class Trainer:
     
     def eval_1epoch(self, epoch_idx):
         start_time = time.time()
-        today = date.today()
         if self.model.training: self.model.eval()
         running_val_loss = 0.0
 
@@ -177,7 +176,6 @@ class Trainer:
     def train(self):
         best_val_loss = 0
         writer = SummaryWriter('runs/trainer_{}_{}'.format(self.mode, self.timestamp))
-
         with open("logs/logs_" + self.mode + "_" + str(self.timestamp) + ".txt","a") as logs :
             logs.write("\n \n")
             logs.write("\nTraining - " + str(self.timestamp) + " - mode " + self.mode  + " - loss mode "  + self.sup_loss_mode + " " + self.unsup_loss_mode + "\n")
