@@ -23,14 +23,14 @@ image_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 
 #%% 
 
-def predict(model, image, class_values=[0,127,255], display=True, return_input=False):
+def predict(model_path, image, class_values=[0,127,255], display=True, return_input=False):
     """
-        model (string) : path to the model to use
+        model_path (string) : path to the model to use
         image (string) : path to the image
     """
     # load the model
     model = Model(mode="semi")
-    with open(model_test, 'rb') as f:
+    with open(model_path, 'rb') as f:
         buffer = io.BytesIO(f.read())
         model.load_state_dict(torch.load(buffer), strict=False)
     model.eval()
@@ -63,5 +63,4 @@ image_test = image_folder + "/0000327.png"
 model_test = model_folder + "/model_semi_20230614_171123"
 
 image, prediction = predict(model_test, image_test, display=True, return_input=True)
-
 
