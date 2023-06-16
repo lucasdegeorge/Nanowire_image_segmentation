@@ -1,7 +1,7 @@
 START TRAINING IN MODE super- 13/06/2023 
  
 
-Training - 20230614_090513 - mode super - loss mode CE mse
+Training - 20230614_091322 - mode super - loss mode CE mse
 
 Epoch : 0 - batch nb : 0 -  in 388130ms, loss 1.6280748844146729START TRAINING IN MODE super- 13/06/2023 
  
