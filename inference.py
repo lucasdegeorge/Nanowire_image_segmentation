@@ -19,7 +19,7 @@ from model import *
 from preprocessing.display import *
 
 model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
-image_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
+image_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
 
 #%% 
 
@@ -59,8 +59,33 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-image_test = image_folder + "/0000327.png"
-model_test = model_folder + "/model_semi_20230614_171123"
+image_test = image_folder + "/0000158.png"
+model_test = model_folder + "/model_semi_20230616_111708_best.pth"
 
 image, prediction = predict(model_test, image_test, display=True, return_input=True)
+
+
+#%% Accuracy
+
+def mIoU(output, target, nb_classes=3):
+    """ adapted from: https://github.com/Tramac/awesome-semantic-segmentation-pytorch/blob/master/core/utils/score.py
+        output is a 4D tensor, target a 3D tensor
+    """
+
+    predict = torch.argmax(output, 1) + 1
+    target = target.float() + 1
+    predict = predict.float() * (target > 0).float()
+    intersection = predict * (predict == target).float()
+
+    area_inter = torch.histc(intersection, bins=nb_classes, min=1, max=nb_classes)
+    area_pred = torch.histc(predict, bins=nb_classes, min=1, max=nb_classes)
+    area_lab = torch.histc(target, bins=nb_classes, min=1, max=nb_classes)
+    area_union = area_pred + area_lab - area_inter
+
+    assert torch.sum(area_inter > area_union).item() == 0, "Intersection area should be smaller than Union area"
+    return area_inter.float(), area_union.float()
+
+# tests 
+
+
 

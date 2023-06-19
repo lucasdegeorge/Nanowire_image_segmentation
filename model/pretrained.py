@@ -7,6 +7,7 @@ from torchvision import transforms
 from torch.utils.data.sampler import SubsetRandomSampler
 import json
 import io
+from PIL import Image
 
 # pretrained models 
 import pretrained_microscopy_models as pmm
@@ -143,13 +144,10 @@ class ResnetBackbone(nn.Module):
 
         self.num_features = 2048
 
-        if pretrained==True:
-            if pretrained_path is not None:
-                with open(pretrained_path, 'rb') as f:
-                    buffer = io.BytesIO(f.read())
-                    orig_resnet.load_state_dict(torch.load(buffer), strict=False)
-            else:
-                print("pretrained_path is invalid. No pretrained model used.")
+        # model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
+        # if pretrained==True:
+        #     url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
+        #     model.load_state_dict(model_zoo.load_url(url))
 
         # Take pretrained resnet, except AvgPool and FC
         self.conv1 = orig_resnet.conv1
@@ -158,6 +156,10 @@ class ResnetBackbone(nn.Module):
         self.layer1 = orig_resnet.layer1
         self.layer2 = orig_resnet.layer2
         self.layer3 = orig_resnet.layer3
+
+        for name, param in orig_resnet.named_parameters():
+            print(name)
+            print(param)
 
     def get_num_features(self):
         return self.num_features
@@ -176,3 +178,49 @@ class ResnetBackbone(nn.Module):
         tuple_features.append(x)
 
         return tuple_features
+    
+def ResNet18_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation))
+    # return ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation)
+
+def ResNet34_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation))
+    # return ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation)
+# 
+def ResNet50_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation))
+    # return ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation)
+
+def ResNet101_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation))
+    # return ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation)
+
+def ResNet152_bb(isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation))
+    # return ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation)
+
+#%% tests 
+
+image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
+convert_tensor = transforms.ToTensor()
+img = convert_tensor(image)  
+img = torch.unsqueeze(img, dim=0)
+
+
+
+rn = ResNet50_bb()
+res = rn(img)
+
+# for i in range(len(res)):
+#     print(i, res[i].shape)
+# %%
+
+pretrained = True
+model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
+if pretrained==True:
+    url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
+    model.load_state_dict(model_zoo.load_url(url))
+
+for name, param in model.named_parameters():
+    print(name)
+    print(param)

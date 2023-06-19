@@ -174,7 +174,7 @@ class Trainer:
         return  val_loss
     
     def train(self):
-        best_val_loss = 0
+        best_val_loss = 1e20
         writer = SummaryWriter('runs/trainer_{}_{}'.format(self.mode, self.timestamp))
         with open("logs/logs_" + self.mode + "_" + str(self.timestamp) + ".txt","a") as logs :
             logs.write("\n \n")
@@ -208,7 +208,7 @@ class Trainer:
             # save (best) models
             model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}.pth'.format(self.mode, self.timestamp)
             torch.save(self.model.state_dict(), model_path)
-            if avg_val_loss > best_val_loss:
+            if avg_val_loss < best_val_loss:
                 model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_best.pth'.format(self.mode, self.timestamp)
                 torch.save(self.model.state_dict(), model_path)
                 print("new best epoch: ", epoch_idx)
