@@ -22,7 +22,7 @@ model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
 image_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
 
 # for tests: 
-# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
+train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
 
 #%% 
 
@@ -90,7 +90,13 @@ def mIoU(output, target, nb_classes=3, batch=True):
     return torch.mean(area_inter.float() / area_union.float()).item()
 
 
-def compute_accuracy(model, eval_dataloarder, model_name=None,  printing=False):
+def compute_accuracy(model_path, eval_dataloarder, printing=False):
+
+    model = Model(mode="semi")
+    with open(model_path, 'rb') as f:
+        buffer = io.BytesIO(f.read())
+        model.load_state_dict(torch.load(buffer), strict=False)
+    model.eval()
 
     meanIoU = 0
     for image, target in eval_dataloarder:
@@ -101,16 +107,23 @@ def compute_accuracy(model, eval_dataloarder, model_name=None,  printing=False):
         meanIoU += mIoU(pred, target, 3, True)
     meanIoU /= len(eval_dataloarder)
 
+    model_name = model_path[len(model_folder)+1:]
+
     if printing:
         print("--- Evaluation of model " + model_name + " ---")
         print("meanIoU: ", meanIoU)
     
     try:
-        with open("logs/logs_" + model_name[6:] +  ".txt","a") as logs :
-            logs.write("\n --- Evaluation of model " + model_name + " --- " + "\n meanIoU: " + meanIoU)
+        with open("logs/logs_" + model_name[6:-4] +  ".txt","a") as logs :
+            logs.write("\n \n --- Evaluation of model " + model_name[:-4] + " --- " + "\n meanIoU: " + str(meanIoU))
             logs.close()
     except:
         print("Can't write in logs for model ", model_name)
 
     return meanIoU 
 
+#%% Tests 
+
+model_test = model_folder + "/model_semi_20230616_111708.pth"
+
+meanIoU = compute_accuracy(model_test, eval_labeled_dataloader, True )

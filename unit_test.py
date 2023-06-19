@@ -97,7 +97,7 @@ for image, mask in eval_labeled_dataloader:
     mask = one_hot_to_image(mask.permute(0,2,3,1), class_values=[0,1,2])
     mask = mask.to(device)
     print(mIoU(pred, mask, 3, True))
-    
+
 
 #%% Resnet unit tests 
 

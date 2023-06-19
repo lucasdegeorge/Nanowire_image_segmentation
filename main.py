@@ -18,6 +18,7 @@ sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segment
 from dataloader import *
 from model import * 
 from trainer import * 
+from inference_scores import * 
 
 def main():
 
@@ -43,10 +44,14 @@ def main():
     print(len(unlabeled_dataloader))
     trainer = Trainer(model, train_labeled_dataloader, unlabeled_dataloader, eval_labeled_dataloader, timestamp=timestamp)
 
+    model_name = "C:/Users/lucas.degeorge/Documents/trained_models/" + "model_{}_{}.pth".format(mode, timestamp)
+
     trainer.train()
     print("end of training in mode " + mode)
     with open("logs/logs_" + mode + "_" + str(timestamp) + ".txt","a") as logs :
-        logs.write("END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
+        logs.write("\n END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
         logs.close()
+
+    meanIoU = compute_accuracy(model_name, eval_labeled_dataloader, True )
 
 main()
