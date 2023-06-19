@@ -124,6 +124,6 @@ def compute_accuracy(model_path, eval_dataloarder, printing=False):
 
 #%% Tests 
 
-model_test = model_folder + "/model_semi_20230616_111708.pth"
+# model_test = model_folder + "/model_semi_20230614_171123.pth"
 
-meanIoU = compute_accuracy(model_test, eval_labeled_dataloader, True )
+# meanIoU = compute_accuracy(model_test, eval_labeled_dataloader, True )
