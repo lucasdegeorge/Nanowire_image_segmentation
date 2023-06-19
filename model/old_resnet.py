@@ -85,7 +85,7 @@ class old_ResNet(nn.Module):
         super(old_ResNet, self).__init__()
         self.inplanes = 64
         self.conv1 = nn.Sequential(   # Ici il faut regarder à quoi correspond deep_base, quel est l'intérêt et pourquoi on utilise cela
-            nn.Conv2d(in_channels, 64, kernel_size=7, stride=2, padding=3),
+            nn.Conv2d(in_channels, self.inplanes, kernel_size=7, stride=2, padding=3),
             nn.BatchNorm2d(64),
             nn.ReLU()
         )
@@ -100,7 +100,7 @@ class old_ResNet(nn.Module):
             self.layer1 = self._make_layer(block, 128, layers[1], stride = 2)
             self.layer2 = self._make_layer(block, 256, layers[2], stride = 2)
             self.layer3 = self._make_layer(block, 512, layers[3], stride = 2)
-        self.avgpool = nn.AvgPool2d(7, stride=1)
+        self.avgpool = nn.AvgPool2d(32, stride=1)
         self.fc = nn.Linear(512*block.expansion, num_classes)
 
     def _make_layer(self, block, planes, nb_blocks, stride=1, dilation=1):
@@ -167,23 +167,23 @@ class old_ResnetBackbone(nn.Module):
 
 def old_ResNet18_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation))
-    # return ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation)
+    # return old_ResNet(old_ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation)
 
 def old_ResNet34_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation))
-    # return ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation)
-# 
+    # return old_ResNet(old_ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation)
+
 def old_ResNet50_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation))
-    # return ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation)
+    # return old_ResNet(old_ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation)
 
 def old_ResNet101_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation))
-    # return ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation)
+    # return old_ResNet(old_ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation)
 
 def old_ResNet152_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation))
-    # return ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation)
+    # return old_ResNet(old_ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation)
 
 old_resnet_bbs = {18 : old_ResNet18_bb, 
            34 : old_ResNet34_bb, 
