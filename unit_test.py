@@ -102,7 +102,7 @@ for image, mask in eval_labeled_dataloader:
 
 #%% Resnet unit tests 
 
-from old_resnet import *
+from resnet import *
 
 image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
 image1 = image.resize((224,224))
@@ -114,7 +114,7 @@ img = torch.unsqueeze(img, dim=0)
 img1 = torch.unsqueeze(img1, dim=0)
 img1.shape
 
-rn18 = old_ResNet50_bb()
+rn18 = ResNet50_bb()
 res = rn18(img)
 
 for i in range(len(res)):
@@ -123,11 +123,11 @@ for i in range(len(res)):
 
 #%% Encoder unit tests 
 
-from old_encoder import * 
+from encoder import * 
 
-for x, y in [(34,512),(101,2048)]:
+for x, y in [(18,512),(34,512),(50,2048),(101,2048),(152,2048)]:
     print("resnet", x)
-    enc = old_Encoder(nb_RNlayers=x, in_channels_psp=y)
+    enc = Encoder(nb_RNlayers=x, in_channels_psp=y)
     for image, mask in micro_labeled_dataloader:
         res = enc(image)
         print(res.shape)
