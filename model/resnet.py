@@ -6,6 +6,12 @@ from torchvision import datasets
 from torchvision import transforms
 from torch.utils.data.sampler import SubsetRandomSampler
 import json
+import io
+from PIL import Image
+
+# pretrained models 
+import pretrained_microscopy_models as pmm
+import torch.utils.model_zoo as model_zoo
 
 # Device configuration
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
@@ -23,13 +29,13 @@ class ResidualBlock_2sl(nn.Module):
     expansion = 1
     def __init__(self, in_channels, out_channels, stride = 1, downsample = None, dilation=1):
         super(ResidualBlock_2sl, self).__init__()
-        self.conv1 = nn.Sequential(
-                        nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = stride, padding = dilation, dilation = dilation, bias=False),
-                        nn.BatchNorm2d(out_channels),
-                        nn.ReLU())
-        self.conv2 = nn.Sequential(
-                        nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1, bias=False),
-                        nn.BatchNorm2d(out_channels))
+
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = stride, padding = dilation, dilation = dilation, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+
         self.downsample = downsample
         self.relu = nn.ReLU()
         self.out_channels = out_channels
@@ -37,11 +43,18 @@ class ResidualBlock_2sl(nn.Module):
     def forward(self, x):
         residual = x
         out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
         out = self.conv2(out)
-        if self.downsample:
+        out = self.bn2(out)
+
+        if self.downsample is not None:
             residual = self.downsample(x)
+
         out += residual
         out = self.relu(out)
+
         return out
     
 
@@ -50,20 +63,16 @@ class ResidualBlock_3sl(nn.Module):
     expansion = 4
     def __init__(self, in_channels, out_channels, stride=1, downsample=None, dilation=1):
         super(ResidualBlock_3sl, self).__init__()
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=dilation, dilation=dilation, bias=False),
-            nn.BatchNorm2d(out_channels),
-            nn.ReLU()
-        )
-        self.conv2 = nn.Sequential(
-            nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(out_channels),
-            nn.ReLU()
-        )
-        self.conv3 = nn.Sequential(
-            nn.Conv2d(out_channels, out_channels*self.expansion, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(out_channels*self.expansion) 
-        )
+
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=dilation, dilation=dilation, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+
+        self.conv3 = nn.Conv2d(out_channels, out_channels*self.expansion, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn3 = nn.BatchNorm2d(out_channels*self.expansion) 
+
         self.downsample = downsample
         self.relu = nn.ReLU()
         self.out_channels = out_channels
@@ -71,12 +80,22 @@ class ResidualBlock_3sl(nn.Module):
     def forward(self, x):
         residual = x
         out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
         out = self.conv2(out)
+        out = self.bn2(out)
+        out = self.relu(out)
+
         out = self.conv3(out)
-        if self.downsample:
+        out = self.bn3(out)
+
+        if self.downsample is not None:
             residual = self.downsample(x)
+
         out += residual
         out = self.relu(out)
+
         return out
 
 
@@ -84,12 +103,12 @@ class ResNet(nn.Module):
     def __init__(self, block, layers, num_classes=num_classes, isDilation=True, dilate_scale=8, multi_grid=(1, 2, 4)):
         super(ResNet, self).__init__()
         self.inplanes = 64
-        self.conv1 = nn.Sequential(   # Ici il faut regarder à quoi correspond deep_base, quel est l'intérêt et pourquoi on utilise cela
-            nn.Conv2d(in_channels, 64, kernel_size=7, stride=2, padding=3),
-            nn.BatchNorm2d(64),
-            nn.ReLU()
-        )
+
+        self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
+        self.bn1 = nn.BatchNorm2d(self.inplanes)
+        self.relu = nn.ReLU()
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
         if isDilation:
             self.layer0 = self._make_layer(block, 64, layers[0], stride=1, dilation=multi_grid[0])
             self.layer1 = self._make_layer(block, 128, layers[1], stride=2, dilation=dilate_scale // multi_grid[1])
@@ -133,10 +152,15 @@ class ResNet(nn.Module):
     
 
 class ResnetBackbone(nn.Module):
-    def __init__(self, orig_resnet):
+    def __init__(self, orig_resnet, pretrained_path=None, pretrained=True, freeze=True):
         super(ResnetBackbone, self).__init__()
 
         self.num_features = 2048
+
+        model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
+        if pretrained==True:
+            url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
+            model.load_state_dict(model_zoo.load_url(url))
 
         # Take pretrained resnet, except AvgPool and FC
         self.conv1 = orig_resnet.conv1
@@ -145,6 +169,10 @@ class ResnetBackbone(nn.Module):
         self.layer1 = orig_resnet.layer1
         self.layer2 = orig_resnet.layer2
         self.layer3 = orig_resnet.layer3
+
+        for name, param in orig_resnet.named_parameters():
+            print(name)
+            print(param)
 
     def get_num_features(self):
         return self.num_features
@@ -164,7 +192,6 @@ class ResnetBackbone(nn.Module):
 
         return tuple_features
     
-
 def ResNet18_bb(isDilation = True):
     return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation))
     # return ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation)
@@ -185,9 +212,29 @@ def ResNet152_bb(isDilation = True):
     return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation))
     # return ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation)
 
-resnet_bbs = {18 : ResNet18_bb, 
-           34 : ResNet34_bb, 
-           50 : ResNet50_bb, 
-           101 : ResNet101_bb,
-           152 : ResNet152_bb
-           }
+#%% tests 
+
+image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
+convert_tensor = transforms.ToTensor()
+img = convert_tensor(image)  
+img = torch.unsqueeze(img, dim=0)
+
+
+
+rn = ResNet50_bb()
+res = rn(img)
+
+# for i in range(len(res)):
+#     print(i, res[i].shape)
+# %%
+
+original  = ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=True)
+
+pretrained = True
+model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
+if pretrained==True:
+    url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
+    model.load_state_dict(model_zoo.load_url(url))
+
+for name, param in model.named_parameters():
+    print(name)
