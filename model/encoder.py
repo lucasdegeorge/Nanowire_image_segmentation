@@ -51,10 +51,10 @@ class Encoder(nn.Module):
         
         self.base = nn.Sequential(
             nn.Sequential(model.conv1, model.bn1, model.relu, model.maxpool),
-            model.layer0,
             model.layer1,
             model.layer2,
-            model.layer3
+            model.layer3,
+            model.layer4
         )
         self.psp = _PSPModule(in_channels_psp, bin_sizes=[1, 2, 3, 6])
 

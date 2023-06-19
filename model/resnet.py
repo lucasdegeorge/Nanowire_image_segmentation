@@ -10,8 +10,8 @@ import io
 from PIL import Image
 
 # pretrained models 
-# import pretrained_microscopy_models as pmm
-# import torch.utils.model_zoo as model_zoo
+import pretrained_microscopy_models as pmm
+import torch.utils.model_zoo as model_zoo
 
 # Device configuration
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
@@ -110,15 +110,15 @@ class ResNet(nn.Module):
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
         if isDilation:
-            self.layer0 = self._make_layer(block, 64, layers[0], stride=1, dilation=multi_grid[0])
-            self.layer1 = self._make_layer(block, 128, layers[1], stride=2, dilation=dilate_scale // multi_grid[1])
-            self.layer2 = self._make_layer(block, 256, layers[2], stride=2, dilation=dilate_scale // multi_grid[2])
-            self.layer3 = self._make_layer(block, 512, layers[3], stride=2, dilation=dilate_scale)
+            self.layer1 = self._make_layer(block, 64, layers[0], stride=1, dilation=multi_grid[0])
+            self.layer2 = self._make_layer(block, 128, layers[1], stride=2, dilation=dilate_scale // multi_grid[1])
+            self.layer3 = self._make_layer(block, 256, layers[2], stride=2, dilation=dilate_scale // multi_grid[2])
+            self.layer4 = self._make_layer(block, 512, layers[3], stride=2, dilation=dilate_scale)
         else:
-            self.layer0 = self._make_layer(block, 64, layers[0], stride = 1)
-            self.layer1 = self._make_layer(block, 128, layers[1], stride = 2)
-            self.layer2 = self._make_layer(block, 256, layers[2], stride = 2)
-            self.layer3 = self._make_layer(block, 512, layers[3], stride = 2)
+            self.layer1 = self._make_layer(block, 64, layers[0], stride = 1)
+            self.layer2 = self._make_layer(block, 128, layers[1], stride = 2)
+            self.layer3 = self._make_layer(block, 256, layers[2], stride = 2)
+            self.layer4 = self._make_layer(block, 512, layers[3], stride = 2)
         self.avgpool = nn.AvgPool2d(32, stride=1)
         self.fc = nn.Linear(512*block.expansion, num_classes)
 
@@ -142,10 +142,10 @@ class ResNet(nn.Module):
         x = self.relu(x)
         x = self.maxpool(x)
 
-        x = self.layer0(x)
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
+        x = self.layer4(x)
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
@@ -160,20 +160,20 @@ class ResnetBackbone(nn.Module):
 
         self.num_features = 2048
 
-        # model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
-        # if pretrained==True:
-        #     url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
-        #     model.load_state_dict(model_zoo.load_url(url))
+        model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
+        if pretrained==True:
+            url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
+            model.load_state_dict(model_zoo.load_url(url))
 
-        # Take pretrained resnet, except AvgPool and FC
+        # Take resnet, except AvgPool and FC
         self.conv1 = orig_resnet.conv1
         self.bn1 = orig_resnet.bn1
         self.relu = nn.ReLU()
         self.maxpool = orig_resnet.maxpool
-        self.layer0 = orig_resnet.layer0
         self.layer1 = orig_resnet.layer1
         self.layer2 = orig_resnet.layer2
         self.layer3 = orig_resnet.layer3
+        self.layer4 = orig_resnet.layer4
 
     def get_num_features(self):
         return self.num_features
@@ -225,13 +225,13 @@ resnet_bbs = {18 : ResNet18_bb,
 
 #%% tests
 
-# original  = ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=True)
+original  = ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=True)
 
-# pretrained = True
-# model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet34', pretrained=False)
-# if pretrained==True:
-#     url = pmm.util.get_pretrained_microscopynet_url('resnet', 'micronet')
-#     model.load_state_dict(model_zoo.load_url(url))
+pretrained = True
+model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet34', pretrained=False)
+if pretrained==True:
+    url = pmm.util.get_pretrained_microscopynet_url('resnet', 'micronet')
+    model.load_state_dict(model_zoo.load_url(url))
 
-# for name, param in original.named_parameters():
-#     print(name)
+for name, param in original.named_parameters():
+    print(name)
