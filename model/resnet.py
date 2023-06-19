@@ -19,7 +19,7 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     device = arguments["device"]
     device = torch.device(device)
 
-in_channels = 1
+in_channels = 3
 num_classes = 3
 
 #%% 
@@ -185,13 +185,13 @@ class ResnetBackbone(nn.Module):
         x = self.relu(x)
         x = self.maxpool(x)
 
-        x = self.layer0(x)
-        tuple_features.append(x)
         x = self.layer1(x)
         tuple_features.append(x)
         x = self.layer2(x)
         tuple_features.append(x)
         x = self.layer3(x)
+        tuple_features.append(x)
+        x = self.layer4(x)
         tuple_features.append(x)
 
         return tuple_features
@@ -225,13 +225,14 @@ resnet_bbs = {18 : ResNet18_bb,
 
 #%% tests
 
-original  = ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=True)
+# original = ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=True)
+# model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
 
-pretrained = True
-model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet34', pretrained=False)
-if pretrained==True:
-    url = pmm.util.get_pretrained_microscopynet_url('resnet', 'micronet')
-    model.load_state_dict(model_zoo.load_url(url))
+# pretrained = True
 
-for name, param in original.named_parameters():
-    print(name)
+# if pretrained==True:
+#     url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
+#     original.load_state_dict(model_zoo.load_url(url))
+
+# # for name, param in original.named_parameters():
+# #     print(name)

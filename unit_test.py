@@ -19,7 +19,7 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 
 from dataloader import * 
 
-in_channels = 1
+in_channels = 3
 num_classes = 3
 
 #%% dataloarder 
@@ -104,7 +104,7 @@ for image, mask in eval_labeled_dataloader:
 
 from resnet import *
 
-image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
+image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
 image1 = image.resize((224,224))
 
 convert_tensor = transforms.ToTensor()
