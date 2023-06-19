@@ -165,29 +165,29 @@ class old_ResnetBackbone(nn.Module):
         return tuple_features
     
 
-def ResNet18_bb(isDilation = True):
+def old_ResNet18_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation))
     # return ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation)
 
-def ResNet34_bb(isDilation = True):
+def old_ResNet34_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation))
     # return ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation)
 # 
-def ResNet50_bb(isDilation = True):
+def old_ResNet50_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation))
     # return ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation)
 
-def ResNet101_bb(isDilation = True):
+def old_ResNet101_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation))
     # return ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation)
 
-def ResNet152_bb(isDilation = True):
+def old_ResNet152_bb(isDilation = True):
     return old_ResnetBackbone(old_ResNet(old_ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation))
     # return ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation)
 
-resnet_bbs = {18 : ResNet18_bb, 
-           34 : ResNet34_bb, 
-           50 : ResNet50_bb, 
-           101 : ResNet101_bb,
-           152 : ResNet152_bb
+old_resnet_bbs = {18 : old_ResNet18_bb, 
+           34 : old_ResNet34_bb, 
+           50 : old_ResNet50_bb, 
+           101 : old_ResNet101_bb,
+           152 : old_ResNet152_bb
            }
