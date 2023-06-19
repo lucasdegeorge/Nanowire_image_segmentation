@@ -370,3 +370,6 @@ Epoch : 10 - batch nb : 300 -  in 2182ms, loss 0.20010362803936005
 Epoch : 10 - batch nb : 400 -  in 1931ms, loss 0.19875545509159565
 Epoch : 10 - batch nb : 500 -  in 2052ms, loss 0.19242579013109207
 END OF TRAINING IN MODE super- 14/06/2023 - it took 1130min
+ 
+ --- Evaluation of model model_semi_20230614_171123 --- 
+ meanIoU: 0.5990292158993807
