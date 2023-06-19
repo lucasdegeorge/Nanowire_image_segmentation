@@ -18,7 +18,6 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     arguments = json.load(f)
 
 from dataloader import * 
-from trainer import *
 
 in_channels = 1
 num_classes = 3
@@ -45,6 +44,8 @@ micro_unlabeled_dataloader = torch.utils.data.DataLoader(micro_unlabeled_dataset
 
 #%% Trainer unit tests 
 
+from trainer import *
+
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
 
@@ -61,7 +62,7 @@ trainer_test.train()
 
 #%% Accuracy unit tests 
 
-from inference import * 
+from inference_scores import * 
 
 # tests
 # for one images
@@ -101,7 +102,7 @@ for image, mask in eval_labeled_dataloader:
 
 #%% Resnet unit tests 
 
-from model.resnet import *
+from old_resnet import *
 
 image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
 image1 = image.resize((224,224))
@@ -113,7 +114,7 @@ img = torch.unsqueeze(img, dim=0)
 img1 = torch.unsqueeze(img1, dim=0)
 img1.shape
 
-rn18 = ResNet34_bb()
+rn18 = old_ResNet50_bb()
 res = rn18(img)
 
 for i in range(len(res)):
@@ -122,12 +123,12 @@ for i in range(len(res)):
 
 #%% Encoder unit tests 
 
-from model.encoder import * 
+from old_encoder import * 
 
-for x,y in [(18,512)]:
+for x, y in [(34,512),(101,2048)]:
     print("resnet", x)
-    enc = Encoder(nb_RNlayers=x)
-    for image, mask in labeled_dataloader:
+    enc = old_Encoder(nb_RNlayers=x, in_channels_psp=y)
+    for image, mask in micro_labeled_dataloader:
         res = enc(image)
         print(res.shape)
         break
