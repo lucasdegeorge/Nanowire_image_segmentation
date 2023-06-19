@@ -15,11 +15,11 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
 from dataloader import *
-from model import * 
+from old_model import * 
 from preprocessing.display import *
 
 model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
-image_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
+image_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 
 # for tests: 
 train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
@@ -32,7 +32,7 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
         image (string) : path to the image
     """
     # load the model
-    model = Model(mode="semi")
+    model = old_Model(mode="semi")
     with open(model_path, 'rb') as f:
         buffer = io.BytesIO(f.read())
         model.load_state_dict(torch.load(buffer), strict=False)
@@ -62,10 +62,10 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-# image_test = image_folder + "/0000158.png"
-# model_test = model_folder + "/model_semi_20230616_111708_best.pth"
+image_test = image_folder + "/0000327.png"
+model_test = model_folder + "/model_semi_20230616_111708.pth"
 
-# image, prediction = predict(model_test, image_test, display=True, return_input=True)
+image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
 
 #%% Accuracy
