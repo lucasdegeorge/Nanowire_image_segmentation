@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import json
 
-from resnet import *
+from old_resnet import *
 
 # Device configuration
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
@@ -47,7 +47,7 @@ class Encoder(nn.Module):
     def __init__(self, nb_RNlayers=50, in_channels_psp=2048, isDilation=True):
         super(Encoder, self).__init__()
 
-        model = resnet_bbs[nb_RNlayers](isDilation=isDilation)
+        model = old_resnet_bbs[nb_RNlayers](isDilation=isDilation)
 
         self.base = nn.Sequential(
             nn.Sequential(model.conv1, model.maxpool),
