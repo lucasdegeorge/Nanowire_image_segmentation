@@ -88,3 +88,29 @@ def mIoU(output, target, nb_classes=3, batch=True):
 
     assert torch.sum(area_inter > area_union).item() == 0, "Intersection area should be smaller than Union area"
     return torch.mean(area_inter.float() / area_union.float()).item()
+
+
+def compute_accuracy(model, eval_dataloarder, model_name=None,  printing=False):
+
+    meanIoU = 0
+    for image, target in eval_dataloarder:
+        image = image.to(device)
+        pred = model(image, eval=True)["output_l"]
+        target = one_hot_to_image(target.permute(0,2,3,1), class_values=[0,1,2])
+        target = target.to(device)
+        meanIoU += mIoU(pred, target, 3, True)
+    meanIoU /= len(eval_dataloarder)
+
+    if printing:
+        print("--- Evaluation of model " + model_name + " ---")
+        print("meanIoU: ", meanIoU)
+    
+    try:
+        with open("logs/logs_" + model_name[6:] +  ".txt","a") as logs :
+            logs.write("\n --- Evaluation of model " + model_name + " --- " + "\n meanIoU: " + meanIoU)
+            logs.close()
+    except:
+        print("Can't write in logs for model ", model_name)
+
+    return meanIoU 
+
