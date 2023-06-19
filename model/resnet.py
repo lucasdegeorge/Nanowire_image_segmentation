@@ -159,7 +159,6 @@ class ResnetBackbone(nn.Module):
         super(ResnetBackbone, self).__init__()
 
         self.num_features = 2048
-        print("bb")
 
         # model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
         # if pretrained==True:
