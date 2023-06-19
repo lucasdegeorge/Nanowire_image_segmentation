@@ -21,6 +21,9 @@ from preprocessing.display import *
 model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
 image_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
 
+# for tests: 
+# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
+
 #%% 
 
 def predict(model_path, image, class_values=[0,127,255], display=True, return_input=False):
@@ -59,20 +62,21 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-image_test = image_folder + "/0000158.png"
-model_test = model_folder + "/model_semi_20230616_111708_best.pth"
+# image_test = image_folder + "/0000158.png"
+# model_test = model_folder + "/model_semi_20230616_111708_best.pth"
 
-image, prediction = predict(model_test, image_test, display=True, return_input=True)
+# image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
 
 #%% Accuracy
 
-def mIoU(output, target, nb_classes=3):
+def mIoU(output, target, nb_classes=3, batch=True):
     """ adapted from: https://github.com/Tramac/awesome-semantic-segmentation-pytorch/blob/master/core/utils/score.py
-        output is a 4D tensor, target a 3D tensor
+        output is a (.,nb_classes,H,W) tensor, target a (.,H,W) tensor
     """
-
-    predict = torch.argmax(output, 1) + 1
+    if batch: dim=1 
+    else: dim=0
+    predict = torch.argmax(output, dim) + 1
     target = target.float() + 1
     predict = predict.float() * (target > 0).float()
     intersection = predict * (predict == target).float()
@@ -83,9 +87,4 @@ def mIoU(output, target, nb_classes=3):
     area_union = area_pred + area_lab - area_inter
 
     assert torch.sum(area_inter > area_union).item() == 0, "Intersection area should be smaller than Union area"
-    return area_inter.float(), area_union.float()
-
-# tests 
-
-
-
+    return torch.mean(area_inter.float() / area_union.float()).item()

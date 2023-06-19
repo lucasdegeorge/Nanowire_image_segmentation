@@ -23,6 +23,10 @@ from trainer import *
 in_channels = 1
 num_classes = 3
 
+#%% dataloarder 
+
+train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
+
 #%% micro - Dataloaders for tests :  ## Does not work since updates in dataloader.py
 
 # micro paths 
@@ -55,6 +59,45 @@ trainer_test = Trainer(model_test, micro_labeled_dataloader, micro_unlabeled_dat
 trainer_test.train()
 
 
+#%% Accuracy unit tests 
+
+from inference import * 
+
+# tests
+# for one images
+mask_path = "C:/Users/lucas.degeorge/Documents/Images/binary_masks/0000021_mask.png"
+predict = mask_converter(mask_path, out="one-hot")
+target = T.functional.to_tensor(Image.open(mask_path).convert("L")) * 2.5
+target = target.to(torch.uint8) 
+
+# print(mIoU(predict, target, batch=False))
+
+# for a batch
+targets = []
+predicts = []
+for filename in os.listdir(masks_dir):
+    if filename.endswith(filetype):
+        predict = mask_converter(mask_path, out="one-hot")
+        target = T.functional.to_tensor(Image.open(mask_path).convert("L")) * 2.5
+        target = target.to(torch.uint8) 
+        predicts.append(predict)
+        targets.append(target)
+
+# mask_tests_dataset = train_LabeledDataset(predicts, targets, transform=None)
+# mask_tests_dataloader = torch.utils.data.DataLoader(mask_tests_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True)
+
+# for predict, target in mask_tests_dataloader:
+#     print(mIoU(predict, target[:,0], 3, True))
+
+model = Model(mode="semi")
+
+for image, mask in eval_labeled_dataloader:
+    image = image.to(device)
+    pred = model(image, eval=True)["output_l"]
+    mask = one_hot_to_image(mask.permute(0,2,3,1), class_values=[0,1,2])
+    mask = mask.to(device)
+    print(mIoU(pred, mask, 3, True))
+    
 
 #%% Resnet unit tests 
 
