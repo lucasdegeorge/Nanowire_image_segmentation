@@ -104,7 +104,7 @@ for image, mask in eval_labeled_dataloader:
 
 from resnet import *
 
-image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
+image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
 image1 = image.resize((224,224))
 
 convert_tensor = transforms.ToTensor()

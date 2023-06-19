@@ -155,25 +155,27 @@ class ResNet(nn.Module):
     
 
 class ResnetBackbone(nn.Module):
-    def __init__(self, orig_resnet, pretrained_path=None, pretrained=True, freeze=True):
+    def __init__(self, orig_resnet, pretrained=True, freeze=True):
         super(ResnetBackbone, self).__init__()
 
         self.num_features = 2048
-
-        model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
+        
         if pretrained==True:
+            model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
             url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
             model.load_state_dict(model_zoo.load_url(url))
+        else:
+            model = orig_resnet
 
         # Take resnet, except AvgPool and FC
-        self.conv1 = orig_resnet.conv1
-        self.bn1 = orig_resnet.bn1
+        self.conv1 = model.conv1
+        self.bn1 = model.bn1
         self.relu = nn.ReLU()
-        self.maxpool = orig_resnet.maxpool
-        self.layer1 = orig_resnet.layer1
-        self.layer2 = orig_resnet.layer2
-        self.layer3 = orig_resnet.layer3
-        self.layer4 = orig_resnet.layer4
+        self.maxpool = model.maxpool
+        self.layer1 = model.layer1
+        self.layer2 = model.layer2
+        self.layer3 = model.layer3
+        self.layer4 = model.layer4
 
     def get_num_features(self):
         return self.num_features
@@ -196,24 +198,24 @@ class ResnetBackbone(nn.Module):
 
         return tuple_features
     
-def ResNet18_bb(isDilation = True):
-    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation))
+def ResNet18_bb(pretrained=True, isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation), pretrained=True)
     # return ResNet(ResidualBlock_2sl, [3,2,2,2], isDilation=isDilation)
 
-def ResNet34_bb(isDilation = True):
-    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation))
+def ResNet34_bb(pretrained=True, isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation), pretrained=True)
     # return ResNet(ResidualBlock_2sl, [3,4,6,3], isDilation=isDilation)
 # 
-def ResNet50_bb(isDilation = True):
-    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation))
+def ResNet50_bb(pretrained=True, isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation), pretrained=True)
     # return ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=isDilation)
 
-def ResNet101_bb(isDilation = True):
-    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation))
+def ResNet101_bb(pretrained=True, isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation), pretrained=True)
     # return ResNet(ResidualBlock_3sl, [3,4,23,3], isDilation=isDilation)
 
-def ResNet152_bb(isDilation = True):
-    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation))
+def ResNet152_bb(pretrained=True, isDilation = True):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation), pretrained=True)
     # return ResNet(ResidualBlock_3sl, [3,8,36,3], isDilation=isDilation)
 
 resnet_bbs = {18 : ResNet18_bb, 
@@ -232,7 +234,7 @@ resnet_bbs = {18 : ResNet18_bb,
 
 # if pretrained==True:
 #     url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
-#     original.load_state_dict(model_zoo.load_url(url))
+#     model.load_state_dict(model_zoo.load_url(url))
 
-# # for name, param in original.named_parameters():
-# #     print(name)
+# for name, param in model.named_parameters():
+#     print(name)
