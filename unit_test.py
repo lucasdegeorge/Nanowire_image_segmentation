@@ -111,7 +111,7 @@ img = torch.unsqueeze(img, dim=0)
 img1 = torch.unsqueeze(img1, dim=0)
 img1.shape
 
-rn18 = ResNet50_bb(pretrained=True)
+rn18 = ResNet50_bb(pretrained=False)
 res = rn18(img)
 
 for i in range(len(res)):
@@ -124,7 +124,7 @@ from encoder import *
 
 for x, y in [(18,512),(34,512),(50,2048),(101,2048),(152,2048)]:
     print("resnet", x)
-    enc = Encoder(nb_RNlayers=x, in_channels_psp=y)
+    enc = Encoder(arguments)
     for image, mask in micro_labeled_dataloader:
         res = enc(image)
         print(res.shape)
