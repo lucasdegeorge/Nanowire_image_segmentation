@@ -130,8 +130,8 @@ def load_labeled_data(in_channels, image_dir, annotation_dir, folder_where_write
         labeled_images = torch.load(folder_where_write + "/" + file_name)
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
     except FileNotFoundError:
-        print("files labeled_images.pt and binary_masks.pt not found")
-        save_and_load(image_dir, annotation_dir, folder_where_write)
+        print("files labeled_images.pt and binary_masks.pt not found. in_channels: ", in_channels)
+        save_and_load(in_channels, image_dir, annotation_dir, folder_where_write)
         labeled_images = torch.load(folder_where_write + "/" + file_name)
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
     train_images, eval_images, train_masks, eval_masks = train_test_split(labeled_images, masks, test_size=0.2, random_state=42)
@@ -187,8 +187,8 @@ def load_unlabeled_data(in_channels, image_dir, folder_where_write):
     try:
         unlabeled_images = torch.load(folder_where_write + "/" + file_name)
     except FileNotFoundError:
-        print("file unlabeled_images.pt not found")
-        save_and_load(image_dir, None, folder_where_write)
+        print("file unlabeled_images.pt not found. in_channels: ", in_channels)
+        save_and_load(in_channels, image_dir, None, folder_where_write)
         unlabeled_images = torch.load(folder_where_write + "/" + file_name)
     # unlabeled_images = [ t.to(device) for t in unlabeled_images]
     return unlabeled_images
