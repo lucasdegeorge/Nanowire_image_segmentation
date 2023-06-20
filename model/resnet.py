@@ -19,7 +19,6 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     device = arguments["device"]
     device = torch.device(device)
 
-arguments["model"]["nb_classes"]
 #%% 
 
 # residual block for the resnet 18 and 34 
