@@ -1,8 +1,11 @@
 {
     "model" : {
+        "in_channels" : 3,
         "nb_classes" : 3,
         "nb_RNlayers" : 50,
         "isDilation" : true,
+        "multi_grid" : [1, 2, 4],
+        "dilate_scale" : 8,
         "upscale" : 8,
         "DropOutDecoder" : 1, 
         "FeatureDropDecoder" : 1, 
