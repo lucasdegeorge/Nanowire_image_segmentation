@@ -25,6 +25,8 @@ train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_d
 
 #%% micro - Dataloaders for tests :  ## Does not work since updates in dataloader.py
 
+in_channels = arguments["model"]["in_channels"]
+
 # micro paths 
 micro_labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/labeled_images"
 micro_masks_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/binary_masks"
@@ -32,9 +34,9 @@ micro_unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batc
 micro_folder_where_write = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests"
 
 
-train_images, eval_images, train_masks, eval_masks = load_labeled_data(micro_labeled_image_dir, micro_masks_dir, folder_where_write=micro_folder_where_write)
+train_images, eval_images, train_masks, eval_masks = load_labeled_data(in_channels, micro_labeled_image_dir, micro_masks_dir, folder_where_write=micro_folder_where_write)
 micro_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
-micro_unlabeled_dataset = UnlabeledDataset(micro_unlabeled_image_dir, transform=None, folder_where_write=micro_folder_where_write)
+micro_unlabeled_dataset = UnlabeledDataset(in_channels, micro_unlabeled_image_dir, transform=None, folder_where_write=micro_folder_where_write)
 
 micro_labeled_dataloader = torch.utils.data.DataLoader(micro_labeled_dataset, batch_size=2, shuffle=True, drop_last=True)
 micro_unlabeled_dataloader = torch.utils.data.DataLoader(micro_unlabeled_dataset, batch_size=2, shuffle=True)
