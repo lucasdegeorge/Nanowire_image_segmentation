@@ -20,8 +20,8 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 from dataloader import * 
 
 #%% dataloarder 
-
-train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
+in_channels = arguments["model"]["in_channels"]
+train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(in_channels, batch_size=batch_size)
 
 #%% micro - Dataloaders for tests :  ## Does not work since updates in dataloader.py
 
@@ -103,15 +103,16 @@ for image, mask in eval_labeled_dataloader:
 
 from resnet import *
 
+# image size in our dataset
 image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
-image1 = image.resize((224,224))
-
 convert_tensor = transforms.ToTensor()
-img = convert_tensor(image)   # image size in our dataset
-img1 = convert_tensor(image1) # image size as in ImageNet 
+img = convert_tensor(image) 
 img = torch.unsqueeze(img, dim=0)
+
+# image size as in ImageNet 
+image1 = image.resize((224,224))
+img1 = convert_tensor(image1) 
 img1 = torch.unsqueeze(img1, dim=0)
-img1.shape
 
 rn18 = ResNet50_bb(pretrained=False)
 res = rn18(img)
@@ -124,13 +125,12 @@ for i in range(len(res)):
 
 from encoder import * 
 
-for x, y in [(18,512),(34,512),(50,2048),(101,2048),(152,2048)]:
-    print("resnet", x)
-    enc = Encoder(arguments)
-    for image, mask in micro_labeled_dataloader:
-        res = enc(image)
-        print(res.shape)
-        break
+print("resnet", 50)
+enc = Encoder(arguments)
+for image, mask in micro_labeled_dataloader:
+    res = enc(image)
+    print(res.shape)
+    break
 
 
 #%% Decoder unit tests

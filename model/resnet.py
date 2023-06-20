@@ -8,6 +8,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import json
 import io
 from PIL import Image
+from torchsummary import summary
 
 # pretrained models 
 import pretrained_microscopy_models as pmm
@@ -18,6 +19,7 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     arguments = json.load(f)
     device = arguments["device"]
     device = torch.device(device)
+    # in_channels = arguments["model"]["in_channels"]
 
 #%% 
 
@@ -61,13 +63,13 @@ class ResidualBlock_3sl(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1, downsample=None, dilation=1):
         super(ResidualBlock_3sl, self).__init__()
 
-        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=dilation, dilation=dilation, bias=False)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=stride, padding=0, dilation=dilation, bias=False)
         self.bn1 = nn.BatchNorm2d(out_channels)
 
         self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(out_channels)
 
-        self.conv3 = nn.Conv2d(out_channels, out_channels*self.expansion, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv3 = nn.Conv2d(out_channels, out_channels*self.expansion, kernel_size=1, stride=1, padding=0, bias=False)
         self.bn3 = nn.BatchNorm2d(out_channels*self.expansion) 
 
         self.downsample = downsample
@@ -163,7 +165,6 @@ class ResnetBackbone(nn.Module):
         self.num_features = 2048
         
         if pretrained==True:
-            print("qa")
             model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
             url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
             model.load_state_dict(model_zoo.load_url(url))
@@ -208,7 +209,7 @@ def ResNet18_bb(pretrained):
 def ResNet34_bb(pretrained):
     return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,4,6,3]), pretrained=pretrained)
     # return ResNet(ResidualBlock_2sl, [3,4,6,3])
-# 
+
 def ResNet50_bb(pretrained):
     return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), pretrained=pretrained)
     # return ResNet(ResidualBlock_3sl, [3,4,6,3])
@@ -230,14 +231,24 @@ resnet_bbs = {18 : ResNet18_bb,
 
 #%% tests
 
-# original = ResNet(ResidualBlock_3sl, [3,4,6,3], isDilation=True)
+# original = ResNet(ResidualBlock_3sl, [3,4,6,3])
 # model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
 
 # pretrained = True
 
 # if pretrained==True:
 #     url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
-#     model.load_state_dict(model_zoo.load_url(url))
+#     missing, unexpected = model.load_state_dict(model_zoo.load_url(url), strict=False)
+#     print(missing)
+#     print(unexpected)
 
-# for name, param in model.named_parameters():
-#     print(name)
+image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
+convert_tensor = transforms.ToTensor()
+img = convert_tensor(image) 
+img = torch.unsqueeze(img, dim=0)
+
+rn18 = ResNet50_bb(pretrained=False)
+res = rn18(img)
+print(res[0])
+
+# summary(original.cuda(), (3, 1024, 1024))
