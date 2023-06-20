@@ -14,7 +14,6 @@ from dataloader import *
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
-    model_arguments = arguments["model"]
     device = arguments["device"]
     device = torch.device(device)
 
@@ -22,25 +21,18 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 #%% Model
 
 class Model(nn.Module):
-    def __init__(self, mode='semi', arguments=model_arguments):
+    def __init__(self, mode='semi', arguments=arguments):
         super(Model, self).__init__()
 
         self.mode = mode
         self.nb_classes = arguments["nb_classes"]
-
-        # encoder
-        self.nb_RNlayers = arguments["nb_RNlayers"]
-        self.isDilation = arguments["isDilation"]
-        if self.nb_RNlayers in [50, 101, 152]: self.in_channels_psp = 2048
-        elif self.nb_RNlayers in [18, 34]: self.in_channels_psp = 512
-        else: raise ValueError("invalid nb_RNlayers")
 
         # decoders
         self.upscale = arguments["upscale"]
         self.in_channels_dec = self.in_channels_psp // 4
 
         # Model
-        self.encoder = Encoder(nb_RNlayers=self.nb_RNlayers, in_channels_psp=self.in_channels_psp, isDilation=self.isDilation).to(device)
+        self.encoder = Encoder(arguments=arguments).to(device)
         self.main_decoder = MainDecoder(self.upscale, self.in_channels_dec, self.nb_classes).to(device)
 
         if self.mode == "semi":

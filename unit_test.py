@@ -19,9 +19,6 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 
 from dataloader import * 
 
-in_channels = 3
-num_classes = 3
-
 #%% dataloarder 
 
 train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
@@ -104,7 +101,7 @@ for image, mask in eval_labeled_dataloader:
 
 from resnet import *
 
-image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png")#.convert("RGB")
+image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
 image1 = image.resize((224,224))
 
 convert_tensor = transforms.ToTensor()
@@ -114,7 +111,7 @@ img = torch.unsqueeze(img, dim=0)
 img1 = torch.unsqueeze(img1, dim=0)
 img1.shape
 
-rn18 = ResNet50_bb()
+rn18 = ResNet50_bb(pretrained=True)
 res = rn18(img)
 
 for i in range(len(res)):

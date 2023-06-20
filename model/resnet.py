@@ -157,7 +157,7 @@ class ResNet(nn.Module):
     
 
 class ResnetBackbone(nn.Module):
-    def __init__(self, orig_resnet, pretrained=True, freeze=True):
+    def __init__(self, orig_resnet, pretrained, freeze=True):
         super(ResnetBackbone, self).__init__()
 
         self.num_features = 2048
@@ -201,23 +201,23 @@ class ResnetBackbone(nn.Module):
 
         return tuple_features
     
-def ResNet18_bb(pretrained=True, isDilation = True):
+def ResNet18_bb(pretrained):
     return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,2,2,2]), pretrained=pretrained)
     # return ResNet(ResidualBlock_2sl, [3,2,2,2])
 
-def ResNet34_bb(pretrained=True, isDilation = True):
+def ResNet34_bb(pretrained):
     return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,4,6,3]), pretrained=pretrained)
     # return ResNet(ResidualBlock_2sl, [3,4,6,3])
 # 
-def ResNet50_bb(pretrained=True, isDilation = True):
+def ResNet50_bb(pretrained):
     return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), pretrained=pretrained)
     # return ResNet(ResidualBlock_3sl, [3,4,6,3])
 
-def ResNet101_bb(pretrained=True, isDilation = True):
+def ResNet101_bb(pretrained):
     return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,23,3]), pretrained=pretrained)
     # return ResNet(ResidualBlock_3sl, [3,4,23,3])
 
-def ResNet152_bb(pretrained=True, isDilation = True):
+def ResNet152_bb(pretrained):
     return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3]), pretrained=pretrained)
     # return ResNet(ResidualBlock_3sl, [3,8,36,3])
 
