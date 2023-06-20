@@ -242,13 +242,13 @@ resnet_bbs = {18 : ResNet18_bb,
 #     print(missing)
 #     print(unexpected)
 
-image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
-convert_tensor = transforms.ToTensor()
-img = convert_tensor(image) 
-img = torch.unsqueeze(img, dim=0)
+# image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
+# convert_tensor = transforms.ToTensor()
+# img = convert_tensor(image) 
+# img = torch.unsqueeze(img, dim=0)
 
-rn18 = ResNet50_bb(pretrained=False)
-res = rn18(img)
-print(res[0])
+# rn18 = ResNet50_bb(pretrained=False)
+# res = rn18(img)
+# print(res[0])
 
 # summary(original.cuda(), (3, 1024, 1024))
