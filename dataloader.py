@@ -125,7 +125,7 @@ def load_labeled_data(in_channels, image_dir, annotation_dir, folder_where_write
     if in_channels == 3: file_name = "labeled_images_3ch.pt"
     elif in_channels == 1: file_name = "labeled_images_1ch.pt"
     else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
-    print(in_channels)
+    print("in_channels", in_channels)
     try:
         labeled_images = torch.load(folder_where_write + "/" + file_name)
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
