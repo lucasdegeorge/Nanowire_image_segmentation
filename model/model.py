@@ -25,24 +25,25 @@ class Model(nn.Module):
         super(Model, self).__init__()
 
         self.mode = mode
-        self.nb_classes = arguments["nb_classes"]
+        self.nb_classes = arguments["model"]["nb_classes"]
+
+        # encoder 
+        self.encoder = Encoder(arguments=arguments).to(device)
 
         # decoders
-        self.upscale = arguments["upscale"]
-        self.in_channels_dec = self.in_channels_psp // 4
+        self.upscale = arguments["model"]["upscale"]
+        self.in_channels_dec = self.encoder.in_channels_psp // 4
 
-        # Model
-        self.encoder = Encoder(arguments=arguments).to(device)
         self.main_decoder = MainDecoder(self.upscale, self.in_channels_dec, self.nb_classes).to(device)
 
         if self.mode == "semi":
-            drop_decoder = [DropOutDecoder(self.upscale, self.in_channels_dec, self.nb_classes,drop_rate=arguments['drop_rate'], spatial_dropout=arguments['spacial_dropout']).to(device) for _ in range(arguments['DropOutDecoder'])]
-            feature_drop = [FeatureDropDecoder(self.upscale, self.in_channels_dec, self.nb_classes).to(device) for _ in range(arguments['FeatureDropDecoder'])]
-            feature_noise = [FeatureNoiseDecoder(self.upscale, self.in_channels_dec, self.nb_classes, uniform_range=arguments['uniform_range']).to(device) for _ in range(arguments['FeatureNoiseDecoder'])]
-            vat_decoder = [VATDecoder(self.upscale, self.in_channels_dec, self.nb_classes, xi=arguments['xi'],eps=arguments['eps']).to(device) for _ in range(arguments['VATDecoder'])]
-            cut_decoder = [CutOutDecoder(self.upscale, self.in_channels_dec, self.nb_classes, erase=arguments['erase']).to(device) for _ in range(arguments['CutOutDecoder'])]
-            context_m_decoder = [ContextMaskingDecoder(self.upscale, self.in_channels_dec, self.nb_classes).to(device) for _ in range(arguments['ContextMaskingDecoder'])]
-            object_masking = [ObjectMaskingDecoder(self.upscale, self.in_channels_dec, self.nb_classes).to(device) for _ in range(arguments['ObjectMaskingDecoder'])]
+            drop_decoder = [DropOutDecoder(self.upscale, self.in_channels_dec, self.nb_classes,drop_rate=arguments["model"]['drop_rate'], spatial_dropout=arguments["model"]['spacial_dropout']).to(device) for _ in range(arguments["model"]['DropOutDecoder'])]
+            feature_drop = [FeatureDropDecoder(self.upscale, self.in_channels_dec, self.nb_classes).to(device) for _ in range(arguments["model"]['FeatureDropDecoder'])]
+            feature_noise = [FeatureNoiseDecoder(self.upscale, self.in_channels_dec, self.nb_classes, uniform_range=arguments["model"]['uniform_range']).to(device) for _ in range(arguments["model"]['FeatureNoiseDecoder'])]
+            vat_decoder = [VATDecoder(self.upscale, self.in_channels_dec, self.nb_classes, xi=arguments["model"]['xi'],eps=arguments["model"]['eps']).to(device) for _ in range(arguments["model"]['VATDecoder'])]
+            cut_decoder = [CutOutDecoder(self.upscale, self.in_channels_dec, self.nb_classes, erase=arguments["model"]['erase']).to(device) for _ in range(arguments["model"]['CutOutDecoder'])]
+            context_m_decoder = [ContextMaskingDecoder(self.upscale, self.in_channels_dec, self.nb_classes).to(device) for _ in range(arguments["model"]['ContextMaskingDecoder'])]
+            object_masking = [ObjectMaskingDecoder(self.upscale, self.in_channels_dec, self.nb_classes).to(device) for _ in range(arguments["model"]['ObjectMaskingDecoder'])]
 
             self.aux_decoders = nn.ModuleList([*drop_decoder, *feature_drop, *feature_noise, *vat_decoder, *cut_decoder, *context_m_decoder, *object_masking])
 

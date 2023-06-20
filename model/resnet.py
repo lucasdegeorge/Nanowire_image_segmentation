@@ -169,8 +169,10 @@ class ResnetBackbone(nn.Module):
             model = torchvision.models.resnet50()
             url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
             model.load_state_dict(model_zoo.load_url(url))
+            print("pretrained")
         else:
             model = orig_resnet
+            print("random")
 
         if freeze and pretrained: # We can't freeze if weights are randomly initialized 
             for param in model.parameters():

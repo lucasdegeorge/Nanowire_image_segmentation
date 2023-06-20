@@ -9,6 +9,7 @@ from itertools import cycle
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 import time
+from torchsummary import summary
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -18,6 +19,8 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     arguments = json.load(f)
 
 from dataloader import * 
+
+print(arguments["trainer"]["nb_epochs"])
 
 #%% dataloarder 
 in_channels = arguments["model"]["in_channels"]
@@ -49,15 +52,16 @@ timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
 
 # # mode super
-model_test = Model(mode='super')
+model_test = Model(mode='semi')
 model_test.to(device)
+
+# summary(model_test.cuda(), (3, 1024, 1024))
 
 trainer_test = Trainer(model_test, micro_labeled_dataloader, micro_unlabeled_dataloader, micro_labeled_dataloader)  ## Just for test : here same data in train and eval
 # trainer_test.train_super_1epoch(0, writer)
 # trainer_test.train_semi_1epoch(0, writer)
 # trainer_test.eval_1epoch(0)
 trainer_test.train()
-
 
 #%% Accuracy unit tests 
 
@@ -180,14 +184,12 @@ from model import *
 
 # mode semi
 model_test = Model(mode='semi')
-# dataloader = iter(zip(cycle(labeled_dataloader), unlabeled_dataloader))
-for x_ul in unlabeled_dataloader:
-    for x_l, _ in labeled_dataloader:
-        res = model_test(x_l, x_ul=x_ul)
-        break
-    break
+dataloader = iter(zip(cycle(micro_labeled_dataloader), micro_unlabeled_dataloader))
 
-dataloader = iter(zip(cycle(labeled_dataloader), unlabeled_dataloader))
-for (x_l, mask), x_ul in dataloader:
+for (x_l, target_l), x_ul in dataloader:
+    x_l = x_l.to(device)
+    target_l = target_l.to(device)
+    x_ul = x_ul.to(device)
+
     res = model_test(x_l, x_ul=x_ul)
     break
