@@ -1,6 +1,6 @@
 {
     "model" : {
-        "pretrained" : false,
+        "pretrained" : true,
         "in_channels" : 3,
         "nb_classes" : 3,
         "nb_RNlayers" : 50,

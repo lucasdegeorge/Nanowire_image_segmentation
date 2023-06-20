@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from torchvision import datasets
 from torchvision import transforms
+import torchvision
 from torch.utils.data.sampler import SubsetRandomSampler
 import json
 import io
@@ -164,12 +165,16 @@ class ResnetBackbone(nn.Module):
 
         self.num_features = 2048
         
-        if pretrained==True:
-            model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
+        if pretrained:
+            model = torchvision.models.resnet50()
             url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
             model.load_state_dict(model_zoo.load_url(url))
         else:
             model = orig_resnet
+
+        if freeze and pretrained: # We can't freeze if weights are randomly initialized 
+            for param in model.parameters():
+                param.requires_grad = False
 
         # Take resnet, except AvgPool and FC
         self.conv1 = model.conv1
@@ -232,15 +237,18 @@ resnet_bbs = {18 : ResNet18_bb,
 #%% tests
 
 # original = ResNet(ResidualBlock_3sl, [3,4,6,3])
-# model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', pretrained=False)
+# model = torchvision.models.resnet50()
 
 # pretrained = True
 
 # if pretrained==True:
 #     url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
-#     missing, unexpected = model.load_state_dict(model_zoo.load_url(url), strict=False)
-#     print(missing)
-#     print(unexpected)
+#     missing, unexpected = model.load_state_dict(model_zoo.load_url(url), strict=True)
+
+# original = ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), pretrained=False)
+# model = ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), pretrained=True)
+
+# summary(model.cuda(), (3, 1024, 1024))
 
 # image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
 # convert_tensor = transforms.ToTensor()

@@ -22,7 +22,7 @@ model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
 image_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 
 # for tests: 
-train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
+train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(1, batch_size=batch_size)
 
 #%% 
 
@@ -62,7 +62,7 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-image_test = image_folder + "/0000327.png"
+image_test = image_folder + "/0006577.png"
 model_test = model_folder + "/model_semi_20230616_111708.pth"
 
 image, prediction = predict(model_test, image_test, display=True, return_input=True)
