@@ -13,6 +13,7 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     batch_size = arguments["batch_size"]
     device = arguments["device"]
     device = torch.device(device)
+    in_channels = arguments["model"]["in_channels"]
 
 c2n = True
 
@@ -73,8 +74,16 @@ def mask_converter(mask, out="one-hot", nb_classes=3, class_values=[0,127,255]):
 
 #%% save tensors in .pt 
 
-def save_and_load(image_folder, mask_folder=None, folder_where_write=folder_where_write):
+def save_and_load(in_channels, image_folder, mask_folder=None, folder_where_write=folder_where_write):
     """ loads the images in the folders and save save in a .pt file using the same name"""
+    if in_channels == 3: 
+        extension = "_3ch.pt"
+        conversion_mode = "RGB"
+    elif in_channels == 1:
+        extension = "_1ch.pt"
+        conversion_mode = "L"
+    else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
+
     converter = T.ToTensor()
     images = []
     masks = []
@@ -82,8 +91,8 @@ def save_and_load(image_folder, mask_folder=None, folder_where_write=folder_wher
     for filename in os.listdir(image_folder):
         if filename.endswith(filetype):
             image_path = os.path.join(image_folder, filename)
-            image = Image.open(image_path).convert('L')
-            if image.size != (1024,1024): image = image.resize((1024,1024))
+            image = Image.open(image_path).convert(conversion_mode)
+            # if image.size != (1024,1024): image = image.resize((1024,1024))
             image = converter(image)
             images.append(image)
             if mask_folder is not None:
@@ -96,7 +105,7 @@ def save_and_load(image_folder, mask_folder=None, folder_where_write=folder_wher
                         print("mask" + mask_path + "has not been saved")
                         pass
     # save tensors 
-    file_name = folder_where_write + "/" + image_folder.split("/")[-1] + ".pt"
+    file_name = folder_where_write + "/" + image_folder.split("/")[-1] + extension
     torch.save(images, file_name)
     if mask_folder is not None:
         folder_name = folder_where_write + "/" + mask_folder.split("/")[-1] + ".pt"
@@ -112,14 +121,18 @@ def save_and_load(image_folder, mask_folder=None, folder_where_write=folder_wher
 
 # Labeled data and masks
 
-def load_labeled_data(image_dir, annotation_dir, folder_where_write):
+def load_labeled_data(in_channels, image_dir, annotation_dir, folder_where_write):
+    if in_channels == 3: file_name = "labeled_images_3ch.pt"
+    elif in_channels == 1: file_name = "labeled_images_1ch.pt"
+    else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
+    print(in_channels)
     try:
-        labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
+        labeled_images = torch.load(folder_where_write + "/" + file_name)
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
     except FileNotFoundError:
         print("files labeled_images.pt and binary_masks.pt not found")
         save_and_load(image_dir, annotation_dir, folder_where_write)
-        labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
+        labeled_images = torch.load(folder_where_write + "/" + file_name)
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
     train_images, eval_images, train_masks, eval_masks = train_test_split(labeled_images, masks, test_size=0.2, random_state=42)
     return train_images, eval_images, train_masks, eval_masks
@@ -166,22 +179,26 @@ class eval_LabeledDataset(torch.utils.data.Dataset):
 
 # Unlabeled data 
 
-def load_unlabeled_data(image_dir, folder_where_write):
+def load_unlabeled_data(in_channels, image_dir, folder_where_write):
+    if in_channels == 3: file_name = "unlabeled_images_3ch.pt"
+    elif in_channels == 1: file_name = "unlabeled_images_1ch.pt"
+    else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
+    print(in_channels)
     try:
-        unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
+        unlabeled_images = torch.load(folder_where_write + "/" + file_name)
     except FileNotFoundError:
         print("file unlabeled_images.pt not found")
         save_and_load(image_dir, None, folder_where_write)
-        unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
+        unlabeled_images = torch.load(folder_where_write + "/" + file_name)
     # unlabeled_images = [ t.to(device) for t in unlabeled_images]
     return unlabeled_images
 
 
 class UnlabeledDataset(torch.utils.data.Dataset):
-    def __init__(self, image_dir, transform=None, folder_where_write=folder_where_write):
+    def __init__(self, in_channels, image_dir, transform=None, folder_where_write=folder_where_write):
         self.image_dir = image_dir
         self.transform = transform
-        self.images = load_unlabeled_data(image_dir, folder_where_write)
+        self.images = load_unlabeled_data(in_channels, image_dir, folder_where_write)
     
     def __getitem__(self, index):
         image = self.images[index]
@@ -195,12 +212,14 @@ class UnlabeledDataset(torch.utils.data.Dataset):
 
 # Definition 
 
-def get_dataloaders(batch_size, labeled_image_dir=labeled_image_dir, masks_dir=masks_dir, unlabeled_image_dir=unlabeled_image_dir, folder_where_write=folder_where_write):
-    train_images, eval_images, train_masks, eval_masks = load_labeled_data(labeled_image_dir, masks_dir, folder_where_write=folder_where_write)
+def get_dataloaders(in_channels, batch_size, labeled_image_dir=labeled_image_dir, masks_dir=masks_dir, unlabeled_image_dir=unlabeled_image_dir, folder_where_write=folder_where_write):
+    train_images, eval_images, train_masks, eval_masks = load_labeled_data(in_channels, labeled_image_dir, masks_dir, folder_where_write=folder_where_write)
 
     train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
     eval_labeled_dataset = eval_LabeledDataset(eval_images, eval_masks, transform=None)
-    unlabeled_dataset = UnlabeledDataset(unlabeled_image_dir, transform=None)
+    print("labeled ok")
+    unlabeled_dataset = UnlabeledDataset(in_channels, unlabeled_image_dir, transform=None)
+    print("unlabeled ok")
 
     train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
     eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
@@ -208,4 +227,4 @@ def get_dataloaders(batch_size, labeled_image_dir=labeled_image_dir, masks_dir=m
 
     return train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader
 
-# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(batch_size=batch_size)
+train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(in_channels=in_channels, batch_size=batch_size)
