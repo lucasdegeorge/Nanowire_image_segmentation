@@ -227,4 +227,4 @@ def get_dataloaders(in_channels, batch_size, labeled_image_dir=labeled_image_dir
 
     return train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader
 
-train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(in_channels=in_channels, batch_size=batch_size)
+# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(in_channels=in_channels, batch_size=batch_size)
