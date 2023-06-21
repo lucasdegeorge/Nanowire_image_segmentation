@@ -56,4 +56,4 @@ def main():
     # meanIoU = compute_accuracy(model_name, eval_labeled_dataloader, True )
     return eval_labeled_dataloader
 
-main()
+eval_dataloader = main()
