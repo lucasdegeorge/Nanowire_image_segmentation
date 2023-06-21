@@ -22,7 +22,7 @@ model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
 image_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 
 # for tests: 
-train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(arguments["model"]["in_channels"], batch_size=arguments["batch_size"])
+# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(arguments["model"]["in_channels"], batch_size=arguments["batch_size"])
 
 #%% 
 
