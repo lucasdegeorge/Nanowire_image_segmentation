@@ -15,14 +15,14 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 
 sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
 from dataloader import *
-from old_model import * 
+from model import * 
 from preprocessing.display import *
 
 model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
 image_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 
 # for tests: 
-# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(1, batch_size=batch_size)
+train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(arguments["model"]["in_channels"], batch_size=arguments["batch_size"])
 
 #%% 
 
@@ -32,7 +32,7 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
         image (string) : path to the image
     """
     # load the model
-    model = old_Model(mode="semi")
+    model = Model(mode="semi")
     with open(model_path, 'rb') as f:
         buffer = io.BytesIO(f.read())
         model.load_state_dict(torch.load(buffer), strict=False)
@@ -40,7 +40,7 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
     # load the image
     converter = T.ToTensor()
-    image = Image.open(image).convert('L')
+    image = Image.open(image).convert('RGB')
     if image.size != (1024,1024): raise ValueError("Up to now, images can only have (1024,1024) shape")
     image = converter(image).to(device)
 
@@ -62,10 +62,10 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-image_test = image_folder + "/0006577.png"
-model_test = model_folder + "/model_semi_20230616_111708.pth"
+# image_test = image_folder + "/0005638.png"
+# model_test = model_folder + "/model_semi_20230620_184101.pth"
 
-image, prediction = predict(model_test, image_test, display=True, return_input=True)
+# image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
 
 #%% Accuracy
@@ -124,6 +124,6 @@ def compute_accuracy(model_path, eval_dataloarder, printing=False):
 
 #%% Tests 
 
-# model_test = model_folder + "/model_semi_20230614_171123.pth"
+# model_test = model_folder + "/model_semi_20230620_184101.pth"
 
 # meanIoU = compute_accuracy(model_test, eval_labeled_dataloader, True )

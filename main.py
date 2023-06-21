@@ -54,5 +54,6 @@ def main():
         logs.close()
 
     # meanIoU = compute_accuracy(model_name, eval_labeled_dataloader, True )
+    return eval_labeled_dataloader
 
 main()
