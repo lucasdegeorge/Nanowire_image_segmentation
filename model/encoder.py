@@ -48,13 +48,12 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
 
         self.nb_RNlayers = arguments["model"]["nb_RNlayers"]
-        self.pretrained = arguments["model"]["pretrained"]
 
         if self.nb_RNlayers in [50, 101, 152]: self.in_channels_psp = 2048
         elif self.nb_RNlayers in [18, 34]: self.in_channels_psp = 512
         else: raise ValueError("invalid nb_RNlayers")
 
-        model = resnet_bbs[self.nb_RNlayers](pretrained=self.pretrained)
+        model = resnet_bbs[self.nb_RNlayers](arguments)
         
         self.base = nn.Sequential(
             nn.Sequential(model.conv1, model.bn1, model.relu, model.maxpool),

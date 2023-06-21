@@ -160,15 +160,18 @@ class ResNet(nn.Module):
     
 
 class ResnetBackbone(nn.Module):
-    def __init__(self, orig_resnet, pretrained, freeze=True):
+    def __init__(self, orig_resnet, arguments):
         super(ResnetBackbone, self).__init__()
 
-        self.num_features = 2048
-        
+        pretrained = arguments["model"]["pretrained"]
+        freeze = arguments["model"]["freeze"]
+        pretraining = arguments["model"]["pretraining"]
+
         if pretrained:
-            model = torchvision.models.resnet50()
-            url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
-            model.load_state_dict(model_zoo.load_url(url))
+            model = torchvision.models.resnet50(weights=torchvision.models.ResNet50_Weights.DEFAULT)
+            if pretraining == "nasa":
+                url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
+                model.load_state_dict(model_zoo.load_url(url))
             print("pretrained")
         else:
             model = orig_resnet
@@ -188,9 +191,6 @@ class ResnetBackbone(nn.Module):
         self.layer3 = model.layer3
         self.layer4 = model.layer4
 
-    def get_num_features(self):
-        return self.num_features
-
     def forward(self, x):
         tuple_features = list()
         x = self.conv1(x)
@@ -209,24 +209,24 @@ class ResnetBackbone(nn.Module):
 
         return tuple_features
     
-def ResNet18_bb(pretrained):
-    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,2,2,2]), pretrained=pretrained)
+def ResNet18_bb(arguments):
+    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,2,2,2]), arguments)
     # return ResNet(ResidualBlock_2sl, [3,2,2,2])
 
-def ResNet34_bb(pretrained):
-    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,4,6,3]), pretrained=pretrained)
+def ResNet34_bb(arguments):
+    return ResnetBackbone(ResNet(ResidualBlock_2sl, [3,4,6,3]), arguments)
     # return ResNet(ResidualBlock_2sl, [3,4,6,3])
 
-def ResNet50_bb(pretrained):
-    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), pretrained=pretrained)
+def ResNet50_bb(arguments):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), arguments)
     # return ResNet(ResidualBlock_3sl, [3,4,6,3])
 
-def ResNet101_bb(pretrained):
-    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,23,3]), pretrained=pretrained)
+def ResNet101_bb(arguments):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,23,3]), arguments)
     # return ResNet(ResidualBlock_3sl, [3,4,23,3])
 
-def ResNet152_bb(pretrained):
-    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3]), pretrained=pretrained)
+def ResNet152_bb(arguments):
+    return ResnetBackbone(ResNet(ResidualBlock_3sl, [3,8,36,3]), arguments)
     # return ResNet(ResidualBlock_3sl, [3,8,36,3])
 
 resnet_bbs = {18 : ResNet18_bb, 

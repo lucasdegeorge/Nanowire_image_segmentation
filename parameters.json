@@ -1,6 +1,8 @@
 {
     "model" : {
         "pretrained" : true,
+        "freeze" : true,
+        "pretraining" : "imagenet",
         "in_channels" : 3,
         "nb_classes" : 3,
         "nb_RNlayers" : 50,

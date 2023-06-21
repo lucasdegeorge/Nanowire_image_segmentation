@@ -212,6 +212,7 @@ class Trainer:
                 model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_best.pth'.format(self.mode, self.timestamp)
                 torch.save(self.model.state_dict(), model_path)
                 print("new best epoch: ", epoch_idx)
+                best_val_loss = avg_val_loss
 
 
 
