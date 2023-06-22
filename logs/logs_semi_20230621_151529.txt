@@ -404,3 +404,6 @@ Epoch : 39 - batch nb : 700 -  in 1337ms, loss 0.20657263129949568
 Epoch : 39 - batch nb : 800 -  in 1321ms, loss 0.2028776717185974
 Epoch : 39 - Eval - in 1996ms, val_loss 0.18212465941905975
  END OF TRAINING IN MODE semi- 13/06/2023 - it took 48176131ms
+ 
+ --- Evaluation of model model_semi_20230621_151529 --- 
+ meanIoU: 0.594405448436737

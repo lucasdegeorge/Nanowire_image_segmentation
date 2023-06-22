@@ -58,10 +58,10 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-image_test = image_folder + "/0000327.png"
-model_test = model_folder + "/model_semi_20230621_102522.pth"
+# image_test = image_folder + "/0000327.png"
+# model_test = model_folder + "/model_semi_20230621_102522.pth"
 
-image, prediction = predict(model_test, image_test, display=True, return_input=True)
+# image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
 
 #%% Accuracy
@@ -120,6 +120,6 @@ def compute_accuracy(model_path, eval_dataloarder, printing=False):
 
 #%% Tests 
 
-# model_test = model_folder + "/model_semi_20230620_184101.pth"
+# model_test = model_folder + "/model_semi_20230621_151529.pth"
 
 # meanIoU = compute_accuracy(model_test, eval_labeled_dataloader, True )
