@@ -2,7 +2,7 @@
     "model" : {
         "pretrained" : true,
         "freeze" : true,
-        "pretraining" : "imagenet",
+        "pretraining" : "nasa",
         "in_channels" : 3,
         "nb_classes" : 3,
         "nb_RNlayers" : 50,
@@ -49,6 +49,6 @@
         "nb_epochs" : 40
     }, 
 
-    "batch_size" : 8,
+    "batch_size" : 2,
     "device" : "cuda"
 }

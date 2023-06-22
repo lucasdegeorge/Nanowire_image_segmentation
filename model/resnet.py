@@ -169,10 +169,11 @@ class ResnetBackbone(nn.Module):
 
         if pretrained:
             model = torchvision.models.resnet50(weights=torchvision.models.ResNet50_Weights.DEFAULT)
+            print("pretrained")
             if pretraining == "nasa":
+                print("nasa")
                 url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
                 model.load_state_dict(model_zoo.load_url(url))
-            print("pretrained")
         else:
             model = orig_resnet
             print("random")
