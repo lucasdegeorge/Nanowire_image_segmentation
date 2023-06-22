@@ -13,11 +13,9 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     device = arguments["device"]
     device = torch.device(device)
 
-sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
-
 from dataloader import *
 from losses import * 
-from model import * 
+from model.model import * 
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)

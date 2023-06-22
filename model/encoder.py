@@ -4,9 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import json
 
-from resnet import *
+from .resnet import *
 
-# Device configuration
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
     device = arguments["device"]

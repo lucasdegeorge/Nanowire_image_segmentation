@@ -1,21 +1,15 @@
 #%% 
-import numpy as np
 import torch
 import torch.nn as nn
-from torchvision import datasets
 from torchvision import transforms
 import torchvision
-from torch.utils.data.sampler import SubsetRandomSampler
 import json
-import io
-from PIL import Image
 from torchsummary import summary
 
 # pretrained models 
 import pretrained_microscopy_models as pmm
 import torch.utils.model_zoo as model_zoo
 
-# Device configuration
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
     device = arguments["device"]

@@ -11,16 +11,12 @@ from datetime import datetime
 import time
 from torchsummary import summary
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model")
-
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
+    device = arguments["device"]
+    device = torch.device(device)
 
 from dataloader import * 
-
-print(arguments["trainer"]["nb_epochs"])
 
 #%% dataloarder 
 in_channels = arguments["model"]["in_channels"]
@@ -105,7 +101,7 @@ for image, mask in eval_labeled_dataloader:
 
 #%% Resnet unit tests 
 
-from resnet import *
+from model.resnet import *
 
 # image size in our dataset
 image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
@@ -127,7 +123,7 @@ for i in range(len(res)):
 
 #%% Encoder unit tests 
 
-from encoder import * 
+from model.encoder import * 
 
 print("resnet", 50)
 enc = Encoder(arguments)
@@ -146,6 +142,8 @@ upscale = 8
 num_out_ch = 512
 decoder_in_ch = num_out_ch // 4
 
+nb_classes = arguments["model"]["nb_classes"]
+
 # enc = Encoder(nb_RNlayers=18, in_channels_psp=512)
 # dec = FeatureNoiseDecoder(upscale, decoder_in_ch, num_classes=num_classes)
 # for image, mask in labeled_dataloader:
@@ -159,11 +157,11 @@ decoder_in_ch = num_out_ch // 4
 #     break
 
 enc = Encoder(nb_RNlayers=18, in_channels_psp=512)
-main_dec = MainDecoder(upscale, decoder_in_ch, num_classes=num_classes)
+main_dec = MainDecoder(upscale, decoder_in_ch, num_classes=nb_classes)
 for name, decoder in aux_decoder_dict.items():
     print(name)
-    dec = decoder(upscale, decoder_in_ch, num_classes=num_classes)
-    for image, mask in labeled_dataloader:
+    dec = decoder(upscale, decoder_in_ch, num_classes=nb_classes)
+    for image, mask in micro_labeled_dataloader:
         res = enc(image)
         pred = main_dec(res)
         res = dec(res, pred)
@@ -174,7 +172,7 @@ for name, decoder in aux_decoder_dict.items():
 
 #%% Model unit tests 
 
-from model import * 
+from model.model import * 
 
 # # mode super
 # model_test = Model(mode='super')

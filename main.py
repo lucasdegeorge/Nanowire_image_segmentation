@@ -13,10 +13,8 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
 
 print(device)
 
-sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/model") 
-
 from dataloader import *
-from model import * 
+from model.model import * 
 from trainer import * 
 # from inference_scores import * 
 

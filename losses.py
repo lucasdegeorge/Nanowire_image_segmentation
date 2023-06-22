@@ -2,10 +2,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import sys
-import itertools
-
-sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation") 
 
 from dataloader import * 
 
