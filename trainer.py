@@ -19,12 +19,11 @@ from model.model import *
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
-    trainer_arguments = arguments["trainer"]
 
 #%% 
 
 class Trainer:
-    def __init__(self, model, labeled_loader, unlabeled_loader, eval_loader, arguments=trainer_arguments, device=device, timestamp=None):
+    def __init__(self, model, labeled_loader, unlabeled_loader, eval_loader, arguments=arguments, device=device, timestamp=None):
         self.model = model
         self.model.to(device)
         self.mode = self.model.mode
@@ -33,30 +32,32 @@ class Trainer:
         else: self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
         # supervised loss
-        self.sup_loss_mode = arguments["sup_loss"]
+        self.sup_loss_mode = arguments["trainer"]["sup_loss"]
         
         # unsupervised loss
-        self.unsup_loss_mode = arguments["unsup_loss"]
-        self.weight_ul = arguments["weight_ul"]
+        self.unsup_loss_mode = arguments["trainer"]["unsup_loss"]
+        self.weight_ul_max = arguments["trainer"]["weight_ul_max"]
          
         # optimizer 
-        if arguments["optimizer"] == "sgd":
-            self.optimizer = torch.optim.SGD(self.model.parameters(), lr=arguments["optimizer_args"]["lr"], momentum=arguments["optimizer_args"]["momentum"])
+        if arguments["trainer"]["optimizer"] == "sgd":
+            self.optimizer = torch.optim.SGD(self.model.parameters(), lr=arguments["trainer"]["optimizer_args"]["lr"], momentum=arguments["trainer"]["optimizer_args"]["momentum"])
         else:
             raise ValueError("optimizer has an invalid value. Must be in ['sgd']")
         
         # scheduler
-        if arguments["scheduler"] == "OneCycleLR":
-            self.scheduler = OneCycleLR(self.optimizer, max_lr = 1e-2, steps_per_epoch = 8, epochs = arguments["nb_epochs"], anneal_strategy = 'cos')
-        elif arguments["scheduler"] == "CosineAnnealingLR":
+        if arguments["trainer"]["scheduler"] == "OneCycleLR":
+            self.scheduler = OneCycleLR(self.optimizer, max_lr = 1e-2, steps_per_epoch = 8, epochs = arguments["trainer"]["nb_epochs"], anneal_strategy = 'cos')
+        elif arguments["trainer"]["scheduler"] == "CosineAnnealingLR":
             self.scheduler = CosineAnnealingLR(self.optimizer, T_max = 40, eta_min = 1e-4)
-        elif arguments["scheduler"] == "CosineAnnealingWarmRestarts":
+        elif arguments["trainer"]["scheduler"] == "CosineAnnealingWarmRestarts":
             self.scheduler = CosineAnnealingWarmRestarts(self.optimizer, t_0=5, T_max = 40, eta_min = 1e-6)
         else:
             self.scheduler = None
             # raise ValueError("scheduler has an invalid value. Must be in ['OneCycleLR', 'CosineAnnealingLR', 'CosineAnnealingWarmRestarts]")
         
-        self.nb_epochs = arguments["nb_epochs"]
+        self.nb_epochs = arguments["trainer"]["nb_epochs"]
+        self.iter_per_epoch = len(unlabeled_loader) # assuming that len(unlabeled) > len(labeled)
+        self.rampup_length = self.nb_epochs * self.iter_per_epoch
 
         # data loaders
         self.labeled_loader = labeled_loader
@@ -127,7 +128,8 @@ class Trainer:
 
             loss_l = supervised_loss(output_l, target_l, mode=self.sup_loss_mode)
             loss_ul = sum([ unsupervised_loss(output, target_ul, mode = self.unsup_loss_mode) for output in aux_outputs_ul]) / len(aux_outputs_ul)
-            loss = loss_l + loss_ul * self.weight_ul
+            w_u = weight_ramp_up(self.iter_per_epoch * epoch_idx + i, self.rampup_length, self.weight_ul_max)
+            loss = loss_l + loss_ul * w_u
 
             loss.backward()
             self.optimizer.step()

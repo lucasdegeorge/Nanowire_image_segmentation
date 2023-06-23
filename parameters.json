@@ -38,7 +38,7 @@
     "trainer" : {
         "sup_loss" : "CE",
         "unsup_loss" : "mse",
-        "weight_ul" : 1,
+        "weight_ul_max" : 3,
         "optimizer" : "sgd",
         "scheduler" : "CosineAnnealingLR",
         "optimizer_args":{

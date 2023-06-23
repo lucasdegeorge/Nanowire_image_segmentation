@@ -44,8 +44,8 @@ micro_unlabeled_dataloader = torch.utils.data.DataLoader(micro_unlabeled_dataset
 
 from trainer import *
 
-timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
+# timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+# writer = SummaryWriter('runs/test_trainer_{}'.format(timestamp))
 
 # # mode super
 model_test = Model(mode='semi')
