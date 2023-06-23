@@ -173,6 +173,7 @@ class ResnetBackbone(nn.Module):
             print("random")
 
         if freeze and pretrained: # We can't freeze if weights are randomly initialized 
+            print("freeze")
             for param in model.parameters():
                 param.requires_grad = False
 

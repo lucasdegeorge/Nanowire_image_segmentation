@@ -1,7 +1,7 @@
 {
     "model" : {
         "pretrained" : true,
-        "freeze" : true,
+        "freeze" : false,
         "pretraining" : "nasa",
         "in_channels" : 3,
         "nb_classes" : 3,
