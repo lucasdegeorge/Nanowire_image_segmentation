@@ -2,7 +2,7 @@
     "model" : {
         "pretrained" : true,
         "freeze" : false,
-        "pretraining" : "nasa",
+        "pretraining" : "imagenet",
         "in_channels" : 3,
         "nb_classes" : 3,
         "nb_RNlayers" : 50,
@@ -42,7 +42,7 @@
         "optimizer" : "sgd",
         "scheduler" : "CosineAnnealingLR",
         "optimizer_args":{
-            "lr": 1e-2,
+            "lr": 1e-3,
             "weight_decay": 1e-4,
             "momentum": 0.9
         },
