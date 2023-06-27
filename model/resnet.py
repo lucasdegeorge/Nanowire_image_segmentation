@@ -252,9 +252,9 @@ resnet_bbs = {18 : ResNet18_bb,
 #     url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
 #     missing, unexpected = model.load_state_dict(model_zoo.load_url(url), strict=True)
 
-original = ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), arguments)
+# original = ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), arguments)
 
-summary(original.cuda(), (3, 1024, 1024))
+# summary(original.cuda(), (3, 1024, 1024))
 
 # image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
 # convert_tensor = transforms.ToTensor()
