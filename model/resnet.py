@@ -172,8 +172,8 @@ class ResnetBackbone(nn.Module):
             model = orig_resnet
             print("random")
 
-        if freeze and pretrained: # We can't freeze if weights are randomly initialized 
-            print("freeze")
+        if freeze=="full" and pretrained: # We can't freeze if weights are randomly initialized 
+            print("full freeze")
             for param in model.parameters():
                 param.requires_grad = False
 
@@ -186,6 +186,15 @@ class ResnetBackbone(nn.Module):
         self.layer2 = model.layer2
         self.layer3 = model.layer3
         self.layer4 = model.layer4
+
+        if freeze=="2layers" and pretrained:
+            print("2layers freeze")
+            self.conv1.requires_grad = False
+            for param in self.layer1.parameters():
+                param.requires_grad = False
+            for param in self.layer2.parameters():
+                param.requires_grad = False
+
 
     def forward(self, x):
         tuple_features = list()
@@ -243,9 +252,9 @@ resnet_bbs = {18 : ResNet18_bb,
 #     url = pmm.util.get_pretrained_microscopynet_url('resnet50', 'micronet')
 #     missing, unexpected = model.load_state_dict(model_zoo.load_url(url), strict=True)
 
-# original = ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), arguments)
+original = ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), arguments)
 
-# summary(original.cuda(), (3, 1024, 1024))
+summary(original.cuda(), (3, 1024, 1024))
 
 # image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
 # convert_tensor = transforms.ToTensor()

@@ -1,8 +1,8 @@
 {
     "model" : {
         "pretrained" : true,
-        "freeze" : false,
-        "pretraining" : "imagenet",
+        "freeze" : "2layers",
+        "pretraining" : "nasa",
         "in_channels" : 3,
         "nb_classes" : 3,
         "nb_RNlayers" : 50,

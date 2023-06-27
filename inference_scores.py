@@ -58,8 +58,8 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-# image_test = image_folder + "/0006527.png"
-# model_test = model_folder + "/model_semi_20230622_095334_best.pth"
+# image_test = image_folder + "/0006330.png"
+# model_test = model_folder + "/model_semi_20230623_114338_best.pth"
 
 # image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
