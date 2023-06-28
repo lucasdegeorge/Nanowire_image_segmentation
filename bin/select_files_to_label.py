@@ -16,8 +16,8 @@ def select_random_files(source_folder, destination_folder, num_files):
         destination_path = os.path.join(destination_folder, file_name)
         shutil.move(source_path, destination_path)
 
-source_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
-destination_folder = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
-num_files = 200
+source_folder = "D:/Images_nanomax/unlabeled_images - Copie"
+destination_folder = "D:/Images_nanomax/labeled_images"
+num_files = 275
 
 select_random_files(source_folder, destination_folder, num_files)
