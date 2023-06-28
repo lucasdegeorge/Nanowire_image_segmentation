@@ -1,9 +1,9 @@
 {
     "model" : {
         "pretrained" : true,
-        "freeze" : "2layers",
+        "freeze" : "full",
         "pretraining" : "nasa",
-        "in_channels" : 3,
+        "in_channels" : 1,
         "nb_classes" : 3,
         "nb_RNlayers" : 50,
         "isDilation" : true,

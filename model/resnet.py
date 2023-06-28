@@ -178,7 +178,7 @@ class ResnetBackbone(nn.Module):
                 param.requires_grad = False
 
         # Take resnet, except AvgPool and FC
-        self.conv1 = model.conv1
+        self.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)   # for test,  else : model.conv1
         self.bn1 = model.bn1
         self.relu = nn.ReLU()
         self.maxpool = model.maxpool
@@ -254,7 +254,7 @@ resnet_bbs = {18 : ResNet18_bb,
 
 # original = ResnetBackbone(ResNet(ResidualBlock_3sl, [3,4,6,3]), arguments)
 
-# summary(original.cuda(), (3, 1024, 1024))
+# summary(original.cuda(), (1, 1024, 1024))
 
 # image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
 # convert_tensor = transforms.ToTensor()
