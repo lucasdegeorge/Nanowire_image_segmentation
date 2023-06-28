@@ -3,6 +3,8 @@ import os
 import glob
 import shutil
 
+#%% 
+
 def get_next_file_number(folder_path):
     png_files = [f for f in os.listdir(folder_path) if f.endswith('.png')]
     highest_number = 0
@@ -64,3 +66,27 @@ counter = rename_files_two_folders(png_path, output_png, annotation_path, output
 
 # renamed all the unlabeled images
 rename_files(unlabeled_folder, count_restart=True, counter_starter=counter)
+
+#%% 
+
+main_folder_path = "D:/Images_nanomax/unlabeled_images - Copie"
+
+# Initialize a counter
+count = 1
+
+# Iterate over the subfolders and rename the PNG files
+# for folder_name in os.listdir(main_folder_path):
+#     folder_path = os.path.join(main_folder_path, folder_name)
+#     if os.path.isdir(folder_path):
+
+file_list = os.listdir(main_folder_path)
+file_list.sort()  # Sort the file list if necessary
+
+# Rename the files in the folder
+for filename in file_list:
+    if filename.endswith('.png'):
+        new_filename = f'1_{count:06}.png'  # Format the new filename
+        file_path = os.path.join(main_folder_path, filename)
+        new_file_path = os.path.join(main_folder_path, new_filename)  # Save in main folder
+        os.rename(file_path, new_file_path)
+        count += 1
