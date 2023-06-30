@@ -32,7 +32,7 @@ class pix2pix_trainer:
         self.d_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))
         self.nb_epochs = 50
 
-        self.train_dataloader, _ = get_dataloaders(in_channels, batch_size, unlabeled=False, test_size=0.)
+        self.train_dataloader, _ = get_dataloaders(in_channels, batch_size, unlabeled=False, split=False)
         print(len(self.train_dataloader))
 
     def train_1epoch(self, epoch_idx, tb_writer):

@@ -121,7 +121,7 @@ def save_and_load(in_channels, image_folder, mask_folder=None, folder_where_writ
 
 # Labeled data and masks
 
-def load_labeled_data(in_channels, test_size, image_dir, annotation_dir, folder_where_write):
+def load_labeled_data(in_channels, image_dir, annotation_dir, folder_where_write, split=True):
     if in_channels == 3: file_name = "labeled_images_3ch.pt"
     elif in_channels == 1: file_name = "labeled_images_1ch.pt"
     else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
@@ -134,9 +134,11 @@ def load_labeled_data(in_channels, test_size, image_dir, annotation_dir, folder_
         save_and_load(in_channels, image_dir, annotation_dir, folder_where_write)
         labeled_images = torch.load(folder_where_write + "/" + file_name)
         masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
-    train_images, eval_images, train_masks, eval_masks = train_test_split(labeled_images, masks, test_size=test_size, random_state=42)
-    return train_images, eval_images, train_masks, eval_masks
-
+    if split:
+        train_images, eval_images, train_masks, eval_masks = train_test_split(labeled_images, masks, test_size=0.2, random_state=42)
+        return train_images, eval_images, train_masks, eval_masks
+    else:
+        return labeled_images, masks
 
 class train_LabeledDataset(torch.utils.data.Dataset):
     def __init__(self, images, masks, transform=None):
@@ -212,22 +214,36 @@ class UnlabeledDataset(torch.utils.data.Dataset):
 
 # Definition 
 
-def get_dataloaders(in_channels, batch_size, unlabeled=True, test_size=0.2, labeled_image_dir=labeled_image_dir, masks_dir=masks_dir, unlabeled_image_dir=unlabeled_image_dir, folder_where_write=folder_where_write):
-    train_images, eval_images, train_masks, eval_masks = load_labeled_data(in_channels, test_size, labeled_image_dir, masks_dir, folder_where_write=folder_where_write)
-
-    train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
-    eval_labeled_dataset = eval_LabeledDataset(eval_images, eval_masks, transform=None)
-    train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
-    eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
-    print("labeled ok")
-
-    if unlabeled:
-        unlabeled_dataset = UnlabeledDataset(in_channels, unlabeled_image_dir, transform=None)
-        unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
-        print("unlabeled ok")
-        return train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader
-
-    return train_labeled_dataloader, eval_labeled_dataloader
+def get_dataloaders(in_channels, batch_size, unlabeled=True, split=True, labeled_image_dir=labeled_image_dir, masks_dir=masks_dir, unlabeled_image_dir=unlabeled_image_dir, folder_where_write=folder_where_write):
     
+    if split:
+        train_images, eval_images, train_masks, eval_masks = load_labeled_data(in_channels, labeled_image_dir, masks_dir, folder_where_write=folder_where_write, split=split)
+        train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
+        eval_labeled_dataset = eval_LabeledDataset(eval_images, eval_masks, transform=None)
+        train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
+        eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
+        print("labeled ok - split True")
+
+        if unlabeled:
+            unlabeled_dataset = UnlabeledDataset(in_channels, unlabeled_image_dir, transform=None)
+            unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
+            print("unlabeled ok")
+            return train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader
+
+        return train_labeled_dataloader, eval_labeled_dataloader
+    
+    else:
+        train_images, train_masks = load_labeled_data(in_channels, labeled_image_dir, masks_dir, folder_where_write=folder_where_write, split=split)
+        train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
+        train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
+        print("labeled ok - split False")
+
+        if unlabeled:
+            unlabeled_dataset = UnlabeledDataset(in_channels, unlabeled_image_dir, transform=None)
+            unlabeled_dataloader = torch.utils.data.DataLoader(unlabeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
+            print("unlabeled ok")
+            return train_labeled_dataloader, unlabeled_dataloader
+
+        return train_labeled_dataloader
 
 # train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(in_channels=in_channels, batch_size=batch_size, labeled=True)
