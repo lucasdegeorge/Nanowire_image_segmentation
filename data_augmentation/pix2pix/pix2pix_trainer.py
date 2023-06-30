@@ -8,17 +8,21 @@ from torch.utils.data import DataLoader
 import time
 from datetime import datetime, date
 import json
-from dataloader import *
 from torch.utils.tensorboard import SummaryWriter
+from pix2pix_dataloader import *
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
     device = arguments["device"]
     device = torch.device(device)
 
+# dir 
+image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
+mask_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
+
 
 class pix2pix_trainer:
-    def __init__(self, generator, discriminator, criterions, lr, batch_size, in_channels, timestamp=None) -> None:
+    def __init__(self, generator, discriminator, criterions, lr, batch_size, timestamp=None) -> None:
         self.generator = generator
         self.discriminator = discriminator
 
@@ -32,7 +36,7 @@ class pix2pix_trainer:
         self.d_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))
         self.nb_epochs = 50
 
-        self.train_dataloader, _ = get_dataloaders(in_channels, batch_size, unlabeled=False, split=False)
+        self.train_dataloader = create_dataloader(image_dir, mask_dir, batch_size, shuffle=True, pin_memory=True)
         print(len(self.train_dataloader))
 
     def train_1epoch(self, epoch_idx, tb_writer):
@@ -78,7 +82,7 @@ class pix2pix_trainer:
                 if i==0: last_loss = running_loss
                 else: last_loss = running_loss / 2
                 # logs file 
-                with open("data_augmentation/pix2pix/logs/logs_pix2pix_" + str(self.timestamp) + ".txt","a") as logs:
+                with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/data_augmentation/pix2pix/logs/logs_pix2pix_" + str(self.timestamp) + ".txt","a") as logs:
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
@@ -91,8 +95,8 @@ class pix2pix_trainer:
         return last_loss
 
     def train(self):
-        writer = SummaryWriter('data_augmentation/pix2pix/runs/trainer_{}'.format(self.timestamp))
-        with open("data_augmentation/pix2pix/logs/logs_pix2pix_" + str(self.timestamp) + ".txt","a") as logs :
+        writer = SummaryWriter('runs/trainer_{}'.format(self.timestamp))
+        with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/data_augmentation/pix2pix/logs/logs_pix2pix_" + str(self.timestamp) + ".txt","a") as logs :
             logs.write("\n \n")
             logs.write("\nTraining - " + str(self.timestamp) + "\n")
             logs.close()
