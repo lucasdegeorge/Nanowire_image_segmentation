@@ -1,21 +1,23 @@
 #%% 
-
 import time
 import torch
 from torch.utils.tensorboard import SummaryWriter
 from datetime import date, datetime
 import json
+import sys
+
+sys.path.append("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation")
+
+from data_augmentation.pix2pix.generator import UnetGenerator
+from data_augmentation.pix2pix.discriminator import ConditionalDiscriminator
+from data_augmentation.pix2pix.pix2pix_loss import GeneratorLoss, DiscriminatorLoss
+from data_augmentation.pix2pix.pix2pix_trainer import *
+from dataloader import *
 
 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
     arguments = json.load(f)
     device = arguments["device"]
     device = torch.device(device)
-
-from dataloader import *
-from pix2pix.generator import UnetGenerator
-from pix2pix.discriminator import ConditionalDiscriminator
-from pix2pix.pix2pix_loss import GeneratorLoss, DiscriminatorLoss
-from pix2pix_trainer import *
 
 def main():
 

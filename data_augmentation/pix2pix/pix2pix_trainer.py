@@ -8,9 +8,6 @@ from torch.utils.data import DataLoader
 import time
 from datetime import datetime, date
 import json
-from pix2pix.generator import UnetGenerator
-from pix2pix.discriminator import ConditionalDiscriminator
-from pix2pix.pix2pix_loss import GeneratorLoss, DiscriminatorLoss
 from dataloader import *
 from torch.utils.tensorboard import SummaryWriter
 
