@@ -30,7 +30,7 @@ class pix2pix_trainer:
         else: self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
         self.g_criterions = criterions[0]
-        self.d_criterions = criterions[0]
+        self.d_criterions = criterions[1]
 
         self.g_optimizer = torch.optim.Adam(generator.parameters(), lr=lr, betas=(0.5, 0.999))
         self.d_optimizer = torch.optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))

@@ -27,8 +27,10 @@ filetype = '.png'
 
 class ImageMaskDataset(Dataset):
     def __init__(self, images, masks, transform=None):
-        self.images = [ t.to(device) for t in images]
-        self.masks = [ t.to(device) for t in masks]
+        self.images = images
+        self.masks = masks
+        # self.images = [ t.to(device) for t in images]
+        # self.masks = [ t.to(device) for t in masks]
         self.transform = transform
 
     def __len__(self):
@@ -44,7 +46,7 @@ class ImageMaskDataset(Dataset):
     
 
 def create_dataloader(image_folder, mask_folder, batch_size, shuffle=True, pin_memory=True):
-    
+
     # load and convet images
     converter = T.ToTensor()
     images = []
@@ -53,20 +55,22 @@ def create_dataloader(image_folder, mask_folder, batch_size, shuffle=True, pin_m
     for filename in os.listdir(image_folder):
         if filename.endswith(filetype):
             image_path = os.path.join(image_folder, filename)
-            image = Image.open(image_path).convert("L")
+            image = Image.open(image_path).convert("RGB")
             image = converter(image)
             images.append(image)
 
             if mask_folder is not None:
                 mask_path = os.path.join(mask_folder, filename[:-4] + '_mask.png')
                 if os.path.isfile(mask_path):
-                    mask = Image.open(mask_path).convert("L")
+                    mask = Image.open(mask_path).convert("RGB")
                     mask = T.functional.to_tensor(mask) * 255
-                    mask = mask.to(torch.uint8) 
+                    # mask = mask.to(torch.uint8) 
                     masks.append(mask)
+    # return images, masks
 
     dataset = ImageMaskDataset(images, masks)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, drop_last=True, pin_memory=pin_memory)
+    print("dataloader ok")
     return dataloader
 
 # images, masks = create_dataloader(image_folder, mask_folder, batch_size=2, shuffle=True, pin_memory=True)
