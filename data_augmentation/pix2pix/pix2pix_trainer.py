@@ -80,7 +80,7 @@ class pix2pix_trainer:
             running_loss[1] += d_loss.item()
             if i % 2 == 0:
                 if i==0: last_loss = running_loss
-                else: last_loss = running_loss / 2
+                else: last_loss = [ x / 2 for x in running_loss ]
                 # logs file 
                 with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/data_augmentation/pix2pix/logs/logs_pix2pix_" + str(self.timestamp) + ".txt","a") as logs:
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
@@ -90,7 +90,7 @@ class pix2pix_trainer:
                 tb_x = epoch_idx * len(self.train_dataloader) + i
                 tb_writer.add_scalar('g_Loss/train', last_loss[0], tb_x)
                 tb_writer.add_scalar('d_Loss/train', last_loss[1], tb_x)
-                running_loss = 0.
+                running_loss = [0., 0.]
 
         return last_loss
 
