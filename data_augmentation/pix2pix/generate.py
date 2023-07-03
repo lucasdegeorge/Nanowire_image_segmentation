@@ -31,9 +31,11 @@ def generate(model_path, mask_path, class_values=[0,127,255], display=True, retu
     generator.eval()
 
     # load the image
-    mask = Image.open(mask_path).convert('RGB')
+    mask = Image.open(mask_path).convert('L')
     if mask.size != (1024,1024): raise ValueError("Up to now, images can only have (1024,1024) shape")
     mask = T.functional.to_tensor(mask) * 255
+
+    print(mask.shape)
 
     # generate
     prediction = generator(mask.unsqueeze(0)).squeeze().permute(1,2,0)
@@ -64,7 +66,7 @@ def generate(model_path, mask_path, class_values=[0,127,255], display=True, retu
 #%% Tests
 
 mask_test = mask_folder + "/0000001_mask.png"
-model_test = model_folder + "/pix2pix_generator_20230703_094231.pth"
+model_test = model_folder + "/pix2pix_generator_20230703_112923.pth"
 
 mask, pred = generate(model_test, mask_test, display=True, return_input=True)
 
