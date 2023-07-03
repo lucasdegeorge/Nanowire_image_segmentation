@@ -38,7 +38,8 @@ def generate(model_path, mask_path, class_values=[0,127,255], display=True, retu
     print(mask.shape)
 
     # generate
-    prediction = generator(mask.unsqueeze(0)).squeeze().permute(1,2,0)
+    prediction = generator(mask.unsqueeze(0)).squeeze()
+    print(prediction.shape)
     # prediction = prediction.permute(1,2,0)
     # prediction = torch.softmax(prediction, dim=-1)
     # prediction = torch.argmax(prediction, dim=-1)
