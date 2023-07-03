@@ -99,10 +99,10 @@ class Generator(nn.Module):
     
 class UnetGenerator(nn.Module):
     """Unet-like Encoder-Decoder model"""
-    def __init__(self,):
+    def __init__(self,in_channels=1, out_channels=1):
         super().__init__()
         
-        self.encoder1 = nn.Conv2d(3, 64, kernel_size=4, stride=2, padding=1)
+        self.encoder1 = nn.Conv2d(in_channels, 64, kernel_size=4, stride=2, padding=1)
         self.encoder2 = EncoderBlock(64, 128)
         self.encoder3 = EncoderBlock(128, 256)
         self.encoder4 = EncoderBlock(256, 512)
@@ -118,7 +118,7 @@ class UnetGenerator(nn.Module):
         self.decoder4 = DecoderBlock(2*512, 256)
         self.decoder3 = DecoderBlock(2*256, 128)
         self.decoder2 = DecoderBlock(2*128, 64)
-        self.decoder1 = nn.ConvTranspose2d(2*64, 3, kernel_size=4, stride=2, padding=1)
+        self.decoder1 = nn.ConvTranspose2d(2*64, out_channels, kernel_size=4, stride=2, padding=1)
         
     def forward(self, x):
         # encoder forward

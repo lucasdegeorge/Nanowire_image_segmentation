@@ -55,14 +55,14 @@ def create_dataloader(image_folder, mask_folder, batch_size, shuffle=True, pin_m
     for filename in os.listdir(image_folder):
         if filename.endswith(filetype):
             image_path = os.path.join(image_folder, filename)
-            image = Image.open(image_path).convert("RGB")
+            image = Image.open(image_path).convert("L")
             image = converter(image)
             images.append(image)
 
             if mask_folder is not None:
                 mask_path = os.path.join(mask_folder, filename[:-4] + '_mask.png')
                 if os.path.isfile(mask_path):
-                    mask = Image.open(mask_path).convert("RGB")
+                    mask = Image.open(mask_path).convert("L")
                     mask = T.functional.to_tensor(mask) * 255
                     # mask = mask.to(torch.uint8) 
                     masks.append(mask)
