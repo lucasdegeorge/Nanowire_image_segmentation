@@ -23,7 +23,7 @@ def main():
     print("start training")
     start_time = time.time()
 
-    batch_size = 2
+    batch_size = 8
     lr = 0.0002
 
     generator = UnetGenerator().to(device)
