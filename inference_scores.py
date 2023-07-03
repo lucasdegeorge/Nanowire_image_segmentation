@@ -36,7 +36,7 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
     # load the image
     converter = T.ToTensor()
-    image = Image.open(image).convert('RGB')
+    image = Image.open(image).convert('L')
     if image.size != (1024,1024): raise ValueError("Up to now, images can only have (1024,1024) shape")
     image = converter(image).to(device)
 
@@ -58,10 +58,10 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-# image_test = image_folder + "/0006330.png"
-# model_test = model_folder + "/model_semi_20230623_114338_best.pth"
+image_test = image_folder + "/0006330.png"
+model_test = model_folder + "/model_semi_20230628_112952.pth"
 
-# image, prediction = predict(model_test, image_test, display=True, return_input=True)
+image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
 
 #%% Accuracy
