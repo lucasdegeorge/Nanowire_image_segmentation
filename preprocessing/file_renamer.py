@@ -62,29 +62,36 @@ output_anno = "C:/Users/lucas.degeorge/Documents/Images/annotations_renamed"
 unlabeled_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
 
 # rename the labeled images from apeer
-counter = rename_files_two_folders(png_path, output_png, annotation_path, output_anno)
+# counter = rename_files_two_folders(png_path, output_png, annotation_path, output_anno)
 
 # renamed all the unlabeled images
-rename_files(unlabeled_folder, count_restart=True, counter_starter=counter)
+# rename_files(unlabeled_folder, count_restart=True, counter_starter=counter)
 
 #%% 
 
-main_folder_path = "D:/Images_nanomax/Images/multiple_NW_images"
+main_folder_path = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
+mask_folder = None
 
 # Initialize a counter
-count = 186552
+count = 1
 
-for folder_name in os.listdir(main_folder_path):
-    folder_path = os.path.join(main_folder_path, folder_name)
-    if os.path.isdir(folder_path):
-        file_list = os.listdir(folder_path)
-        file_list.sort()  # Sort the file list if necessary
+# for folder_name in os.listdir(main_folder_path):
+#     folder_path = os.path.join(main_folder_path, folder_name)
+#     if os.path.isdir(folder_path):
+file_list = os.listdir(main_folder_path)
+file_list.sort()  # Sort the file list if necessary
 
-        # Rename the files in the folder
-        for filename in file_list:
-            if filename.endswith('.png'):
-                new_filename = f'{count:06}.png'  # Format the new filename
-                file_path = os.path.join(folder_path, filename)
-                new_file_path = os.path.join(main_folder_path, new_filename)  # Save in main folder
-                os.rename(file_path, new_file_path)
-                count += 1
+# Rename the files in the folder
+for filename in file_list:
+    if filename.endswith('.png'):
+        new_filename = f'lul_{count:06}.png'  # Format the new filename
+        file_path = os.path.join(main_folder_path, filename)
+        new_file_path = os.path.join(main_folder_path, new_filename)  # Save in main folder
+        os.rename(file_path, new_file_path)
+        # if mask_folder is not None:
+        #         mask_path = os.path.join(mask_folder, filename[:-4] + '_mask.png')
+        #         if os.path.isfile(mask_path):
+        #             new_filename = f'l_{count:06}_mask.png'
+        #             new_file_path = os.path.join(mask_folder, new_filename)
+        #             os.rename(mask_path, new_file_path)
+        count += 1
