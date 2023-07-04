@@ -20,7 +20,7 @@ c2n = True
 if c2n:
     labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
     masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
-    unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/little_unlabeled_images" #"D:/Images_nanomax/Images/unlabeled_images"
+    unlabeled_image_dir = "D:/Images_nanomax/Images/unlabeled_images" # "C:/Users/lucas.degeorge/Documents/Images/little_unlabeled_images" 
     folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
 else:
     labeled_image_dir = "C:/Users/lucas/Desktop/labeled_images"

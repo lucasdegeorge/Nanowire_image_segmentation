@@ -39,14 +39,14 @@
         "sup_loss" : "CE",
         "unsup_loss" : "mse",
         "weight_ul_max" : 3,
-        "optimizer" : "sgd",
-        "scheduler" : "CosineAnnealingLR",
+        "optimizer" : "adam",
+        "scheduler" : "None",
         "optimizer_args":{
-            "lr": 1e-3,
+            "lr": 1e-5,
             "weight_decay": 1e-4,
             "momentum": 0.9
         },
-        "nb_epochs" : 40
+        "nb_epochs" : 10
     }, 
 
     "batch_size" : 2,

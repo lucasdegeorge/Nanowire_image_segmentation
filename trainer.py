@@ -41,6 +41,8 @@ class Trainer:
         # optimizer 
         if arguments["trainer"]["optimizer"] == "sgd":
             self.optimizer = torch.optim.SGD(self.model.parameters(), lr=arguments["trainer"]["optimizer_args"]["lr"], momentum=arguments["trainer"]["optimizer_args"]["momentum"])
+        elif arguments["trainer"]["optimizer"] == "adam":
+            self.optimizer = torch.optim.Adam(self.model.parameters(), lr=arguments["trainer"]["optimizer_args"]["lr"])
         else:
             raise ValueError("optimizer has an invalid value. Must be in ['sgd']")
         
