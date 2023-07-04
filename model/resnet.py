@@ -179,8 +179,7 @@ class ResnetBackbone(nn.Module):
                 param.requires_grad = False
 
         # Take resnet, except AvgPool and FC
-        if self.in_channels == 1:
-            self.preconv = nn.Conv2d(1, 3, kernel_size=1, stride=1, padding=0, bias=False)
+        self.preconv = nn.Conv2d(1, 3, kernel_size=1, stride=1, padding=0, bias=False)
         self.conv1 = model.conv1
         self.bn1 = model.bn1
         self.relu = nn.ReLU()

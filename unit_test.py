@@ -104,17 +104,17 @@ for image, mask in eval_labeled_dataloader:
 from model.resnet import *
 
 # image size in our dataset
-image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/0000001.png").convert("RGB")
+image = Image.open("C:/Users/lucas.degeorge/Documents/Images/labeled_images/l_000001.png").convert("L")
 convert_tensor = transforms.ToTensor()
 img = convert_tensor(image) 
 img = torch.unsqueeze(img, dim=0)
 
 # image size as in ImageNet 
-image1 = image.resize((224,224))
-img1 = convert_tensor(image1) 
-img1 = torch.unsqueeze(img1, dim=0)
+# image1 = image.resize((224,224))
+# img1 = convert_tensor(image1) 
+# img1 = torch.unsqueeze(img1, dim=0)
 
-rn18 = ResNet50_bb(pretrained=False)
+rn18 = ResNet50_bb(arguments)
 res = rn18(img)
 
 for i in range(len(res)):

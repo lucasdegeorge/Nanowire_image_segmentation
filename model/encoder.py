@@ -47,6 +47,7 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
 
         self.nb_RNlayers = arguments["model"]["nb_RNlayers"]
+        self.in_channels = arguments["model"]["in_channels"]
 
         if self.nb_RNlayers in [50, 101, 152]: self.in_channels_psp = 2048
         elif self.nb_RNlayers in [18, 34]: self.in_channels_psp = 512
@@ -54,13 +55,22 @@ class Encoder(nn.Module):
 
         model = resnet_bbs[self.nb_RNlayers](arguments)
         
-        self.base = nn.Sequential(
-            nn.Sequential(model.conv1, model.bn1, model.relu, model.maxpool),
-            model.layer1,
-            model.layer2,
-            model.layer3,
-            model.layer4
-        )
+        if self.in_channels == 1:
+            self.base = nn.Sequential(model.preconv, 
+                nn.Sequential(model.conv1, model.bn1, model.relu, model.maxpool),
+                model.layer1,
+                model.layer2,
+                model.layer3,
+                model.layer4
+            )
+        else:
+            self.base = nn.Sequential(
+                nn.Sequential(model.conv1, model.bn1, model.relu, model.maxpool),
+                model.layer1,
+                model.layer2,
+                model.layer3,
+                model.layer4
+            )
         self.psp = _PSPModule(self.in_channels_psp, bin_sizes=[1, 2, 3, 6])
 
     def forward(self, x):
