@@ -20,7 +20,7 @@ c2n = True
 if c2n:
     labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
     masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
-    unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
+    unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/little_unlabeled_images" #"D:/Images_nanomax/Images/unlabeled_images"
     folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
 else:
     labeled_image_dir = "C:/Users/lucas/Desktop/labeled_images"
@@ -82,7 +82,7 @@ def save_and_load(in_channels, image_folder, mask_folder=None, folder_where_writ
     elif in_channels == 1:
         extension = "_1ch.pt"
         conversion_mode = "L"
-    else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
+    else: raise ValueError("in_channels must be 1 or 3 but is " + str(in_channels))
 
     converter = T.ToTensor()
     images = []
@@ -111,7 +111,7 @@ def save_and_load(in_channels, image_folder, mask_folder=None, folder_where_writ
         folder_name = folder_where_write + "/" + mask_folder.split("/")[-1] + ".pt"
         torch.save(masks, folder_name)
 
-# save_and_load(labeled_image_dir, masks_dir)
+# save_and_load(1, labeled_image_dir, masks_dir)
 # save_and_load(unlabeled_image_dir, None)
 # labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
 # masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
@@ -190,8 +190,20 @@ def load_unlabeled_data(in_channels, image_dir, folder_where_write):
         unlabeled_images = torch.load(folder_where_write + "/" + file_name)
     except FileNotFoundError:
         print("file unlabeled_images.pt not found. in_channels: ", in_channels)
-        save_and_load(in_channels, image_dir, None, folder_where_write)
-        unlabeled_images = torch.load(folder_where_write + "/" + file_name)
+        # save_and_load(in_channels, image_dir, None, folder_where_write)
+        # unlabeled_images = torch.load(folder_where_write + "/" + file_name)
+
+        unlabeled_images = []
+        converter = T.ToTensor()
+        for filename in os.listdir(image_dir):
+            if filename.endswith(filetype):
+                image_path = os.path.join(image_dir, filename)
+                image = Image.open(image_path).convert("L")
+                # if image.size != (1024,1024): image = image.resize((1024,1024))
+                image = converter(image)
+                unlabeled_images.append(image)
+
+
     # unlabeled_images = [ t.to(device) for t in unlabeled_images]
     return unlabeled_images
 
@@ -246,4 +258,4 @@ def get_dataloaders(in_channels, batch_size, unlabeled=True, split=True, labeled
 
         return train_labeled_dataloader
 
-# train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(in_channels=in_channels, batch_size=batch_size, labeled=True)
+# train_labeled_dataloader, eval_labeled_dataloader, unlabeled_dataloader = get_dataloaders(in_channels=in_channels, batch_size=batch_size, unlabeled=True)

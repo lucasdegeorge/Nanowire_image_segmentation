@@ -160,6 +160,7 @@ class ResnetBackbone(nn.Module):
         pretrained = arguments["model"]["pretrained"]
         freeze = arguments["model"]["freeze"]
         pretraining = arguments["model"]["pretraining"]
+        self.in_channels = arguments["model"]["in_channels"]
 
         if pretrained:
             model = torchvision.models.resnet50(weights=torchvision.models.ResNet50_Weights.DEFAULT)
@@ -178,7 +179,9 @@ class ResnetBackbone(nn.Module):
                 param.requires_grad = False
 
         # Take resnet, except AvgPool and FC
-        self.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)   # for test,  else : model.conv1
+        if self.in_channels == 1:
+            self.preconv = nn.Conv2d(1, 3, kernel_size=1, stride=1, padding=0, bias=False)
+        self.conv1 = model.conv1
         self.bn1 = model.bn1
         self.relu = nn.ReLU()
         self.maxpool = model.maxpool
@@ -198,6 +201,8 @@ class ResnetBackbone(nn.Module):
 
     def forward(self, x):
         tuple_features = list()
+        if self.in_channels==1:
+            x = self.preconv(x)
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)

@@ -25,11 +25,10 @@ def main():
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
     with open("logs/logs_" + mode + "_" + str(timestamp) + ".txt","a") as logs :
-        logs.write("START TRAINING IN MODE " + mode + "- 14/06/2023 ")
+        logs.write("START TRAINING IN MODE " + mode)
         logs.close()
     print("start training in mode " + mode)
-    start_time = time.time()
-
+    
     model = Model(mode=mode)
     model.to(device)
 
@@ -39,7 +38,9 @@ def main():
         in_channels = arguments["model"]["in_channels"]
         print(batch_size)
 
+    start_time = time.time()
     train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(in_channels, batch_size)
+    print("dataloading took ", int(1000*(time.time()-start_time)), "ms")
     print(len(unlabeled_dataloader))
     trainer = Trainer(model, train_labeled_dataloader, unlabeled_dataloader, eval_labeled_dataloader, timestamp=timestamp)
 
@@ -48,7 +49,7 @@ def main():
     trainer.train()
     print("end of training in mode " + mode)
     with open("logs/logs_" + mode + "_" + str(timestamp) + ".txt","a") as logs :
-        logs.write("\n END OF TRAINING IN MODE " + mode + "- 13/06/2023 - it took " + str(int(1000*(time.time()-start_time))) + "ms")
+        logs.write("\n END OF TRAINING IN MODE " + mode + "- it took " + str(int(1000*(time.time()-start_time))) + "ms")
         logs.close()
 
     # meanIoU = compute_accuracy(model_name, eval_labeled_dataloader, True )
