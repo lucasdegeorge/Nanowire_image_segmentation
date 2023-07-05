@@ -112,7 +112,7 @@ def save_and_load(in_channels, image_folder, folder_where_write, mask_folder=Non
         torch.save(masks, folder_name)
 
 # save_and_load(1, labeled_image_dir, folder_where_write, masks_dir)
-save_and_load(1, unlabeled_image_dir, "D:/Images_nanomax/Images", None)
+# save_and_load(1, unlabeled_image_dir, "D:/Images_nanomax/Images", None)
 # labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
 # masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
 # unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
@@ -187,6 +187,7 @@ def load_unlabeled_data(in_channels, image_dir, folder_where_write="D:/Images_na
     else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
     print(in_channels)
     try:
+        print("ok")
         unlabeled_images = torch.load(folder_where_write + "/" + file_name)
     except FileNotFoundError:
         print("file unlabeled_images.pt not found. in_channels: ", in_channels)
