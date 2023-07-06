@@ -208,7 +208,7 @@ class Trainer:
             writer.flush()
 
             # save (best) models
-            model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}.pth'.format(self.mode, self.timestamp)
+            model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_epoch{}.pth'.format(self.mode, self.timestamp, epoch_idx)
             torch.save(self.model.state_dict(), model_path)
             if avg_val_loss < best_val_loss:
                 model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_best.pth'.format(self.mode, self.timestamp)
