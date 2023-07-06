@@ -233,7 +233,7 @@ def get_dataloaders(in_channels, batch_size, unlabeled=True, split=True, labeled
         train_images, eval_images, train_masks, eval_masks = load_labeled_data(in_channels, labeled_image_dir, masks_dir, folder_where_write=folder_where_write, split=split)
         train_labeled_dataset = train_LabeledDataset(train_images, train_masks, transform=None)
         eval_labeled_dataset = eval_LabeledDataset(eval_images, eval_masks, transform=None)
-        train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
+        train_labeled_dataloader = torch.utils.data.DataLoader(train_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True, num_workers=multiprocessing.cpu_count())
         eval_labeled_dataloader = torch.utils.data.DataLoader(eval_labeled_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True) #, num_workers=multiprocessing.cpu_count())
         print("labeled ok - split True")
 

@@ -31,4 +31,4 @@ mask_path = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/resi
 output_path_A = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/enlarged_images"
 output_path_B = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/enlarged_masks"
 
-resize(image_path, mask_path, output_path_A, output_path_B)
+# resize(image_path, mask_path, output_path_A, output_path_B)
