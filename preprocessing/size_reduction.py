@@ -14,14 +14,14 @@ def resize(image_folder, mask_folder, output_folder_A, output_folder_B):
         if filename.endswith("png"):
             image_path = os.path.join(image_folder, filename)
             image = Image.open(image_path).convert("L")
-            image = image.resize((1024,1024), resample=PIL.Image.NEAREST)
+            image = image.resize((256,256), resample=PIL.Image.NEAREST)
             output_image_path = os.path.join(output_folder_A, filename)
             image.save(output_image_path)
             if mask_folder is not None:
                 mask_path = os.path.join(mask_folder, filename[:-4] + '_mask.png')
                 if os.path.isfile(mask_path):
                     mask = Image.open(mask_path).convert("L")
-                    mask = mask.resize((1024,1024), resample=PIL.Image.NEAREST)
+                    mask = mask.resize((256,256), resample=PIL.Image.NEAREST)
                     output_mask_path = os.path.join(output_folder_B, filename[:-4] + '_mask.png')
                     mask.save(output_mask_path)
     

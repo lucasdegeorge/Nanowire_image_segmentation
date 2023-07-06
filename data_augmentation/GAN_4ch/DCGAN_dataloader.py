@@ -11,7 +11,7 @@ from preprocessing.size_reduction import resize
 ## Resize the labeled images 
 image_path = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
 mask_path = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
-output_path_images = "C:/Users/lucas.degeorge/Documents/Images/resized_images/resized_images"
+output_path_images = "C:/Users/lucas.degeorge/Documents/Images/resized_images/resized_labeled_images"
 output_path_masks = "C:/Users/lucas.degeorge/Documents/Images/resized_images/resized_masks"
 where_write = "C:/Users/lucas.degeorge/Documents/Images/resized_images"
 
@@ -67,7 +67,7 @@ def separate_image_mask(combined_tensor, return_PIL=False):
 
 
 # tests : 
-# combined_tensors = combine_image_mask(output_path_A, output_path_B, one_batch=False)
+# combined_tensors = combine_image_mask(output_path_images, output_path_masks, one_batch=False)
 # image, mask = separate_image_mask(combined_tensors[0], True)
 
 def data_processing(image_folder, mask_folder, output_A, output_B, where_write):
@@ -75,3 +75,30 @@ def data_processing(image_folder, mask_folder, output_A, output_B, where_write):
     resize(image_folder, mask_folder, output_A, output_B)
     combined_tensors = combine_image_mask(output_A, output_B, False)
     torch.save(combined_tensors, where_write + "/combined_data")
+
+# data_processing(image_path, mask_path, output_path_images, output_path_masks, where_write)
+
+
+class CombinedDataset(torch.utils.data.Dataset):
+    def __init__(self, pt_path, transform=None):
+        self.transform = transform
+        try:
+            self.combined_images = torch.load(pt_path)
+        except FileNotFoundError:
+            print("file not found: ", pt_path)
+            raise FileNotFoundError
+    
+    def __getitem__(self, index):
+        image = self.combined_images[index]
+        if self.transform is not None:
+            image = self.transform(image)
+        return image
+    
+    def __len__(self):
+        return len(self.combined_images)
+
+
+def get_dataloader(pt_file, batch_size, shuffle=True, pin_memory=True):
+    transform = transforms.Compose([transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    dataset = CombinedDataset(pt_file, transform)
+    return torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, pin_memory=pin_memory)

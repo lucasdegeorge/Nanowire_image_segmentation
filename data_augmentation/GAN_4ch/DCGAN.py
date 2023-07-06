@@ -16,6 +16,7 @@ import matplotlib.animation as animation
 from IPython.display import HTML
 
 from DCGAN_model import *
+from DCGAN_dataloader import *
 
 device = torch.device("cuda")
 
@@ -30,12 +31,8 @@ image_size = 1024
 batch_size = 128 
 
 # dataloaders 
-dataroot = ""
-dataset = dset.ImageFolder(root=dataroot,
-                           transform=transforms.Compose([transforms.ToTensor(),
-                               transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)) ]))
-
-dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
+data_path = "C:/Users/lucas.degeorge/Documents/Images/resized_images/combined_data"
+dataloader = get_dataloader(data_path, batch_size=batch_size, shuffle=True, pin_memory=True)
 
 # Generator
 netG = Generator().to(device)
@@ -121,3 +118,4 @@ def train():
             iters += 1
 
 
+train()

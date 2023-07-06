@@ -87,8 +87,10 @@ def save_and_load(in_channels, image_folder, folder_where_write, mask_folder=Non
     converter = T.ToTensor()
     images = []
     masks = []
+    i=0
     # load and converter images 
     for filename in os.listdir(image_folder):
+        if i % 1000 == 0: print(i)
         if filename.endswith(filetype):
             image_path = os.path.join(image_folder, filename)
             image = Image.open(image_path).convert(conversion_mode)
@@ -104,6 +106,7 @@ def save_and_load(in_channels, image_folder, folder_where_write, mask_folder=Non
                     except RuntimeError:
                         print("mask" + mask_path + "has not been saved")
                         pass
+        i+=1
     # save tensors 
     file_name = folder_where_write + "/" + image_folder.split("/")[-1] + extension
     torch.save(images, file_name)
@@ -112,7 +115,7 @@ def save_and_load(in_channels, image_folder, folder_where_write, mask_folder=Non
         torch.save(masks, folder_name)
 
 # save_and_load(1, labeled_image_dir, folder_where_write, masks_dir)
-# save_and_load(1, unlabeled_image_dir, "D:/Images_nanomax/Images", None)
+save_and_load(1, unlabeled_image_dir, "D:/Images_nanomax/Images", None)
 # labeled_images = torch.load(folder_where_write + "/" + "labeled_images.pt")
 # masks = torch.load(folder_where_write + "/" + "binary_masks.pt")
 # unlabeled_images = torch.load(folder_where_write + "/" + "unlabeled_images.pt")
@@ -187,7 +190,6 @@ def load_unlabeled_data(in_channels, image_dir, folder_where_write="D:/Images_na
     else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
     print(in_channels)
     try:
-        print("ok")
         unlabeled_images = torch.load(folder_where_write + "/" + file_name)
     except FileNotFoundError:
         print("file unlabeled_images.pt not found. in_channels: ", in_channels)
