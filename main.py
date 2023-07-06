@@ -23,6 +23,7 @@ def main():
     torch.cuda.empty_cache()
     mode = "semi"
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    print(timestamp)
 
     with open("logs/logs_" + mode + "_" + str(timestamp) + ".txt","a") as logs :
         logs.write("START TRAINING IN MODE " + mode)
