@@ -15,7 +15,7 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     device = torch.device(device)
 
 model_folder = "C:/Users/lucas.degeorge/Documents/trained_models"
-image_folder = "C:/Users/lucas.degeorge/Documents/Images/unlabeled_images"
+image_folder = "D:/Images_nanomax/Images/unlabeled_images_t1_60000"
 
 # for tests: 
 # train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(arguments["model"]["in_channels"], batch_size=arguments["batch_size"])
@@ -58,8 +58,10 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 
 #%% Tests
 
-image_test = image_folder + "/0006330.png"
-model_test = model_folder + "/model_semi_20230628_112952.pth"
+# image_test = image_folder + "/0006330.png"
+files = os.listdir(image_folder) 
+image_test =  image_folder + "/" + random.choice(files)
+model_test = model_folder + "/model_semi_20230708_112446/model_semi_20230708_112446_epoch9.pth"
 
 image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
