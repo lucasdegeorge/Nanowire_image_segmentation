@@ -48,7 +48,7 @@ class Trainer:
         
         # scheduler
         if arguments["trainer"]["scheduler"] == "OneCycleLR":
-            self.scheduler = OneCycleLR(self.optimizer, max_lr = 1e-2, steps_per_epoch = 8, epochs = arguments["trainer"]["nb_epochs"], anneal_strategy = 'cos')
+            self.scheduler = OneCycleLR(self.optimizer, max_lr = 1e-2, steps_per_epoch = 20000, epochs = arguments["trainer"]["nb_epochs"], anneal_strategy = 'cos')
         elif arguments["trainer"]["scheduler"] == "CosineAnnealingLR":
             self.scheduler = CosineAnnealingLR(self.optimizer, T_max = 40, eta_min = 1e-5)
         elif arguments["trainer"]["scheduler"] == "CosineAnnealingWarmRestarts":

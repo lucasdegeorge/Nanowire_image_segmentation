@@ -184,7 +184,6 @@ from losses import MulticlassDiceLoss
 # mode semi
 model_test = Model(mode='semi')
 dataloader = iter(zip(cycle(micro_labeled_dataloader), micro_unlabeled_dataloader))
-criterion = MulticlassDiceLoss(nb_classes=3)
 
 for (x_l, target_l), x_ul in dataloader:
     x_l = x_l.to(device)
@@ -193,5 +192,7 @@ for (x_l, target_l), x_ul in dataloader:
 
     res = model_test(x_l, x_ul=x_ul)
     out_l, out_ul = res["output_l"], res["output_ul"]
+    print(out_l.shape)
+    criterion = MulticlassDiceLoss(nb_classes=out_l.shape[2])
     loss = criterion(out_l, target_l)
     break

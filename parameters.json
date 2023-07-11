@@ -36,17 +36,17 @@
     },
     
     "trainer" : {
-        "sup_loss" : "DICE",
+        "sup_loss" : "CE",
         "unsup_loss" : "mse",
         "weight_ul_max" : 3,
-        "optimizer" : "adam",
-        "scheduler" : "None",
+        "optimizer" : "sgd",
+        "scheduler" : "OneCycleLR",
         "optimizer_args":{
-            "lr": 1e-3,
+            "lr": 1e-4,
             "weight_decay": 1e-4,
             "momentum": 0.9
         },
-        "nb_epochs" : 15
+        "nb_epochs" : 10
     }, 
 
     "batch_size" : 2,
