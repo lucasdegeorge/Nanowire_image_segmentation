@@ -170,9 +170,10 @@ for name, decoder in aux_decoder_dict.items():
         print(res.shape)
         break
 
-#%% Model unit tests 
+#%% Model unit tests and criterion (DICE)
 
 from model.model import * 
+from losses import MulticlassDiceLoss
 
 # # mode super
 # model_test = Model(mode='super')
@@ -183,6 +184,7 @@ from model.model import *
 # mode semi
 model_test = Model(mode='semi')
 dataloader = iter(zip(cycle(micro_labeled_dataloader), micro_unlabeled_dataloader))
+criterion = MulticlassDiceLoss(nb_classes=3)
 
 for (x_l, target_l), x_ul in dataloader:
     x_l = x_l.to(device)
@@ -190,4 +192,6 @@ for (x_l, target_l), x_ul in dataloader:
     x_ul = x_ul.to(device)
 
     res = model_test(x_l, x_ul=x_ul)
+    out_l, out_ul = res["output_l"], res["output_ul"]
+    loss = criterion(out_l, target_l)
     break
