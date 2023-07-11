@@ -61,7 +61,7 @@ def predict(model_path, image, class_values=[0,127,255], display=True, return_in
 # image_test = image_folder + "/0006330.png"
 files = os.listdir(image_folder) 
 image_test =  image_folder + "/" + random.choice(files)
-model_test = model_folder + "/model_semi_20230710_103406_epoch0.pth"
+model_test = model_folder + "/model_semi_20230710_103406_epoch5.pth"
 
 # image, prediction = predict(model_test, image_test, display=True, return_input=True)
 

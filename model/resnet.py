@@ -157,12 +157,12 @@ class ResnetBackbone(nn.Module):
     def __init__(self, orig_resnet, arguments):
         super(ResnetBackbone, self).__init__()
 
-        pretrained = arguments["model"]["pretrained"]
+        self.pretrained = arguments["model"]["pretrained"]
         freeze = arguments["model"]["freeze"]
         pretraining = arguments["model"]["pretraining"]
         self.in_channels = arguments["model"]["in_channels"]
 
-        if pretrained:
+        if self.pretrained:
             model = torchvision.models.resnet50(weights=torchvision.models.ResNet50_Weights.DEFAULT)
             print("pretrained")
             if pretraining == "nasa":
@@ -173,7 +173,7 @@ class ResnetBackbone(nn.Module):
             model = orig_resnet
             print("random")
 
-        if freeze=="full" and pretrained: # We can't freeze if weights are randomly initialized 
+        if freeze=="full" and self.pretrained: # We can't freeze if weights are randomly initialized 
             print("full freeze")
             for param in model.parameters():
                 param.requires_grad = False
@@ -189,7 +189,7 @@ class ResnetBackbone(nn.Module):
         self.layer3 = model.layer3
         self.layer4 = model.layer4
 
-        if freeze=="2layers" and pretrained:
+        if freeze=="2layers" and self.pretrained:
             print("2layers freeze")
             self.conv1.requires_grad = False
             for param in self.layer1.parameters():
@@ -200,7 +200,7 @@ class ResnetBackbone(nn.Module):
 
     def forward(self, x):
         tuple_features = list()
-        if self.in_channels==1:
+        if self.in_channels==1 and self.pretrained:
             x = self.preconv(x)
         x = self.conv1(x)
         x = self.bn1(x)
