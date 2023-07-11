@@ -2,7 +2,7 @@
     "model" : {
         "pretrained" : true,
         "freeze" : "full",
-        "pretraining" : "nasa",
+        "pretraining" : "imagenet",
         "in_channels" : 1,
         "nb_classes" : 3,
         "nb_RNlayers" : 50,
@@ -46,7 +46,7 @@
             "weight_decay": 1e-4,
             "momentum": 0.9
         },
-        "nb_epochs" : 10
+        "nb_epochs" : 15
     }, 
 
     "batch_size" : 2,

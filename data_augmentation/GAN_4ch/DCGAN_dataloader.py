@@ -99,6 +99,6 @@ class CombinedDataset(torch.utils.data.Dataset):
 
 
 def get_dataloader(pt_file, batch_size, shuffle=True, pin_memory=True):
-    transform = transforms.Compose([transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    transform = None #transforms.Compose([transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     dataset = CombinedDataset(pt_file, transform)
     return torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, pin_memory=pin_memory)

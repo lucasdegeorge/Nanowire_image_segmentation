@@ -14,6 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
+from datetime import datetime
 
 from DCGAN_model import *
 from DCGAN_dataloader import *
@@ -22,13 +23,11 @@ device = torch.device("cuda")
 
 images_path = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
 
-workers = 2 # Number of workers for dataloader ?????
-
 nb_epochs = 20 
 lr = 0.0002 
 beta1 = 0.5 # Beta1 hyperparameter for Adam optimizers
 image_size = 1024 
-batch_size = 128 
+batch_size = 4
 
 # dataloaders 
 data_path = "C:/Users/lucas.degeorge/Documents/Images/resized_images/combined_data"
@@ -57,6 +56,8 @@ def train():
     D_losses = []
     iters = 0
 
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
     print("Starting Training Loop...")
     for epoch in range(nb_epochs):
 
@@ -65,11 +66,14 @@ def train():
             netD.zero_grad()
 
             ## Train the discriminator with the real data
-            real_cpu = data[0].to(device)
+            real_cpu = data.to(device)
             ba_size = real_cpu.size(0)
 
             label = torch.full((ba_size,), real_label, dtype=torch.float, device=device) # ground truth for real data
-            output = netD(real_cpu).view(-1)  # prediction by the discriminator on real image
+            output = netD(real_cpu)
+            print(output.shape)
+            output = output.view(-1)
+            print(output.shape)  # prediction by the discriminator on real image
             errD_real = criterion(output, label)
 
             errD_real.backward()
@@ -114,8 +118,15 @@ def train():
                 with torch.no_grad():
                     fake = netG(fixed_noise).detach().cpu()
                 img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
-
+        
             iters += 1
 
+        # save models after each epoch 
+        G_path = "C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/data_augmentation/GAN_4ch/saved_models/generator_{}_epoch{}".format(timestamp, epoch)
+        D_path = "C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/data_augmentation/GAN_4ch/saved_models/discriminator_{}_epoch{}".format(timestamp, epoch) 
+        torch.save(netG.state_dict(), G_path)
+        torch.save(netD.state_dict(), D_path)
+
+    return img_list, G_losses, D_losses
 
 train()

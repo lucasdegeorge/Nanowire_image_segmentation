@@ -1,7 +1,7 @@
 #%% 
 import torch.nn as nn
 
-img_channels = 3 
+img_channels = 2 
 noise_channels = 100 # Size of z latent vector (i.e. size of generator input)
 gfeatures_size = 64 
 dfeatures_size = 64 
