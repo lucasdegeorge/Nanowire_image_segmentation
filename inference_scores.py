@@ -63,7 +63,7 @@ files = os.listdir(image_folder)
 image_test =  image_folder + "/" + random.choice(files)
 model_test = model_folder + "/model_semi_20230710_103406_epoch0.pth"
 
-image, prediction = predict(model_test, image_test, display=True, return_input=True)
+# image, prediction = predict(model_test, image_test, display=True, return_input=True)
 
 
 #%% Accuracy
