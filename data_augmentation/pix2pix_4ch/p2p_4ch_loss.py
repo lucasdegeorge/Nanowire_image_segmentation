@@ -6,15 +6,22 @@ import torch
 from torch import nn
 
 class GeneratorLoss(nn.Module):
-    def __init__(self, alpha=100):
+    def __init__(self, alpha1=100, alpha2=200):
         super().__init__()
-        self.alpha=alpha
+        self.alpha1=alpha1
+        self.alpha2=alpha2
         self.bce=nn.BCEWithLogitsLoss()
         self.l1=nn.L1Loss()
         
     def forward(self, fake, real, fake_pred):
         fake_target = torch.ones_like(fake_pred)
-        loss = self.bce(fake_pred, fake_target) + self.alpha* self.l1(fake, real)
+
+        real_image = real[:,0]
+        real_mask = real[:,1]
+        fake_image = fake[:,0]
+        fake_mask = fake[:,1]
+
+        loss = self.bce(fake_pred, fake_target) + self.alpha1*self.l1(fake_image, real_image) + self.alpha2*self.l1(fake_mask, real_mask)
         return loss
     
     

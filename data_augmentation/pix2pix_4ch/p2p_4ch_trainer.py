@@ -45,7 +45,7 @@ class pix2pix_trainer:
         last_loss = [0., 0.]
         running_loss = [0., 0.]
 
-        for i, (real, x) in enumerate(dataloader):
+        for i, x in enumerate(dataloader): # x here a 2 or 4-channel image where the last channel is the mask
             start_time = time.time()
 
             x = x.to(device)
@@ -53,7 +53,7 @@ class pix2pix_trainer:
 
             # generator's loss
             fake = self.generator(x)
-            fake_pred = self.discriminator(fake, x)
+            fake_pred = self.discriminator(fake, x) # what is predicted by the discriminator given the generated (fake) image
             g_loss = self.g_criterions(fake, real, fake_pred)
 
             # discriminator's loss
