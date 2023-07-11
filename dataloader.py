@@ -184,7 +184,7 @@ class eval_LabeledDataset(torch.utils.data.Dataset):
 
 # Unlabeled data 
 
-def load_unlabeled_data(in_channels, image_dir, folder_where_write="D:/Images_nanomax/Images"):
+def load_unlabeled_data(in_channels, image_dir, folder_where_write="D:/Images_nanomax/Images"): # folder_where_write="C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests"
     if in_channels == 3: file_name = "unlabeled_images_3ch.pt"
     elif in_channels == 1: file_name = "unlabeled_images_t1_1ch.pt"
     else: raise ValueError("in_channels must be 1 or 3 and is " + str(in_channels))
