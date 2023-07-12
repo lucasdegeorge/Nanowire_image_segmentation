@@ -4,7 +4,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import math
-import cv2
 import random
 import json
 
@@ -12,6 +11,7 @@ import json
 c2n = False
 
 if c2n:
+    import cv2
     with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
         arguments = json.load(f)
         device = arguments["device"]

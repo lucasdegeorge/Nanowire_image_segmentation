@@ -20,6 +20,8 @@ if c2n:
         device = torch.device(device)
 else:
     device = torch.device("cuda")
+    with open("parameters.json", 'r') as f:
+        arguments = json.load(f)
 
 #%% 
 
