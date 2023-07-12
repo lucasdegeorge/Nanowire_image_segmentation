@@ -8,6 +8,11 @@ from sklearn.model_selection import train_test_split
 import json
 import multiprocessing
 
+labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
+masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
+unlabeled_image_dir = "D:/Images_nanomax/Images/unlabeled_images_t1" # "C:/Users/lucas.degeorge/Documents/Images/little_unlabeled_images" 
+folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
+
 c2n = False
 
 if c2n:
@@ -17,12 +22,6 @@ if c2n:
         device = arguments["device"]
         device = torch.device(device)
         in_channels = arguments["model"]["in_channels"]
-    
-    labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
-    masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
-    unlabeled_image_dir = "D:/Images_nanomax/Images/unlabeled_images_t1" # "C:/Users/lucas.degeorge/Documents/Images/little_unlabeled_images" 
-    folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
-
 else:
     with open("parameters.json", 'r') as f:
         arguments = json.load(f)
