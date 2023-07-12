@@ -16,13 +16,23 @@ with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/
     device = arguments["device"]
     device = torch.device(device)
 
-from dataloader import * 
+#%% dataloarder v1
 
-#%% dataloarder 
+from dataloader import * 
 in_channels = arguments["model"]["in_channels"]
 train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_dataloaders(in_channels, batch_size=batch_size)
 
-#%% micro - Dataloaders for tests :  ## Does not work since updates in dataloader.py
+#%% mini for test - from dataloader_sep
+
+from dataloader_sep import get_dataloaders_sep
+
+mini_labeled = "C:/Users/lucas.degeorge/Documents/Images/other_images/mini_pt/mini_labeled_pt"
+mini_mask = "C:/Users/lucas.degeorge/Documents/Images/other_images/mini_pt/mini_masks_pt"
+mini_unlabeled = "C:/Users/lucas.degeorge/Documents/Images/other_images/mini_pt/mini_unlabeled_pt"
+
+mini_train_labeled_dataloader, mini_eval_labeled_dataloader, mini_unlabeled_dataloader = get_dataloaders_sep(batch_size=2, unlabeled=True, labeled_image_dir=mini_labeled, masks_dir=mini_mask, unlabeled_image_dir=mini_unlabeled)
+
+#%% micro - Dataloaders for tests :  
 
 in_channels = arguments["model"]["in_channels"]
 
@@ -53,7 +63,9 @@ model_test.to(device)
 
 # summary(model_test.cuda(), (3, 1024, 1024))
 
-trainer_test = Trainer(model_test, micro_labeled_dataloader, micro_unlabeled_dataloader, micro_labeled_dataloader)  ## Just for test : here same data in train and eval
+print(len(mini_unlabeled_dataloader))
+
+trainer_test = Trainer(model_test, mini_train_labeled_dataloader, mini_unlabeled_dataloader, mini_eval_labeled_dataloader) 
 # trainer_test.train_super_1epoch(0, writer)
 # trainer_test.train_semi_1epoch(0, writer)
 # trainer_test.eval_1epoch(0)

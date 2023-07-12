@@ -81,7 +81,7 @@ class UnlabeledDataset(torch.utils.data.Dataset):
         image = torch.load(image)
         return image
 
-def get_dataloaders(batch_size, unlabeled=True, split=True, labeled_image_dir=labeled_image_dir + "_pt", masks_dir=masks_dir + "_pt", unlabeled_image_dir=unlabeled_image_dir + "_pt"):
+def get_dataloaders_sep(batch_size, unlabeled=True, split=True, labeled_image_dir=labeled_image_dir + "_pt", masks_dir=masks_dir + "_pt", unlabeled_image_dir=unlabeled_image_dir + "_pt"):
     
     if split:
         image_list = glob.glob(labeled_image_dir + '/*.pt')
@@ -113,4 +113,4 @@ def get_dataloaders(batch_size, unlabeled=True, split=True, labeled_image_dir=la
         
         return labeled_dataloader
 
-# train_labeled_dataloader, eval_labeled_dataloader, unlabeled_dataloader = get_dataloaders(batch_size=32, unlabeled=True)
+# train_labeled_dataloader, eval_labeled_dataloader, unlabeled_dataloader = get_dataloaders_sep(batch_size=32, unlabeled=True)
