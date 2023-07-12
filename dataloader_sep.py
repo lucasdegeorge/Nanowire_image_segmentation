@@ -81,10 +81,12 @@ class UnlabeledDataset(torch.utils.data.Dataset):
         image = torch.load(image)
         return image
 
-def get_dataloader(batch_size, unlabeled=True, split=True, labeled_image_dir=labeled_image_dir + "_pt", masks_dir=masks_dir + "_pt", unlabeled_image_dir=unlabeled_image_dir + "_pt"):
+def get_dataloaders(batch_size, unlabeled=True, split=True, labeled_image_dir=labeled_image_dir + "_pt", masks_dir=masks_dir + "_pt", unlabeled_image_dir=unlabeled_image_dir + "_pt"):
     
     if split:
-        train_images, eval_images, train_masks, eval_masks = train_test_split(labeled_image_dir, masks_dir, test_size=0.2)
+        image_list = glob.glob(labeled_image_dir + '/*.pt')
+        mask_list = glob.glob(masks_dir + '/*.pt' )
+        train_images, eval_images, train_masks, eval_masks = train_test_split(image_list, mask_list, test_size=0.2)
         train_dataset = train_LabeledDataset(train_images, train_masks)
         eval_dataset = eval_LabeledDataset(eval_images, eval_masks)
         train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True, pin_memory=True)
@@ -111,4 +113,4 @@ def get_dataloader(batch_size, unlabeled=True, split=True, labeled_image_dir=lab
         
         return labeled_dataloader
 
-# train_labeled_dataloader, eval_labeled_dataloader, unlabeled_dataloader = get_dataloaders(batch_size=batch_size, unlabeled=True)
+# train_labeled_dataloader, eval_labeled_dataloader, unlabeled_dataloader = get_dataloaders(batch_size=32, unlabeled=True)
