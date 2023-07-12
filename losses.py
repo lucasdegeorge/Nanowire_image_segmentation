@@ -17,10 +17,10 @@ def supervised_loss(input, target, mode="CE"):
     if mode == "CE":
         return F.cross_entropy(input, target)
     elif mode == "DICE":
-        dice_loss = DiceLoss(reduction='none')
+        dice_loss = DiceLoss(reduction='mean')
         return dice_loss(input, target)
     elif mode == "DICE-CE":
-        diceCE = DiceCELoss(reduction='none')
+        diceCE = DiceCELoss(reduction='mean')
         return diceCE(input, target) 
     else:
         ValueError("Invalid value for mode. Must be in ['CE', 'DICE', DICE-CE]")

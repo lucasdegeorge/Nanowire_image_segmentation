@@ -27,10 +27,10 @@ train_labeled_dataloader, eval_labeled_dataloader,  unlabeled_dataloader = get_d
 in_channels = arguments["model"]["in_channels"]
 
 # micro paths 
-micro_labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/labeled_images"
-micro_masks_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/binary_masks"
-micro_unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests/unlabeled_images"
-micro_folder_where_write = "C:/Users/lucas.degeorge/Documents/Images/micro_batch_for_tests"
+micro_labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/other_images/micro_batch_for_tests/labeled_images"
+micro_masks_dir = "C:/Users/lucas.degeorge/Documents/Images/other_images/micro_batch_for_tests/binary_masks"
+micro_unlabeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/other_images/micro_batch_for_tests/unlabeled_images"
+micro_folder_where_write = "C:/Users/lucas.degeorge/Documents/Images/other_images/micro_batch_for_tests"
 
 
 train_images, eval_images, train_masks, eval_masks = load_labeled_data(in_channels, micro_labeled_image_dir, micro_masks_dir, folder_where_write=micro_folder_where_write)
@@ -173,7 +173,7 @@ for name, decoder in aux_decoder_dict.items():
 #%% Model unit tests and criterion (DICE)
 
 from model.model import * 
-from losses import MulticlassDiceLoss
+from monai.losses import DiceLoss, DiceCELoss
 
 # # mode super
 # model_test = Model(mode='super')
@@ -193,6 +193,6 @@ for (x_l, target_l), x_ul in dataloader:
     res = model_test(x_l, x_ul=x_ul)
     out_l, out_ul = res["output_l"], res["output_ul"]
     print(out_l.shape)
-    criterion = MulticlassDiceLoss(nb_classes=out_l.shape[2])
+    criterion = DiceCELoss(reduction='mean')
     loss = criterion(out_l, target_l)
     break
