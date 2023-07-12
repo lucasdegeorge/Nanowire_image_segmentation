@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import math
+from monai.losses import DiceLoss, DiceCELoss
 
 from dataloader import * 
 
@@ -16,35 +17,13 @@ def supervised_loss(input, target, mode="CE"):
     if mode == "CE":
         return F.cross_entropy(input, target)
     elif mode == "DICE":
-        dice_loss = MulticlassDiceLoss(input.shape[2])
+        dice_loss = DiceLoss(reduction='none')
         return dice_loss(input, target)
+    elif mode == "DICE-CE":
+        diceCE = DiceCELoss(reduction='none')
+        return diceCE(input, target) 
     else:
-        ValueError("Invalid value for mode. Must be in ['CE', 'DICE']")
-
-    
-
-class MulticlassDiceLoss(nn.Module):
-    """Reference: https://www.kaggle.com/code/bigironsphere/loss-function-library-keras-pytorch#Dice-Loss
-    """
-    def __init__(self, nb_classes):
-        super().__init__()
-        self.nb_classes = nb_classes
-
-    def forward(self, logits, targets, reduction='mean', smooth=1e-6):
-        """The "reduction" argument is ignored. This method computes the dice
-        loss for all classes and provides an overall weighted loss.
-        """
-        probabilities = logits
-        intersection = (targets * probabilities).sum()
-        
-        mod_a = intersection.sum()
-        mod_b = targets.numel()
-        
-        dice_coefficient = 2. * intersection / (mod_a + mod_b + smooth)
-        dice_loss = - dice_coefficient.log()
-        # return 1 - dice_coefficient
-        return dice_loss
-
+        ValueError("Invalid value for mode. Must be in ['CE', 'DICE', DICE-CE]")
 
 
 #%% unsupervised losses 
