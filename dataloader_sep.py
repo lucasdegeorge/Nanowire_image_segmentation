@@ -24,7 +24,7 @@ def save_1by1(input_folder, output_folder, is_mask=False):
         if is_mask:
             tensor = mask_converter(file_path)
         else:
-            image = Image.open(file_path)
+            image = Image.open(file_path).convert("L")
             tensor = converter(image)
         file_name = os.path.splitext(os.path.basename(file_path))[0]
         output_path = os.path.join(output_folder, file_name + '.pt')
