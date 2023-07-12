@@ -19,7 +19,7 @@ if c2n:
 else:
     with open("parameters.json", 'r') as f:
         arguments = json.load(f)
-    device = torch.device("cuda)
+    device = torch.device("cuda")
 
 from dataloader import *
 from losses import * 
