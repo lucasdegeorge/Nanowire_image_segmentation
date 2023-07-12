@@ -17,7 +17,7 @@ if c2n:
         device = arguments["device"]
         device = torch.device(device)
 else:
-    device = torch.device("cuda)
+    device = torch.device("cuda")
 
 
 # most of the code from: https://github.com/yassouali/CCT/blob/master/models/decoders.py

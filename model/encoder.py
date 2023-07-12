@@ -15,7 +15,7 @@ if c2n:
         device = arguments["device"]
         device = torch.device(device)
 else:
-    device = torch.device("cuda)
+    device = torch.device("cuda")
 
 #%% 
 
