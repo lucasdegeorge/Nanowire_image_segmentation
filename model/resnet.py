@@ -7,14 +7,19 @@ import json
 from torchsummary import summary
 
 # pretrained models 
-import pretrained_microscopy_models as pmm
+# import pretrained_microscopy_models as pmm
 import torch.utils.model_zoo as model_zoo
 
-with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
-    arguments = json.load(f)
-    device = arguments["device"]
-    device = torch.device(device)
-    # in_channels = arguments["model"]["in_channels"]
+# Device configuration
+c2n = False
+
+if c2n:
+    with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+        arguments = json.load(f)
+        device = arguments["device"]
+        device = torch.device(device)
+else:
+    device = torch.device("cuda)
 
 #%% 
 

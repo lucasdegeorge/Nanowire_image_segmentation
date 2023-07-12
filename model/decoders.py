@@ -9,10 +9,16 @@ import random
 import json
 
 # Device configuration
-with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
-    arguments = json.load(f)
-    device = arguments["device"]
-    device = torch.device(device)
+c2n = False
+
+if c2n:
+    with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
+        arguments = json.load(f)
+        device = arguments["device"]
+        device = torch.device(device)
+else:
+    device = torch.device("cuda)
+
 
 # most of the code from: https://github.com/yassouali/CCT/blob/master/models/decoders.py
 
