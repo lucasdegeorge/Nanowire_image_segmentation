@@ -59,8 +59,9 @@ class Trainer:
             # raise ValueError("scheduler has an invalid value. Must be in ['OneCycleLR', 'CosineAnnealingLR', 'CosineAnnealingWarmRestarts]")
         
         self.nb_epochs = arguments["trainer"]["nb_epochs"]
-        self.iter_per_epoch = len(unlabeled_loader) # assuming that len(unlabeled) > len(labeled)
-        self.rampup_length = self.nb_epochs * self.iter_per_epoch
+        if self.mode == 'semi':
+            self.iter_per_epoch = len(unlabeled_loader) # assuming that len(unlabeled) > len(labeled)
+            self.rampup_length = self.nb_epochs * self.iter_per_epoch
 
         # data loaders
         self.labeled_loader = labeled_loader
@@ -91,16 +92,16 @@ class Trainer:
 
             # report data
             running_loss += loss.item()
-            if i % 2 == 0:
+            if i % 100 == 0:
                 if i==0: last_loss = running_loss
-                else: last_loss = running_loss / 2
+                else: last_loss = running_loss / 100
                 # logs file 
                 with open("logs/logs_" + self.mode + "_" + str(self.timestamp) + ".txt","a") as logs :
                     logs.write("\nEpoch : " + str(epoch_idx) + " - batch nb : "+str(i)+" -  in "+ str(int(1000*(time.time()-start_time))) + "ms, loss "+ str(last_loss))
                     logs.close()
                 # tensorboard
                 print('  batch {} loss: {}'.format(i, last_loss))
-                tb_x = epoch_idx * len(self.unlabeled_loader) + i
+                tb_x = epoch_idx * len(self.labeled_loader) + i
                 tb_writer.add_scalar('Loss/train', last_loss, tb_x)
                 running_loss = 0.
 
