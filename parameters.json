@@ -37,7 +37,7 @@
     
     "trainer" : {
         "sup_loss" : "DICE",
-        "unsup_loss" : "mse",
+        "unsup_loss" : "dice",
         "weight_ul_max" : 3,
         "optimizer" : "sgd",
         "scheduler" : "OneCycleLR",

@@ -132,7 +132,7 @@ class Trainer:
 
             loss_l = supervised_loss(output_l, target_l, mode=self.sup_loss_mode)
             loss_ul = sum([ unsupervised_loss(output, target_ul, mode = self.unsup_loss_mode) for output in aux_outputs_ul]) / len(aux_outputs_ul)
-            w_u = weight_ramp_up(self.iter_per_epoch * epoch_idx + i, self.rampup_length, self.weight_ul_max)
+            w_u = 1 #  weight_ramp_up(self.iter_per_epoch * epoch_idx + i, self.rampup_length, self.weight_ul_max)
             loss = loss_l + loss_ul * w_u
 
             loss.backward()

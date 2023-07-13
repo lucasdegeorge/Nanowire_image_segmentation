@@ -44,10 +44,13 @@ def eval_loss(input, target, mode):
 
 #%% unsupervised losses 
 
-def unsupervised_loss(input, target, mode="mse"):
+def unsupervised_loss(input, target, mode):
     assert input.requires_grad == True and target.requires_grad == False, "Error in requires_grad"
     assert input.size() == target.size(), "Input and target must have the same size, must be (batch_size * num_classes * H * W)"
 
+    if mode == "dice":
+        dice_loss = DiceLoss(reduction='mean')
+        return dice_loss(input, target)
     if mode == "mse":
         input = F.softmax(input, dim=1)
         return F.mse_loss(input, target, reduction='mean')
