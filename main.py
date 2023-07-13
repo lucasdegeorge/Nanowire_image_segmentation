@@ -12,7 +12,6 @@ with open("parameters.json", 'r') as f:
     device = arguments["device"]
     device = torch.device(device)
 
-#%% 
 print(device)
 
 # from dataloader import *
