@@ -16,7 +16,7 @@ with open("parameters.json", 'r') as f:
     device = arguments["device"]
     device = torch.device(device)
 
-from dataloader import *
+# from dataloader import *
 from dataloader_sep import *
 from losses import * 
 from model.model import * 
@@ -165,7 +165,7 @@ class Trainer:
                 val_target = val_target.to(device)
 
                 val_output = self.model(val_x, None, eval=True)["output_l"].to(device)
-                val_loss = F.cross_entropy(val_output, val_target)
+                val_loss = eval_loss(val_output, val_target, mode=self.sup_loss_mode)
                 running_val_loss += val_loss
         val_loss = running_val_loss / (i + 1) 
 

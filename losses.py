@@ -8,8 +8,26 @@ from monai.losses import DiceLoss, DiceCELoss
 
 #%% Supervised losses 
 
-def supervised_loss(input, target, mode="CE"):
-    assert input.requires_grad == True and target.requires_grad == False, "Error in requires_grad"
+def supervised_loss(input, target, mode):
+    assert input.requires_grad == True and target.requires_grad == False, "Error in requires_grad - supervised"
+    assert input.size() == target.size(), "Input and target must have the same size, must be (batch_size * num_classes * H * W)"
+
+    if mode == "CE":
+        return F.cross_entropy(input, target)
+    elif mode == "DICE":
+        dice_loss = DiceLoss(reduction='mean')
+        return dice_loss(input, target)
+    elif mode == "DICE-CE":
+        diceCE = DiceCELoss(reduction='mean')
+        return diceCE(input, target) 
+    else:
+        ValueError("Invalid value for mode. Must be in ['CE', 'DICE', DICE-CE]")
+
+
+#%% Eval loss 
+
+def eval_loss(input, target, mode):
+    assert input.requires_grad == False and target.requires_grad == False, "Error in requires_grad - eval"
     assert input.size() == target.size(), "Input and target must have the same size, must be (batch_size * num_classes * H * W)"
 
     if mode == "CE":
