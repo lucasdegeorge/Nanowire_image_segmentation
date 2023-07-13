@@ -6,13 +6,53 @@ from PIL import Image
 import os
 from sklearn.model_selection import train_test_split
 
-from dataloader import mask_converter
-
 labeled_image_dir = "C:/Users/lucas.degeorge/Documents/Images/labeled_images"
 masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
 unlabeled_image_dir = "D:/Images_nanomax/Images/unlabeled_images_t1" # "C:/Users/lucas.degeorge/Documents/Images/little_unlabeled_images" 
 folder_where_write_A = "C:/Users/lucas.degeorge/Documents/Images"
 folder_where_write_B = "D:/Images_nanomax/Images"
+
+#%% mask converter 
+
+def mask_converter(mask, out="one-hot", nb_classes=3, class_values=[0,127,255]):
+    """ mask can be:
+        - a string representing the path to a filetype image -> the mask converted in a (nb_classes, H, W)  tensor(s)
+        - a (.,H,W,1) tensor -> the mask is converted as a (.,nb_classes,H,W) tensor 
+        - a (.,nb_classes,H,W) tensor -> the mask is converted as a (.,H,W,1) tensor
+        (tensors can represent a batch)
+    """
+    if type(mask) == str:  # mask is a path, the mask is converted in a tensor 
+        image = Image.open(mask).convert("L")
+        # if image.size != (1024,1024): image = image.resize((1024,1024))
+        tensor_image = transforms.functional.to_tensor(image) * 255
+        tensor_image = tensor_image.to(torch.uint8) 
+        # if tensor_image.size != (1024,1024): tensor_image = tensor_image.resize((1024,1024))
+        for i in range(nb_classes):
+            tensor_image = torch.where(tensor_image == class_values[i], torch.tensor(i), tensor_image)         
+        try:
+            tensor_image = torch.nn.functional.one_hot(tensor_image.to(torch.int64), nb_classes).permute(0,3,1,2).squeeze(0)
+            tensor_image = tensor_image.to(torch.float32)
+        except RuntimeError:
+            raise RuntimeError("Error while trying to convert the file" + mask)
+        if out == "one-hot":
+            return tensor_image
+        elif out == "image-like":
+            return tensor_image.permute(1,2,0)
+        else: 
+            raise ValueError("out mode is incorrect")
+    if type(mask) == torch.Tensor:
+        if out == "one-hot":
+            assert mask.shape[-1] == nb_classes, "Tensor has a wrong shape"
+            if len(mask.shape) == 3: return mask.permute(2,0,1)
+            elif len(mask.shape) == 4: return mask.permute(0,3,1,2)
+            else: raise ValueError("Tensor has a wrong shape")
+        if out == "image-like":
+            assert mask.shape[0] == nb_classes or mask.shape[1] == nb_classes, "Tensor has a wrong shape"
+            if len(mask.shape) == 3: return mask.permute(1,2,0)
+            elif len(mask.shape) == 4: return mask.permute(0,2,3,1)
+            else: raise ValueError("Tensor has a wrong shape")
+
+#%% 
 
 converter = transforms.ToTensor()
 

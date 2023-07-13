@@ -15,7 +15,8 @@ with open("parameters.json", 'r') as f:
 #%% 
 print(device)
 
-from dataloader import *
+# from dataloader import *
+from dataloader_sep import * 
 from model.model import * 
 from trainer import * 
 # from inference_scores import * 
