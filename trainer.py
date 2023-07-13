@@ -8,6 +8,8 @@ from datetime import datetime, date
 import time
 from torch.optim.lr_scheduler import OneCycleLR, CosineAnnealingLR, CosineAnnealingWarmRestarts
 
+c2n = True
+
 # Device configuration
 with open("parameters.json", 'r') as f:
     arguments = json.load(f)
@@ -207,10 +209,14 @@ class Trainer:
             writer.flush()
 
             # save (best) models
-            model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_epoch{}.pth'.format(self.mode, self.timestamp, epoch_idx)
+            if c2n:
+                model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_epoch{}.pth'.format(self.mode, self.timestamp, epoch_idx)
+            else:
+                model_path = 'trained_models/model_{}_{}_epoch{}.pth'.format(self.mode, self.timestamp, epoch_idx)
             torch.save(self.model.state_dict(), model_path)
             if avg_val_loss < best_val_loss:
-                model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_best.pth'.format(self.mode, self.timestamp)
+                if c2n: model_path = 'C:/Users/lucas.degeorge/Documents/trained_models/model_{}_{}_best.pth'.format(self.mode, self.timestamp)
+                else: model_path = 'trained_models/model_{}_{}_best.pth'.format(self.mode, self.timestamp)
                 torch.save(self.model.state_dict(), model_path)
                 print("new best epoch: ", epoch_idx)
                 best_val_loss = avg_val_loss
