@@ -6,8 +6,6 @@ import numpy as np
 import math
 from monai.losses import DiceLoss, DiceCELoss
 
-from dataloader import * 
-
 #%% Supervised losses 
 
 def supervised_loss(input, target, mode="CE"):

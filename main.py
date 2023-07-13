@@ -7,18 +7,12 @@ from datetime import date
 import json
 
 # Device configuration
-c2n = False
+with open("parameters.json", 'r') as f:
+    arguments = json.load(f)
+    device = arguments["device"]
+    device = torch.device(device)
 
-if c2n:
-    with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
-        arguments = json.load(f)
-        device = arguments["device"]
-        device = torch.device(device)
-else:
-    with open("parameters.json", 'r') as f:
-        arguments = json.load(f)
-    device = torch.device("cuda")
-
+#%% 
 print(device)
 
 from dataloader import *

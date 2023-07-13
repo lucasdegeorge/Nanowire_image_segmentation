@@ -9,19 +9,13 @@ import time
 from torch.optim.lr_scheduler import OneCycleLR, CosineAnnealingLR, CosineAnnealingWarmRestarts
 
 # Device configuration
-c2n = False
-
-if c2n:
-    with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
-        arguments = json.load(f)
-        device = arguments["device"]
-        device = torch.device(device)
-else:
-    with open("parameters.json", 'r') as f:
-        arguments = json.load(f)
-    device = torch.device("cuda")
+with open("parameters.json", 'r') as f:
+    arguments = json.load(f)
+    device = arguments["device"]
+    device = torch.device(device)
 
 from dataloader import *
+from dataloader_sep import *
 from losses import * 
 from model.model import * 
 

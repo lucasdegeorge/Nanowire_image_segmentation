@@ -13,22 +13,12 @@ masks_dir = "C:/Users/lucas.degeorge/Documents/Images/binary_masks"
 unlabeled_image_dir = "D:/Images_nanomax/Images/unlabeled_images_t1" # "C:/Users/lucas.degeorge/Documents/Images/little_unlabeled_images" 
 folder_where_write = "C:/Users/lucas.degeorge/Documents/Images"
 
-c2n = False
-
-if c2n:
-    with open("C:/Users/lucas.degeorge/Documents/GitHub/Nanowire_image_segmentation/parameters.json", 'r') as f:
-        arguments = json.load(f)
-        batch_size = arguments["batch_size"]
-        device = arguments["device"]
-        device = torch.device(device)
-        in_channels = arguments["model"]["in_channels"]
-else:
-    with open("parameters.json", 'r') as f:
-        arguments = json.load(f)
-        batch_size = arguments["batch_size"]
-        device = arguments["device"]
-        device = torch.device(device)
-        in_channels = arguments["model"]["in_channels"]
+with open("parameters.json", 'r') as f:
+    arguments = json.load(f)
+    batch_size = arguments["batch_size"]
+    device = arguments["device"]
+    device = torch.device(device)
+    in_channels = arguments["model"]["in_channels"]
 
 filetype = '.png'
 
